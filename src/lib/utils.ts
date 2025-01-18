@@ -37,14 +37,38 @@ const calculateContractorSalary = (
 
   const taxPercentage =
     (retirementTax + fonasaTax + frlTax) / realCurrentSalary;
+
+  console.log(
+    retirementTax,
+    fonasaTax,
+    frlTax,
+    realCurrentSalary,
+    taxPercentage
+  );
+
   return addIrpf ? grossSalary : realCurrentSalary / (1 - taxPercentage);
 };
 
 const calculateRealCurrentSalary = (salary: number) => {
-  const hourlyRate = salary / 160; // 8 hour shift
-  const holidaySalary = hourlyRate * 8 * 20; // 20 days of holidays
+  const dailyRate = salary / 30;
+  const holidaySalary = dailyRate * 20; // 20 days of holidays
   const annualRealSalary = salary * 13 + holidaySalary; // 13th salary (aguinaldo)
   return annualRealSalary / 12;
+};
+
+const calculateFonasa = (
+  baseTaxableAmount: number,
+  hasChildsInCharge: boolean,
+  hasPartnerInCharge: boolean
+) => {
+  let fonasaTax = baseTaxableAmount * 0.095;
+
+  if (hasChildsInCharge && hasPartnerInCharge)
+    fonasaTax = baseTaxableAmount * 0.13;
+  else if (hasChildsInCharge) fonasaTax = baseTaxableAmount * 0.11;
+  else if (hasPartnerInCharge) fonasaTax = baseTaxableAmount * 0.115;
+
+  return fonasaTax;
 };
 
 export const calculateSalaryForPath = (data: FormData) => {
@@ -71,12 +95,11 @@ export const calculateSalaryForPath = (data: FormData) => {
       } else if (socialSecurityCategory) {
         const retirementTax = socialSecurityCategory * 0.225;
         const frlTax = socialSecurityCategory * 0.001;
-        let fonasaTax;
-
-        if (hasChildsInCharge && hasPartnerInCharge)
-          fonasaTax = socialSecurityCategory * 0.13;
-        else if (hasChildsInCharge) fonasaTax = socialSecurityCategory * 0.11;
-        else if (hasPartnerInCharge) fonasaTax = socialSecurityCategory * 0.115;
+        const fonasaTax = calculateFonasa(
+          socialSecurityCategory,
+          !!hasChildsInCharge,
+          !!hasPartnerInCharge
+        );
 
         return calculateContractorSalary(
           realCurrentSalary,
@@ -98,12 +121,11 @@ export const calculateSalaryForPath = (data: FormData) => {
       } else if (socialSecurityCategory) {
         const retirementTax = socialSecurityCategory * 0.225;
         const frlTax = socialSecurityCategory * 0.001;
-        let fonasaTax;
-
-        if (hasChildsInCharge && hasPartnerInCharge)
-          fonasaTax = socialSecurityCategory * 0.13;
-        else if (hasChildsInCharge) fonasaTax = socialSecurityCategory * 0.11;
-        else if (hasPartnerInCharge) fonasaTax = socialSecurityCategory * 0.115;
+        const fonasaTax = calculateFonasa(
+          socialSecurityCategory,
+          !!hasChildsInCharge,
+          !!hasPartnerInCharge
+        );
 
         return calculateContractorSalary(
           realCurrentSalary,
@@ -127,11 +149,11 @@ export const calculateSalaryForPath = (data: FormData) => {
     } else {
       const retirementTax = 15 * BFC * 0.225;
       const frlTax = 15 * BFC * 0.001;
-      let fonasaTax;
-
-      if (hasChildsInCharge && hasPartnerInCharge) fonasaTax = 6.5 * BPC * 0.13;
-      else if (hasChildsInCharge) fonasaTax = 6.5 * BPC * 0.11;
-      else if (hasPartnerInCharge) fonasaTax = 6.5 * BPC * 0.115;
+      let fonasaTax = calculateFonasa(
+        6.5 * BPC,
+        !!hasChildsInCharge,
+        !!hasPartnerInCharge
+      );
 
       return calculateContractorSalary(
         realCurrentSalary,
