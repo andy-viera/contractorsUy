@@ -130,8 +130,8 @@ const INITIAL_INPUTS: QuestionType[] = [
             },
             type: "radio",
             options: [
-              { label: "Sí", value: true },
-              { label: "No", value: false },
+              { label: "Sí", value: "true" },
+              { label: "No", value: "false" },
             ],
           },
         ],
@@ -142,13 +142,13 @@ const INITIAL_INPUTS: QuestionType[] = [
           value: "isProfessional",
         },
         options: [
-          { label: "Sí", value: true },
-          { label: "No", value: false },
+          { label: "Sí", value: "true" },
+          { label: "No", value: "false" },
         ],
         type: "radio",
         followups: [
           {
-            condition: true,
+            condition: "true",
             question: {
               label:
                 "¿En que categoría de la escala de la caja de profesionales estás?",
@@ -170,31 +170,31 @@ const INITIAL_INPUTS: QuestionType[] = [
             ],
           },
           {
-            condition: false,
+            condition: "false",
             question: {
               label: "¿Tenés hijos a cargo?",
               value: "hasChildsInCharge",
             },
             type: "radio",
             options: [
-              { label: "Si", value: true },
-              { label: "No", value: false },
+              { label: "Si", value: "true" },
+              { label: "No", value: "false" },
             ],
           },
           {
-            condition: false,
+            condition: "false",
             question: {
               label: "¿Tenés cónyuge a cargo?",
               value: "hasPartnerInCharge",
             },
             type: "radio",
             options: [
-              { label: "Si", value: true },
-              { label: "No", value: false },
+              { label: "Si", value: "true" },
+              { label: "No", value: "false" },
             ],
           },
           {
-            condition: false,
+            condition: "false",
             companyType: companyType.unipersonal,
             question: {
               label: "Seleccioná categoría de ficto",

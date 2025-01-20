@@ -91,12 +91,14 @@ export default function Question({
                   return (
                     <>
                       <Select
-                        value={String(watchedAnswer)}
+                        value={
+                          !watchedAnswer ? undefined : String(watchedAnswer)
+                        }
                         onValueChange={(value) =>
                           setValue(question.value, Number(value))
                         }
                       >
-                        <SelectTrigger className="w-[180px]">
+                        <SelectTrigger className="w-48">
                           <SelectValue placeholder="Selecciona una opción" />
                         </SelectTrigger>
                         <SelectContent>
