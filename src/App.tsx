@@ -78,7 +78,7 @@ function App() {
   return (
     <div className="flex flex-col min-h-screen">
       <MainNavbar />
-      <main className="flex items-center justify-center flex-1 w-full p-4 bg-white">
+      <main className="flex flex-wrap items-center justify-center flex-1 w-full p-4 bg-white gap-x-3">
         <motion.div
           layout
           transition={{
@@ -86,47 +86,49 @@ function App() {
             stiffness: 300,
             damping: 30,
           }}
-          className="w-2/3 p-8 mx-auto border rounded-lg shadow-sm"
+          className="w-2/3 mx-auto border rounded-lg shadow-sm"
         >
-          <h3 className="mb-4 text-xl font-bold">Simulador</h3>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {INITIAL_INPUTS.map((input, i) => (
-              <Question
-                key={i}
-                register={register}
-                watch={watch}
-                setValue={setValue}
-                question={input.question}
-                options={input.options}
-                type={input.type}
-                followups={input.followups}
-              />
-            ))}
-            {/* Button */}
-            <div
-              className={`flex justify-center w-full transition-opacity duration-1000 ${
-                isDisabledBtn
-                  ? "opacity-0 invisible absolute"
-                  : "opacity-100 visible relative"
-              }`}
-            >
-              <button className="px-0 pt-5 cursor-pointer" type="submit">
-                <HoverBorderGradientDemo />
-              </button>
-            </div>
-          </form>
-        </motion.div>
-        {result && (
-          <div className="max-w-xl p-6 mx-auto mt-5 border rounded-lg shadow-sm">
-            <h2 className="text-xl font-semibold">Resultado</h2>
-            <p className="mt-2 text-lg">
-              El sueldo de contractor que deberías pedir es de: <br />
-              <span className="font-semibold">
-                ${Math.round(result)} {`(US$ ${Math.round(result / 45)})`}
-              </span>
-            </p>
+          <div className="p-8">
+            <h3 className="mb-4 text-xl font-bold">Simulador</h3>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              {INITIAL_INPUTS.map((input, i) => (
+                <Question
+                  key={i}
+                  register={register}
+                  watch={watch}
+                  setValue={setValue}
+                  question={input.question}
+                  options={input.options}
+                  type={input.type}
+                  followups={input.followups}
+                />
+              ))}
+              {/* Button */}
+              <div
+                className={`flex justify-center w-full transition-opacity duration-1000 ${
+                  isDisabledBtn
+                    ? "opacity-0 invisible absolute"
+                    : "opacity-100 visible relative"
+                }`}
+              >
+                <button className="px-0 pt-5 cursor-pointer" type="submit">
+                  <HoverBorderGradientDemo />
+                </button>
+              </div>
+            </form>
           </div>
-        )}
+          {result && (
+            <div className="w-full px-8 py-4 mx-auto mt-8 text-white rounded-b-lg shadow-sm bg-neutral-500">
+              <h2 className="text-xl font-semibold">Resultado</h2>
+              <p className="mt-2 text-lg">
+                El sueldo de contractor que deberías pedir es de: <br />
+                <span className="font-semibold">
+                  U$ {Math.round(result)} {`(US$ ${Math.round(result / 45)})`}
+                </span>
+              </p>
+            </div>
+          )}
+        </motion.div>
       </main>
 
       <Footer />
