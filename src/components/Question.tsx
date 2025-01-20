@@ -73,14 +73,17 @@ export default function Question({
                 case "number":
                   return (
                     <div className="relative text-sm">
-                      <span className="absolute inset-y-0 left-0 flex items-center p-2 font-semibold">
-                        $
+                      <span className="absolute inset-y-0 left-0 flex items-center p-2 ">
+                        U$
                       </span>
                       <input
                         type={type}
-                        {...register(question.value, { required: true })}
-                        className="w-full py-2 pl-8 border rounded-md form-input"
-                        placeholder="0.00"
+                        {...register(question.value, {
+                          required: true,
+                          valueAsNumber: true,
+                        })}
+                        className="w-full py-2 pl-8 pr-2 border rounded-md form-input"
+                        placeholder="0"
                       />
                     </div>
                   );
@@ -109,7 +112,10 @@ export default function Question({
                       </Select>
                       <input
                         type="hidden"
-                        {...register(question.value, { required: true })}
+                        {...register(question.value, {
+                          required: true,
+                          valueAsNumber: true,
+                        })}
                       />
                     </>
                   );
@@ -119,7 +125,9 @@ export default function Question({
                       <input
                         type={type}
                         value={String(option.value)}
-                        {...register(question.value, { required: true })}
+                        {...register(question.value, {
+                          required: true,
+                        })}
                         className="form-radio"
                       />
                       <span>{option.label}</span>

@@ -5,6 +5,7 @@ import {
   ADICIONAL_FONDO_SOLIDARIDAD,
   BFC,
   BPC,
+  companyType,
   DEDUCCION_HIJO_CON_DISCAPACIDAD,
   DEDUCCION_HIJO_SIN_DISCAPACIDAD,
   INCREMENTO_INGRESOS_GRAVADOS,
@@ -17,14 +18,42 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const calculateContractorSalary = (
-  realCurrentSalary: number,
-  retirementTax: number = 0,
-  fonasaTax: number = 0,
+type ParseBooleans<T> = {
+  [K in keyof T]: T[K] extends "true" | "false" | undefined
+    ? boolean | undefined
+    : T[K];
+};
+
+export const parseBooleans = (data: FormData): ParseBooleans<FormData> => {
+  const parsedData: Partial<ParseBooleans<FormData>> = {};
+
+  for (const key in data) {
+    const value = data[key as keyof FormData];
+
+    //@ts-expect-error
+    // TODO: Fix type
+    parsedData[key as keyof FormData] =
+      value === "true" ? true : value === "false" ? false : value;
+  }
+
+  return parsedData as ParseBooleans<FormData>;
+};
+
+const calculateContractorSalary = ({
+  realCurrentSalary,
+  retirementTax = 0,
+  fonasaTax = 0,
   frlTax = 0,
-  professionalCategory: number = 0,
-  addIrpf: boolean = false
-) => {
+  professionalCategory = 0,
+  addIrpf = false,
+}: {
+  realCurrentSalary: number;
+  retirementTax?: number;
+  fonasaTax?: number;
+  frlTax?: number;
+  professionalCategory?: number;
+  addIrpf?: boolean;
+}) => {
   const grossSalary = addIrpf
     ? calcularSalarioBrutoDesdeNeto(
         realCurrentSalary,
@@ -58,10 +87,11 @@ const calculateRealCurrentSalary = (salary: number) => {
 
 const calculateFonasa = (
   baseTaxableAmount: number,
-  hasChildsInCharge: boolean,
-  hasPartnerInCharge: boolean
+  hasChildsInCharge?: boolean,
+  hasPartnerInCharge?: boolean
 ) => {
   let fonasaTax = baseTaxableAmount * 0.095;
+  console.log(hasChildsInCharge, hasPartnerInCharge, "TESTTTTTTTTTTTT");
 
   if (hasChildsInCharge && hasPartnerInCharge)
     fonasaTax = baseTaxableAmount * 0.13;
@@ -71,97 +101,181 @@ const calculateFonasa = (
   return fonasaTax;
 };
 
+const calculateTaxes = ({
+  socialSecurityValue,
+  hasChildsInCharge,
+  hasPartnerInCharge,
+  fonasaBaseTaxableAmount,
+}: {
+  socialSecurityValue: number;
+  hasChildsInCharge?: boolean;
+  hasPartnerInCharge?: boolean;
+  fonasaBaseTaxableAmount?: number;
+}) => {
+  const retirementTax = socialSecurityValue * 0.225;
+  const frlTax = socialSecurityValue * 0.001;
+  const fonasaTax = calculateFonasa(
+    fonasaBaseTaxableAmount ?? socialSecurityValue,
+    hasChildsInCharge,
+    hasPartnerInCharge
+  );
+  return { retirementTax, frlTax, fonasaTax };
+};
+
+// export const calculateSalaryForPath = (data: FormData) => {
+//   const {
+//     originCompanyType,
+//     currentSalary,
+//     targetCompanyType,
+//     combinesCapitalAndWork,
+//     isProfessional,
+//     professionalCategory,
+//     socialSecurityCategory,
+//     hasChildsInCharge,
+//     hasPartnerInCharge,
+//   } = data;
+
+//   console.log(data);
+
+//   const realCurrentSalary = calculateRealCurrentSalary(currentSalary);
+
+//   if (targetCompanyType === "foreign") {
+//     if (isProfessional && professionalCategory) {
+//       return calculateContractorSalary({
+//         realCurrentSalary,
+//         professionalCategory,
+//         addIrpf:
+//           combinesCapitalAndWork &&
+//           originCompanyType === companyType.unipersonal,
+//       });
+//     } else {
+//       if (originCompanyType === companyType.SAS) {
+//         const retirementTax = 15 * BFC * 0.225;
+//         const frlTax = 15 * BFC * 0.001;
+//         const fonasaTax = calculateFonasa(
+//           6.5 * BPC,
+//           !!hasChildsInCharge,
+//           !!hasPartnerInCharge
+//         );
+
+//         return calculateContractorSalary({
+//           realCurrentSalary,
+//           retirementTax,
+//           fonasaTax,
+//           frlTax,
+//         });
+//       } else if (socialSecurityCategory) {
+//         const retirementTax = socialSecurityCategory * 0.225;
+//         const frlTax = socialSecurityCategory * 0.001;
+//         const fonasaTax = calculateFonasa(
+//           socialSecurityCategory,
+//           !!hasChildsInCharge,
+//           !!hasPartnerInCharge
+//         );
+
+//         return calculateContractorSalary({
+//           realCurrentSalary,
+//           retirementTax,
+//           fonasaTax,
+//           frlTax,
+//           addIrpf: combinesCapitalAndWork,
+//         });
+//       }
+//     }
+//   } else {
+//     if (isProfessional && professionalCategory) {
+//       return calculateContractorSalary({
+//         realCurrentSalary,
+//         professionalCategory,
+//         addIrpf: originCompanyType === companyType.unipersonal,
+//       });
+//     } else {
+//       if (originCompanyType === companyType.SAS) {
+//         const retirementTax = 15 * BFC * 0.225;
+//         const frlTax = 15 * BFC * 0.001;
+//         const fonasaTax = calculateFonasa(
+//           6.5 * BPC,
+//           !!hasChildsInCharge,
+//           !!hasPartnerInCharge
+//         );
+
+//         return calculateContractorSalary({
+//           realCurrentSalary,
+//           retirementTax,
+//           fonasaTax,
+//           frlTax,
+//         });
+//       } else if (socialSecurityCategory) {
+//         const retirementTax = socialSecurityCategory * 0.225;
+//         const frlTax = socialSecurityCategory * 0.001;
+//         const fonasaTax = calculateFonasa(
+//           socialSecurityCategory,
+//           !!hasChildsInCharge,
+//           !!hasPartnerInCharge
+//         );
+
+//         return calculateContractorSalary({
+//           realCurrentSalary,
+//           retirementTax,
+//           fonasaTax,
+//           frlTax,
+//           addIrpf: true,
+//         });
+//       }
+//     }
+//   }
+// };
 export const calculateSalaryForPath = (data: FormData) => {
   const {
+    originCompanyType,
     currentSalary,
-    targetCompanyType,
     combinesCapitalAndWork,
     isProfessional,
     professionalCategory,
     socialSecurityCategory,
     hasChildsInCharge,
     hasPartnerInCharge,
-  } = data;
+  } = parseBooleans(data);
 
   const realCurrentSalary = calculateRealCurrentSalary(currentSalary);
 
-  if (targetCompanyType === "foreign") {
-    if (!combinesCapitalAndWork) {
-      if (isProfessional && professionalCategory) {
-        return calculateContractorSalary(
-          realCurrentSalary,
-          professionalCategory
-        );
-      } else if (socialSecurityCategory) {
-        const retirementTax = socialSecurityCategory * 0.225;
-        const frlTax = socialSecurityCategory * 0.001;
-        const fonasaTax = calculateFonasa(
-          socialSecurityCategory,
-          !!hasChildsInCharge,
-          !!hasPartnerInCharge
-        );
+  if (isProfessional && professionalCategory) {
+    return calculateContractorSalary({
+      realCurrentSalary,
+      professionalCategory,
+      addIrpf:
+        originCompanyType === companyType.unipersonal && combinesCapitalAndWork,
+    });
+  }
 
-        return calculateContractorSalary(
-          realCurrentSalary,
-          retirementTax,
-          fonasaTax,
-          frlTax
-        );
-      }
-    } else {
-      if (isProfessional && professionalCategory) {
-        return calculateContractorSalary(
-          realCurrentSalary,
-          0,
-          0,
-          0,
-          professionalCategory,
-          true
-        );
-      } else if (socialSecurityCategory) {
-        const retirementTax = socialSecurityCategory * 0.225;
-        const frlTax = socialSecurityCategory * 0.001;
-        const fonasaTax = calculateFonasa(
-          socialSecurityCategory,
-          !!hasChildsInCharge,
-          !!hasPartnerInCharge
-        );
+  if (originCompanyType === companyType.SAS) {
+    const { retirementTax, frlTax, fonasaTax } = calculateTaxes({
+      socialSecurityValue: 15 * BFC,
+      fonasaBaseTaxableAmount: 6.5 * BPC,
+      hasChildsInCharge,
+      hasPartnerInCharge,
+    });
+    return calculateContractorSalary({
+      realCurrentSalary,
+      retirementTax,
+      fonasaTax,
+      frlTax,
+    });
+  }
 
-        return calculateContractorSalary(
-          realCurrentSalary,
-          retirementTax,
-          fonasaTax,
-          frlTax,
-          0,
-          true
-        );
-      }
-    }
-  } else {
-    if (isProfessional && professionalCategory) {
-      return calculateContractorSalary(
-        realCurrentSalary,
-        0,
-        0,
-        0,
-        professionalCategory
-      );
-    } else {
-      const retirementTax = 15 * BFC * 0.225;
-      const frlTax = 15 * BFC * 0.001;
-      let fonasaTax = calculateFonasa(
-        6.5 * BPC,
-        !!hasChildsInCharge,
-        !!hasPartnerInCharge
-      );
-
-      return calculateContractorSalary(
-        realCurrentSalary,
-        retirementTax,
-        fonasaTax,
-        frlTax
-      );
-    }
+  if (originCompanyType === companyType.unipersonal && socialSecurityCategory) {
+    const { retirementTax, frlTax, fonasaTax } = calculateTaxes({
+      socialSecurityValue: socialSecurityCategory,
+      hasChildsInCharge,
+      hasPartnerInCharge,
+    });
+    return calculateContractorSalary({
+      realCurrentSalary,
+      retirementTax,
+      fonasaTax,
+      frlTax,
+      addIrpf: combinesCapitalAndWork,
+    });
   }
 };
 

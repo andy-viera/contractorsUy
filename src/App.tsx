@@ -1,21 +1,24 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import "./App.css";
-import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Question from "./components/Question";
+import Question, { QuestionType } from "./components/Question";
 import { companyType, INITIAL_INPUTS } from "./lib/constants";
 import { useState, useEffect } from "react";
 import { calculateSalaryForPath } from "./lib/utils";
+import { MainNavbar } from "./components/Navbar";
+import { HoverBorderGradient } from "./components/ui/hover-border-gradient";
+import { motion } from "framer-motion";
+import { ChevronRight } from "lucide-react";
 
 export interface FormData {
   originCompanyType: companyType;
   targetCompanyType: "foreign" | "national";
-  isProfessional: boolean;
+  isProfessional: "true" | "false";
   currentSalary: number;
-  combinesCapitalAndWork?: boolean;
+  combinesCapitalAndWork?: "true" | "false";
   professionalCategory?: number;
-  hasChildsInCharge?: boolean;
-  hasPartnerInCharge?: boolean;
+  hasChildsInCharge?: "true" | "false";
+  hasPartnerInCharge?: "true" | "false";
   socialSecurityCategory?: number;
 }
 
@@ -25,43 +28,37 @@ function App() {
   const [result, setResult] = useState<number | undefined>(undefined);
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
+    console.log(calculateSalaryForPath(data));
     setResult(calculateSalaryForPath(data));
   };
 
   const formValues = watch();
 
-  const areAllRequiredFieldsFilled = (
-    inputs: typeof INITIAL_INPUTS,
-    values: FormData
+  const areAllQuestionsAnswered = (
+    questions: QuestionType[],
+    formValues: FormData
   ): boolean => {
-    for (const input of inputs) {
-      const value = values[input.question.value];
+    for (const question of questions) {
+      const answer = formValues[question.question.value];
 
-      if (!value) {
+      if (answer === undefined || answer === null) {
         return false;
       }
 
-      if (input.followups && value) {
-        for (const followup of input.followups) {
-          const followupValue = values[followup.question.value];
+      if (question.followups) {
+        for (const followup of question.followups) {
+          const shouldDisplay =
+            (followup.condition === undefined ||
+              String(followup.condition) === answer) &&
+            (!followup.companyType ||
+              followup.companyType === formValues.originCompanyType);
 
-          if (
-            followup.condition !== undefined &&
-            followup.condition !== value
-          ) {
-            continue;
-          }
-
-          if (!followupValue) {
-            return false;
-          }
-
-          if (followup.followups) {
-            const isNestedFilled = areAllRequiredFieldsFilled(
-              [{ ...followup }],
-              values
+          if (shouldDisplay) {
+            const followupAnswered = areAllQuestionsAnswered(
+              [followup],
+              formValues
             );
-            if (!isNestedFilled) {
+            if (!followupAnswered) {
               return false;
             }
           }
@@ -73,24 +70,25 @@ function App() {
   };
 
   useEffect(() => {
-    const allFilled = areAllRequiredFieldsFilled(INITIAL_INPUTS, formValues);
+    const allFilled = areAllQuestionsAnswered(INITIAL_INPUTS, formValues);
     setIsDisabledBtn(!allFilled);
   }, [formValues]);
+  console.log(formValues);
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      <main className="w-full p-4 bg-white">
-        {result !== undefined && (
-          <div className="max-w-xl p-6 mx-auto border rounded-lg shadow-sm">
-            <h2 className="text-xl font-semibold">Resultado</h2>
-            <p className="mt-2 text-lg">
-              El sueldo de contractor que deberías pedir es de{" "}
-              <span className="font-semibold">${result}</span>
-            </p>
-          </div>
-        )}
-        <div className="max-w-xl p-6 mx-auto border rounded-lg shadow-sm">
+    <div className="flex flex-col min-h-screen">
+      <MainNavbar />
+      <main className="flex items-center justify-center flex-1 w-full p-4 bg-white">
+        <motion.div
+          layout
+          transition={{
+            type: "spring",
+            stiffness: 300,
+            damping: 30,
+          }}
+          className="w-2/3 p-8 mx-auto border rounded-lg shadow-sm"
+        >
+          <h3 className="mb-4 text-xl font-bold">Simulador</h3>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {INITIAL_INPUTS.map((input, i) => (
               <Question
@@ -104,21 +102,53 @@ function App() {
                 followups={input.followups}
               />
             ))}
-            <button
-              type="submit"
-              className={`w-full px-4 py-2 text-white ${
+            {/* Button */}
+            <div
+              className={`flex justify-center w-full transition-opacity duration-1000 ${
                 isDisabledBtn
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-blue-500 hover:bg-blue-600"
-              } rounded-md`}
-              disabled={isDisabledBtn}
+                  ? "opacity-0 invisible absolute"
+                  : "opacity-100 visible relative"
+              }`}
             >
-              Calcular sueldo de contractor
-            </button>
+              <button className="px-0 pt-5 cursor-pointer" type="submit">
+                <HoverBorderGradientDemo />
+              </button>
+            </div>
           </form>
-        </div>
+        </motion.div>
+        {result && (
+          <div className="max-w-xl p-6 mx-auto mt-5 border rounded-lg shadow-sm">
+            <h2 className="text-xl font-semibold">Resultado</h2>
+            <p className="mt-2 text-lg">
+              El sueldo de contractor que deberías pedir es de: <br />
+              <span className="font-semibold">
+                ${Math.round(result)} {`(US$ ${Math.round(result / 45)})`}
+              </span>
+            </p>
+          </div>
+        )}
       </main>
+
       <Footer />
+    </div>
+  );
+}
+function HoverBorderGradientDemo() {
+  return (
+    <div className="flex justify-center text-center">
+      <HoverBorderGradient
+        containerClassName="rounded-full"
+        as="button"
+        className="flex items-center space-x-2 text-white bg-black"
+      >
+        <div className="flex space-x-1">
+          <span className="flex items-center">
+            <ChevronRight className="w-[1.2rem]" />
+            <ChevronRight className="w-[1.2rem] -ml-3" />
+          </span>
+          <p>Calcular Sueldo De Contractor</p>
+        </div>
+      </HoverBorderGradient>
     </div>
   );
 }

@@ -1,55 +1,45 @@
 import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { Menu, MenuItem, ProductItem } from "./ui/navbar-menu";
+import { Logo } from "./icons/Logo";
 
-export default function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+export function MainNavbar() {
   return (
-    <header className="w-full mb-20 shadow-md">
-      <nav className="flex items-center justify-between max-w-screen-xl px-4 py-4 mx-auto">
-        {/* Logo */}
-        <h1 className="text-xl font-bold text-slate-800">ContractorsUy</h1>
+    <div className="relative flex items-center justify-center w-full pb-32 ">
+      <Navbar />
+    </div>
+  );
+}
 
-        {/* Mobile Menu Button */}
-        <button
-          className="text-slate-800 md:hidden"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
+export default function Navbar({ className }: { className?: string }) {
+  const [active, setActive] = useState<string | null>(null);
+  return (
+    <div
+      className={cn("fixed top-8 inset-x-0 max-w-2xl mx-auto z-50", className)}
+    >
+      <Menu setActive={setActive}>
+        <MenuItem
+          setActive={setActive}
+          active={active}
+          item=""
+          icon={<Logo width={35} height={35} fill="#737373" />}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 6h16M4 12h16M4 18h16"
+          <div className="grid grid-cols-2 gap-10 p-4 text-sm ">
+            <ProductItem
+              title="Simulador"
+              href="https://algochurn.com"
+              src="/simulator.gif"
+              description="Calcula tu salario de contractor en base a tu situación legal particular y tu sueldo como dependiente."
             />
-          </svg>
-        </button>
-
-        {/* Desktop Menu */}
-        <div className="hidden space-x-8 md:flex">
-          <button className="text-slate-700">
-            Calcular tu sueldo de contractor
-          </button>
-          <button className="text-slate-700">Guía</button>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="absolute left-0 w-full bg-white shadow-md top-16 md:hidden">
-            <div className="flex flex-col items-start p-4 space-y-4">
-              <button className="w-full text-left text-slate-700">
-                Calcular tu sueldo de contractor
-              </button>
-              <button className="w-full text-left text-slate-700">Guía</button>
-            </div>
+            <ProductItem
+              title="Guía del contractor"
+              href="https://tailwindmasterkit.com"
+              src="https://assets.aceternity.com/demos/tailwindmasterkit.webp"
+              description="Entendé las básicas de ser contractor en Uruguay y cómo optimizar tu pago de impuestos."
+            />
           </div>
-        )}
-      </nav>
-    </header>
+        </MenuItem>
+      </Menu>
+    </div>
   );
 }

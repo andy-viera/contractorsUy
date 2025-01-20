@@ -223,6 +223,7 @@ const INITIAL_INPUTS: QuestionType[] = [
     ],
   },
 ];
+
 export {
   INITIAL_INPUTS,
   BPC,
