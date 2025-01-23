@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -23,7 +23,7 @@ export function HoverBorderGradient({
     clockwise?: boolean;
   } & React.HTMLAttributes<HTMLElement>
 >) {
-  const [direction, setDirection] = useState<Direction>("TOP");
+  const [direction] = useState<Direction>("TOP");
 
   const movingMap: Record<Direction, string> = {
     TOP: "radial-gradient(20.7% 50% at 50% 0%, hsl(0, 0%, 100%) 0%, rgba(255, 255, 255, 0) 100%)",
