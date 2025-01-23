@@ -5,10 +5,10 @@ import Question, { QuestionType } from "./components/Question";
 import { companyType, INITIAL_INPUTS } from "./lib/constants";
 import { useState, useEffect } from "react";
 import { calculateSalaryForPath } from "./lib/utils";
-import { MainNavbar } from "./components/Navbar";
 import { HoverBorderGradient } from "./components/ui/hover-border-gradient";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
+import MainNavbar from "./components/Navbar";
 
 export interface FormData {
   originCompanyType: companyType;
@@ -28,7 +28,6 @@ function App() {
   const [result, setResult] = useState<number | undefined>(undefined);
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    console.log(calculateSalaryForPath(data));
     setResult(calculateSalaryForPath(data));
   };
 
@@ -73,7 +72,6 @@ function App() {
     const allFilled = areAllQuestionsAnswered(INITIAL_INPUTS, formValues);
     setIsDisabledBtn(!allFilled);
   }, [formValues]);
-  console.log(formValues);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -89,7 +87,17 @@ function App() {
           className="w-2/3 mx-auto border rounded-lg shadow-sm"
         >
           <div className="p-8">
-            <h3 className="mb-4 text-xl font-bold">Simulador</h3>
+            <section className="mb-10">
+              <h2 className="px-5 py-4 mb-4 text-2xl font-bold border rounded-full border-neutral-300 bg-neutral-50 w-fit">
+                Simulator
+              </h2>
+              <p className="text-[0.97rem]">
+                Descubrí tu sueldo como contractor en base a tu situación legal
+                particular. Nuestro simulador calcula tu salario considerando
+                impuestos, aportes y exoneraciones para que tomes decisiones
+                informadas y optimices tus ingresos.
+              </p>
+            </section>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {INITIAL_INPUTS.map((input, i) => (
                 <Question

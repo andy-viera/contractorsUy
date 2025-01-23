@@ -33,3 +33,8 @@
 .read-the-docs {
   color: #888;
 }
+
+input:focus {
+  outline: none !important;
+  border: 2px solid black;
+}

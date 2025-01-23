@@ -65,15 +65,8 @@ const calculateContractorSalary = ({
     : 0;
 
   const taxPercentage =
-    (retirementTax + fonasaTax + frlTax) / realCurrentSalary;
-
-  console.log(
-    retirementTax,
-    fonasaTax,
-    frlTax,
-    realCurrentSalary,
-    taxPercentage
-  );
+    (retirementTax + fonasaTax + frlTax + professionalCategory) /
+    realCurrentSalary;
 
   return addIrpf ? grossSalary : realCurrentSalary / (1 - taxPercentage);
 };
@@ -91,7 +84,6 @@ const calculateFonasa = (
   hasPartnerInCharge?: boolean
 ) => {
   let fonasaTax = baseTaxableAmount * 0.095;
-  console.log(hasChildsInCharge, hasPartnerInCharge, "TESTTTTTTTTTTTT");
 
   if (hasChildsInCharge && hasPartnerInCharge)
     fonasaTax = baseTaxableAmount * 0.13;
@@ -122,109 +114,6 @@ const calculateTaxes = ({
   return { retirementTax, frlTax, fonasaTax };
 };
 
-// export const calculateSalaryForPath = (data: FormData) => {
-//   const {
-//     originCompanyType,
-//     currentSalary,
-//     targetCompanyType,
-//     combinesCapitalAndWork,
-//     isProfessional,
-//     professionalCategory,
-//     socialSecurityCategory,
-//     hasChildsInCharge,
-//     hasPartnerInCharge,
-//   } = data;
-
-//   console.log(data);
-
-//   const realCurrentSalary = calculateRealCurrentSalary(currentSalary);
-
-//   if (targetCompanyType === "foreign") {
-//     if (isProfessional && professionalCategory) {
-//       return calculateContractorSalary({
-//         realCurrentSalary,
-//         professionalCategory,
-//         addIrpf:
-//           combinesCapitalAndWork &&
-//           originCompanyType === companyType.unipersonal,
-//       });
-//     } else {
-//       if (originCompanyType === companyType.SAS) {
-//         const retirementTax = 15 * BFC * 0.225;
-//         const frlTax = 15 * BFC * 0.001;
-//         const fonasaTax = calculateFonasa(
-//           6.5 * BPC,
-//           !!hasChildsInCharge,
-//           !!hasPartnerInCharge
-//         );
-
-//         return calculateContractorSalary({
-//           realCurrentSalary,
-//           retirementTax,
-//           fonasaTax,
-//           frlTax,
-//         });
-//       } else if (socialSecurityCategory) {
-//         const retirementTax = socialSecurityCategory * 0.225;
-//         const frlTax = socialSecurityCategory * 0.001;
-//         const fonasaTax = calculateFonasa(
-//           socialSecurityCategory,
-//           !!hasChildsInCharge,
-//           !!hasPartnerInCharge
-//         );
-
-//         return calculateContractorSalary({
-//           realCurrentSalary,
-//           retirementTax,
-//           fonasaTax,
-//           frlTax,
-//           addIrpf: combinesCapitalAndWork,
-//         });
-//       }
-//     }
-//   } else {
-//     if (isProfessional && professionalCategory) {
-//       return calculateContractorSalary({
-//         realCurrentSalary,
-//         professionalCategory,
-//         addIrpf: originCompanyType === companyType.unipersonal,
-//       });
-//     } else {
-//       if (originCompanyType === companyType.SAS) {
-//         const retirementTax = 15 * BFC * 0.225;
-//         const frlTax = 15 * BFC * 0.001;
-//         const fonasaTax = calculateFonasa(
-//           6.5 * BPC,
-//           !!hasChildsInCharge,
-//           !!hasPartnerInCharge
-//         );
-
-//         return calculateContractorSalary({
-//           realCurrentSalary,
-//           retirementTax,
-//           fonasaTax,
-//           frlTax,
-//         });
-//       } else if (socialSecurityCategory) {
-//         const retirementTax = socialSecurityCategory * 0.225;
-//         const frlTax = socialSecurityCategory * 0.001;
-//         const fonasaTax = calculateFonasa(
-//           socialSecurityCategory,
-//           !!hasChildsInCharge,
-//           !!hasPartnerInCharge
-//         );
-
-//         return calculateContractorSalary({
-//           realCurrentSalary,
-//           retirementTax,
-//           fonasaTax,
-//           frlTax,
-//           addIrpf: true,
-//         });
-//       }
-//     }
-//   }
-// };
 export const calculateSalaryForPath = (data: FormData) => {
   const {
     originCompanyType,
