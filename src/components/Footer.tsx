@@ -6,9 +6,8 @@ export default function Footer() {
   const location = useLocation();
   const { pathname } = location;
   return (
-    <footer className="w-full py-10 mt-8 text-sm bg-white border-t border-neutral-100 text-neutral-600">
+    <footer className="w-full py-16 mt-24 text-sm bg-white border-t border-neutral-100 text-neutral-600">
       <div className="flex flex-col justify-between max-w-screen-xl px-8 mx-auto space-y-8 md:flex-row md:space-y-0">
-        {/* Left Section */}
         <div className="space-y-2">
           <div className="flex items-center mb-4 space-x-2">
             <Logo width={32} height={32} />

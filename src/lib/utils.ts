@@ -111,6 +111,7 @@ const calculateTaxes = ({
     hasChildsInCharge,
     hasPartnerInCharge
   );
+  console.log(retirementTax, frlTax, fonasaTax);
   return { retirementTax, frlTax, fonasaTax };
 };
 

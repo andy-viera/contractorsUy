@@ -5,7 +5,7 @@ import { Logo } from "./icons/Logo";
 
 export default function MainNavbar() {
   return (
-    <div className="relative flex items-center justify-center w-full pb-32 ">
+    <div className="relative flex items-center justify-center w-full pb-36 sm:pb-48">
       <Navbar />
     </div>
   );
@@ -15,7 +15,10 @@ function Navbar({ className }: { className?: string }) {
   const [active, setActive] = useState<string | null>(null);
   return (
     <div
-      className={cn("fixed top-8 inset-x-0 max-w-2xl mx-auto z-50", className)}
+      className={cn(
+        "fixed top-8 inset-x-0 max-w-2xl mx-8 sm:mx-auto z-50",
+        className
+      )}
     >
       <Menu setActive={setActive}>
         <MenuItem

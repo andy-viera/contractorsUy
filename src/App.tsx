@@ -1,6 +1,5 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import "./App.css";
-import Footer from "./components/Footer";
 import Question, { QuestionType } from "./components/Question";
 import { companyType, INITIAL_INPUTS } from "./lib/constants";
 import { useState, useEffect } from "react";
@@ -8,7 +7,8 @@ import { calculateSalaryForPath } from "./lib/utils";
 import { HoverBorderGradient } from "./components/ui/hover-border-gradient";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
-import MainNavbar from "./components/Navbar";
+import Layout from "./components/Layout";
+import ProductHeading from "./components/ProductHeading";
 
 export interface FormData {
   originCompanyType: companyType;
@@ -74,30 +74,27 @@ function App() {
   }, [formValues]);
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <MainNavbar />
-      <main className="flex flex-wrap items-center justify-center flex-1 w-full p-4 bg-white gap-x-3">
+    <Layout>
+      <main className="flex flex-wrap items-center justify-center flex-1 w-full bg-white gap-x-3">
         <motion.div
           layout
           transition={{
             type: "spring",
             stiffness: 300,
-            damping: 30,
+            damping: 40,
           }}
-          className="w-2/3 mx-auto border rounded-lg shadow-sm"
+          className="w-full mx-auto border rounded-lg shadow-lg sm:w-2/3"
         >
-          <div className="p-8">
-            <section className="mb-10">
-              <h2 className="px-5 py-4 mb-4 text-2xl font-bold border rounded-full border-neutral-300 bg-neutral-50 w-fit">
-                Simulator
-              </h2>
-              <p className="text-[0.97rem]">
-                Descubrí tu sueldo como contractor en base a tu situación legal
+          <div className="p-8 sm:p-12">
+            <ProductHeading
+              productName="Simulator"
+              productDescription="Descubrí tu sueldo como contractor en base a tu situación legal
                 particular. Nuestro simulador calcula tu salario considerando
                 impuestos, aportes y exoneraciones para que tomes decisiones
-                informadas y optimices tus ingresos.
-              </p>
-            </section>
+                informadas y optimices tus ingresos."
+              productStatus="beta"
+            />
+
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {INITIAL_INPUTS.map((input, i) => (
                 <Question
@@ -134,13 +131,16 @@ function App() {
                   U$ {Math.round(result)} {`(US$ ${Math.round(result / 45)})`}
                 </span>
               </p>
+              <p className="mt-2 text-xs text-neutral-300">
+                * Las estimaciones proporcionadas por éste simulador no incluyen
+                IVA ni gastos adicionales como honorarios de contador o
+                facturación electrónica.
+              </p>
             </div>
           )}
         </motion.div>
       </main>
-
-      <Footer />
-    </div>
+    </Layout>
   );
 }
 function HoverBorderGradientDemo() {

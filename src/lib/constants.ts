@@ -6,9 +6,9 @@ export enum companyType {
 }
 
 /**
- * BPC value 2024.
+ * BPC value 2025.
  */
-const BPC = 6177;
+const BPC = 6576;
 
 /**
  * BFC value 2025.
