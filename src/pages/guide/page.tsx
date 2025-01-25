@@ -24,7 +24,7 @@ export default function Guide() {
               >
                 cómo contribuir al proyecto
               </a>
-              ."
+              .
             </>
           }
           productStatus="beta"

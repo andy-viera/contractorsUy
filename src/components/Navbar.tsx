@@ -37,7 +37,7 @@ function Navbar({ className }: { className?: string }) {
             <ProductItem
               title="Contractor's Guide"
               href="/guide"
-              src="https://assets.aceternity.com/demos/tailwindmasterkit.webp"
+              src="guide.gif"
               description="Entendé las básicas de ser contractor en Uruguay y cómo optimizar tu pago de impuestos."
             />
           </div>
