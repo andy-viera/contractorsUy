@@ -1,5 +1,4 @@
-"use client";
-import React from "react";
+import React, { ReactNode } from "react";
 import { motion } from "framer-motion";
 
 const transition = {
@@ -108,7 +107,7 @@ export const ProductItem = ({
   );
 };
 
-export const HoveredLink = ({ children, ...rest }: any) => {
+export const HoveredLink = ({ children, ...rest }: { children: ReactNode }) => {
   return (
     <a
       {...rest}

@@ -30,8 +30,7 @@ export const parseBooleans = (data: FormData): ParseBooleans<FormData> => {
   for (const key in data) {
     const value = data[key as keyof FormData];
 
-    //@ts-expect-error
-    // TODO: Fix type
+    //@ts-expect-error: Fix type
     parsedData[key as keyof FormData] =
       value === "true" ? true : value === "false" ? false : value;
   }

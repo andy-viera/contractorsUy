@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { hover, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { BackgroundGradient } from "./ui/background-gradient";
 
 export function BackLightButton({

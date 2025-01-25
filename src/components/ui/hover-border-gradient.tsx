@@ -1,4 +1,3 @@
-"use client";
 import React, { useState } from "react";
 
 import { motion } from "framer-motion";
@@ -12,7 +11,6 @@ export function HoverBorderGradient({
   className,
   as: Tag = "button",
   duration = 1,
-  clockwise = true,
   ...props
 }: React.PropsWithChildren<
   {
@@ -20,7 +18,6 @@ export function HoverBorderGradient({
     containerClassName?: string;
     className?: string;
     duration?: number;
-    clockwise?: boolean;
   } & React.HTMLAttributes<HTMLElement>
 >) {
   const [direction] = useState<Direction>("TOP");
