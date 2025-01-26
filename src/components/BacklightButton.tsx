@@ -35,7 +35,7 @@ export function BackLightButton({
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          className="top-[-7rem] right-[-6rem] break-words max-w-24 sm:max-w-fit absolute z-50 p-3 text-xs sm:text-sm text-black transform -translate-x-1/2 bg-transparent backdrop-blur-sm rounded-lg shadow-lg sm:top-[-2.7rem] sm:right-[-23.7rem]"
+          className="top-[-6rem] right-[-6rem] break-words max-w-24 sm:max-w-fit absolute z-50 p-3 text-xs sm:text-sm text-black transform -translate-x-1/2 bg-transparent backdrop-blur-sm rounded-lg shadow-lg sm:top-[-2.7rem] sm:right-[-20rem]"
         >
           <p className="break-words">{hoverText}</p>
         </motion.div>

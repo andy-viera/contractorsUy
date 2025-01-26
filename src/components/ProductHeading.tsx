@@ -19,8 +19,8 @@ export default function ProductHeading({
             text={productStatus === "beta" ? "β" : "α"}
             hoverText={
               productStatus === "beta"
-                ? "This product is in beta testing and may have defects"
-                : "This product is in alpha testing and may have defects"
+                ? "This is a beta release and may have defects"
+                : "This is an alpha release and may have defects"
             }
           />
         )}
