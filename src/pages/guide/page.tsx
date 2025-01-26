@@ -143,7 +143,7 @@ export default function Guide() {
             debido a las exoneraciones actuales al rubro de "Profesionales de la
             informática" (como hace referencia la DGI).
           </p>
-          <div className="overflow-x-scroll">
+          <div className="overflow-x-scroll xl:overflow-x-hidden">
             <table className="!border-separate border-spacing-0 w-full mt-6 text-left table-auto">
               <thead>
                 <tr className="bg-neutral-50">
