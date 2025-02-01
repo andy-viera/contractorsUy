@@ -25,17 +25,15 @@ type ParseBooleans<T> = {
 };
 
 export const parseBooleans = (data: FormData): ParseBooleans<FormData> => {
-  const parsedData: Partial<ParseBooleans<FormData>> = {};
+  const convertedEntries = Object.entries(data).map(([key, value]) => {
+    if (value === "true") {
+      return [key, true];
+    } else if (value === "false") {
+      return [key, false];
+    } else return [key, value];
+  });
 
-  for (const key in data) {
-    const value = data[key as keyof FormData];
-
-    //@ts-expect-error: Fix type
-    parsedData[key as keyof FormData] =
-      value === "true" ? true : value === "false" ? false : value;
-  }
-
-  return parsedData as ParseBooleans<FormData>;
+  return Object.fromEntries(convertedEntries) as ParseBooleans<FormData>;
 };
 
 const calculateContractorSalary = ({
