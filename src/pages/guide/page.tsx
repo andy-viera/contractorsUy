@@ -391,6 +391,15 @@ export default function Guide() {
               <a
                 target="_blank"
                 className="text-sky-600"
+                href="https://www.gub.uy/direccion-general-impositiva/comunicacion/publicaciones/irpf-para-trabajadores-independientes"
+              >
+                IRPF para trabajadores independientes
+              </a>
+            </li>
+            <li>
+              <a
+                target="_blank"
+                className="text-sky-600"
                 href="https://www.reddit.com/r/CharruaDevs/"
               >
                 Se utilizó también información proporcionada por la comunidad

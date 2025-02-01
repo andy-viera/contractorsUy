@@ -108,7 +108,6 @@ const calculateTaxes = ({
     hasChildsInCharge,
     hasPartnerInCharge
   );
-  console.log(retirementTax, frlTax, fonasaTax);
   return { retirementTax, frlTax, fonasaTax };
 };
 
@@ -122,6 +121,7 @@ export const calculateSalaryForPath = (data: FormData) => {
     socialSecurityCategory,
     hasChildsInCharge,
     hasPartnerInCharge,
+    targetCompanyType,
   } = parseBooleans(data);
 
   const realCurrentSalary = calculateRealCurrentSalary(currentSalary);
@@ -131,7 +131,8 @@ export const calculateSalaryForPath = (data: FormData) => {
       realCurrentSalary,
       professionalCategory,
       addIrpf:
-        originCompanyType === companyType.unipersonal && combinesCapitalAndWork,
+        originCompanyType === companyType.unipersonal &&
+        (combinesCapitalAndWork || targetCompanyType === "national"),
     });
   }
 
@@ -161,7 +162,7 @@ export const calculateSalaryForPath = (data: FormData) => {
       retirementTax,
       fonasaTax,
       frlTax,
-      addIrpf: combinesCapitalAndWork,
+      addIrpf: combinesCapitalAndWork || targetCompanyType === "national",
     });
   }
 };
@@ -182,19 +183,31 @@ export const calculateSalaryForPath = (data: FormData) => {
  *
  * @returns {ImpuestoIRPF} - El monto total de IRPF y los detalles de las distintas franjas y deducciones.
  */
-export const calcularIPRF = (
-  salarioNominal: number,
-  aportesJubilatorios: number = 0,
-  aportesFONASA: number = 0,
-  aporteFRL: number = 0,
-  factorDeduccionPersonasACargo: number = 0,
-  cantHijosSinDiscapacidad: number = 0,
-  cantHijosConDiscapacidad: number = 0,
-  aportesFondoSolidaridad: number = 0,
-  adicionalFondoSolidaridad?: boolean,
-  aportesCJPPU: number = 0,
-  otrasDeducciones: number = 0
-) => {
+export const calcularIRPF = ({
+  salarioNominal,
+  aportesJubilatorios = 0,
+  aportesFONASA = 0,
+  aporteFRL = 0,
+  factorDeduccionPersonasACargo = 0,
+  cantHijosSinDiscapacidad = 0,
+  cantHijosConDiscapacidad = 0,
+  aportesFondoSolidaridad = 0,
+  adicionalFondoSolidaridad = false,
+  aportesCJPPU = 0,
+  otrasDeducciones = 0,
+}: {
+  salarioNominal: number;
+  aportesJubilatorios?: number;
+  aportesFONASA?: number;
+  aporteFRL?: number;
+  factorDeduccionPersonasACargo?: number;
+  cantHijosSinDiscapacidad?: number;
+  cantHijosConDiscapacidad?: number;
+  aportesFondoSolidaridad?: number;
+  adicionalFondoSolidaridad?: boolean;
+  aportesCJPPU?: number;
+  otrasDeducciones?: number;
+}) => {
   const salarioEnBPC = salarioNominal / BPC;
   let tasaDeducciones = null;
   if (salarioEnBPC > 15) tasaDeducciones = TASA_DEDUCCIONES_DESDE15BPC;
@@ -288,8 +301,8 @@ export const calcularSalarioBrutoDesdeNeto = (
   let estimatedGrossSalary = (lowerBound + upperBound) / 2;
 
   while (upperBound - lowerBound > TOLERANCE) {
-    const { totalIRPF } = calcularIPRF(
-      estimatedGrossSalary,
+    const { totalIRPF } = calcularIRPF({
+      salarioNominal: estimatedGrossSalary,
       factorDeduccionPersonasACargo,
       cantHijosSinDiscapacidad,
       cantHijosConDiscapacidad,
@@ -299,8 +312,8 @@ export const calcularSalarioBrutoDesdeNeto = (
       aportesFondoSolidaridad,
       adicionalFondoSolidaridad,
       aportesCJPPU,
-      otrasDeducciones
-    );
+      otrasDeducciones,
+    });
 
     const calculatedNetSalary =
       estimatedGrossSalary -
