@@ -16,7 +16,7 @@
   <br/>
 
   <p align="center">
-    <a href="https://www.walkito.com"><strong>Check out the project »</strong></a>
+    <a href="https://contractors-uy.vercel.app/"><strong>Check out the project »</strong></a>
     <br/>
     <br/>
     <a href="https://github.com/andy-viera/contractorsUy/issues/new?labels=enhancement">Suggest a Feature</a>
@@ -31,8 +31,8 @@
     <li>
       <a href="#overview">Overview</a>
       <ul>
-         <li><a href="#key-features">Key Features</a></li>
-         <li><a href="#tech-stack">Technologies</a></li>
+         <li><a href="#features">Features</a></li>
+         <li><a href="#technologies">Technologies</a></li>
       </ul>
     </li>
     <li>
