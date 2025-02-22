@@ -2,16 +2,16 @@ import { FormData } from "@/App";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import {
-  ADICIONAL_FONDO_SOLIDARIDAD,
+  ADDITIONAL_SOLIDARITY_FUND,
   BFC,
   BPC,
+  CHILD_DEDUCTION,
   companyType,
-  DEDUCCION_HIJO_CON_DISCAPACIDAD,
-  DEDUCCION_HIJO_SIN_DISCAPACIDAD,
-  INCREMENTO_INGRESOS_GRAVADOS,
+  DEDUCTIONS_RATE_OVER_15BPC,
+  DEDUCTIONS_RATE_UNDER_15BPC,
+  DISABLED_CHILD_DEDUCTION,
   IRPF_FRANJAS,
-  TASA_DEDUCCIONES_DESDE15BPC,
-  TASA_DEDUCCIONES_HASTA15BPC,
+  TAXABLE_INCOME_INCREASE,
 } from "./constants";
 
 export function cn(...inputs: ClassValue[]) {
@@ -210,20 +210,20 @@ export const calcularIRPF = ({
 }) => {
   const salarioEnBPC = salarioNominal / BPC;
   let tasaDeducciones = null;
-  if (salarioEnBPC > 15) tasaDeducciones = TASA_DEDUCCIONES_DESDE15BPC;
-  else tasaDeducciones = TASA_DEDUCCIONES_HASTA15BPC;
+  if (salarioEnBPC > 15) tasaDeducciones = DEDUCTIONS_RATE_OVER_15BPC;
+  else tasaDeducciones = DEDUCTIONS_RATE_UNDER_15BPC;
 
   // Calcular si hay que aplicar el aumento a ingresos gravados Seguridad Social
-  if (salarioEnBPC > 10) salarioNominal *= 1 + INCREMENTO_INGRESOS_GRAVADOS;
+  if (salarioEnBPC > 10) salarioNominal *= 1 + TAXABLE_INCOME_INCREASE;
 
   // Cantidad deducida del IRPF por los hijos
   const deduccionesHijos =
     factorDeduccionPersonasACargo *
-    (cantHijosSinDiscapacidad * DEDUCCION_HIJO_SIN_DISCAPACIDAD +
-      cantHijosConDiscapacidad * DEDUCCION_HIJO_CON_DISCAPACIDAD);
+    (cantHijosSinDiscapacidad * CHILD_DEDUCTION +
+      cantHijosConDiscapacidad * DISABLED_CHILD_DEDUCTION);
 
   const aporteAdicionalFondoSolidaridad = adicionalFondoSolidaridad
-    ? ADICIONAL_FONDO_SOLIDARIDAD
+    ? ADDITIONAL_SOLIDARITY_FUND
     : 0;
 
   const deducciones =
@@ -243,20 +243,17 @@ export const calcularIRPF = ({
     tasaDeducciones: number;
   } = { impuestoFranja: [], deducciones, tasaDeducciones };
 
-  IRPF_FRANJAS.forEach(
-    (franja: { hasta: number; desde: number; tasa: number }) => {
-      const hasta = franja.hasta !== 0 ? franja.hasta : 999;
-      if (salarioNominal > franja.desde * BPC) {
-        const impuesto =
-          (Math.min(hasta * BPC, salarioNominal) - franja.desde * BPC) *
-          franja.tasa;
+  IRPF_FRANJAS.forEach((franja: { from: number; to: number; rate: number }) => {
+    const to = franja.to !== 0 ? franja.to : 999;
+    if (salarioNominal > franja.from * BPC) {
+      const impuesto =
+        (Math.min(to * BPC, salarioNominal) - franja.from * BPC) * franja.rate;
 
-        detalleIRPF.impuestoFranja.push(impuesto);
-      } else {
-        detalleIRPF.impuestoFranja.push(0);
-      }
+      detalleIRPF.impuestoFranja.push(impuesto);
+    } else {
+      detalleIRPF.impuestoFranja.push(0);
     }
-  );
+  });
 
   const totalIRPF = Math.max(
     0,

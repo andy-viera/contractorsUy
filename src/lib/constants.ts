@@ -16,84 +16,85 @@ const BPC = 6576;
 const BFC = 1744.4;
 
 /**
- * Franjas de IPRF.
- *  - 'desde' y 'hasta' son los valores en BPC en los que está comprendida la franja.
+ * IRPF tax brackets.
+ *  - 'from' and 'to' are the BPC values that define the bracket range.
  *
- *    El valor de 'desde' está dentro de la franja, el de 'hasta' no.
+ *    The 'from' value is included in the bracket, the 'to' value is not.
  *
- *    La última franja tiene valor 0 en "hasta".
- *  - 'tasa' es el porcentaje del impuesto.
+ *    The last bracket has a value of 0 in 'to'.
+ *  - 'rate' is the tax percentage.
  */
 const IRPF_FRANJAS = [
-  { desde: 0, hasta: 7, tasa: 0 },
-  { desde: 7, hasta: 10, tasa: 0.1 },
-  { desde: 10, hasta: 15, tasa: 0.15 },
-  { desde: 15, hasta: 30, tasa: 0.24 },
-  { desde: 30, hasta: 50, tasa: 0.25 },
-  { desde: 50, hasta: 75, tasa: 0.27 },
-  { desde: 75, hasta: 115, tasa: 0.31 },
-  { desde: 115, hasta: 0, tasa: 0.36 },
+  { from: 0, to: 7, rate: 0 },
+  { from: 7, to: 10, rate: 0.1 },
+  { from: 10, to: 15, rate: 0.15 },
+  { from: 15, to: 30, rate: 0.24 },
+  { from: 30, to: 50, rate: 0.25 },
+  { from: 50, to: 75, rate: 0.27 },
+  { from: 75, to: 115, rate: 0.31 },
+  { from: 115, to: 0, rate: 0.36 },
 ];
 
 /**
- * Porcentaje de aportes jubilatorios.
+ * Retirement contributions percentage.
  */
-const APORTES_JUBILATORIOS = 15;
+const RETIREMENT_CONTRIBUTIONS = 15;
 
 /**
- * Maximo del salario nominal sobre el cual aplican los aportes jubilatorios.
+ * Maximum nominal salary on which retirement contributions apply.
  */
-const TOPE_APORTES_JUBILATORIOS = 236309;
+const RETIREMENT_CONTRIBUTIONS_CAP = 236309;
 
 /**
- * Porcentaje de aportes FONASA para personas con salario hasta a 2.5 BPC.
+ * FONASA contributions percentage for people with salary up to 2.5 BPC.
  */
-const APORTES_FONASA_HASTA25BPC = { base: 3, conyuge: 2, hijos: 0 };
-/**
- * Porcentaje de aportes FONASA para personas con salario mayor a 2.5 BPC.
- */
-const APORTES_FONASA_DESDE25BPC = { base: 4.5, conyuge: 2, hijos: 1.5 };
+const HEALTH_INSURANCE_UNDER_25BPC = { base: 3, spouse: 2, children: 0 };
 
 /**
- * Porcentaje de aporte FRL.
+ * FONASA contributions percentage for people with salary above 2.5 BPC.
  */
-const APORTE_FRL = 0.1;
+const HEALTH_INSURANCE_OVER_25BPC = { base: 4.5, spouse: 2, children: 1.5 };
 
 /**
- * Tope AFAP.
+ * FRL contribution percentage.
  */
-const TOPE_AFAP = 236309;
+const LABOR_RETRAINING_CONTRIBUTION = 0.1;
 
 /**
- * Porcentaje de incremento de ingresos gravados que aplica si la renta computable es mayor a 10 BPC.
+ * AFAP contribution cap.
  */
-const INCREMENTO_INGRESOS_GRAVADOS = 0.06;
+const PENSION_FUND_CAP = 236309;
 
 /**
- * Porcentaje de deducciones de IRPF para personas con salario hasta 15 BPC.
+ * Percentage increase in taxable income that applies if computable income is greater than 10 BPC.
  */
-const TASA_DEDUCCIONES_HASTA15BPC = 0.1;
-/**
- * Porcentaje de deducciones de IRPF para personas con salario desde 15 BPC.
- */
-const TASA_DEDUCCIONES_DESDE15BPC = 0.08;
+const TAXABLE_INCOME_INCREASE = 0.06;
 
 /**
- * Cantidad deducida del IRPF por cada hijo sin discapacidad.
+ * IRPF deduction percentage for people with salary up to 15 BPC.
  */
-const DEDUCCION_HIJO_SIN_DISCAPACIDAD = (20 * BPC) / 12;
-/**
- * Cantidad deducida del IRPF por cada hijo con discapacidad.
- */
-const DEDUCCION_HIJO_CON_DISCAPACIDAD = (40 * BPC) / 12;
+const DEDUCTIONS_RATE_UNDER_15BPC = 0.1;
 
 /**
- * Adicional al fondo de solidaridad que debe pagarse en carreras de duracion igual o mayor
- * a cinco años.
+ * IRPF deduction percentage for people with salary from 15 BPC.
  */
-const ADICIONAL_FONDO_SOLIDARIDAD = ((5 / 4) * BPC) / 12;
+const DEDUCTIONS_RATE_OVER_15BPC = 0.08;
 
-// TODO:Fix type in order to specifically type each option value correctly
+/**
+ * Amount deducted from IRPF for each child without disability.
+ */
+const CHILD_DEDUCTION = (20 * BPC) / 12;
+
+/**
+ * Amount deducted from IRPF for each child with disability.
+ */
+const DISABLED_CHILD_DEDUCTION = (40 * BPC) / 12;
+
+/**
+ * Additional solidarity fund contribution that must be paid for careers with duration equal to or greater than five years.
+ */
+const ADDITIONAL_SOLIDARITY_FUND = ((5 / 4) * BPC) / 12;
+
 const INITIAL_INPUTS: QuestionType[] = [
   {
     question: {
@@ -229,16 +230,16 @@ export {
   BPC,
   BFC,
   IRPF_FRANJAS,
-  APORTES_JUBILATORIOS,
-  TOPE_APORTES_JUBILATORIOS,
-  APORTES_FONASA_HASTA25BPC,
-  APORTES_FONASA_DESDE25BPC,
-  APORTE_FRL,
-  TOPE_AFAP,
-  INCREMENTO_INGRESOS_GRAVADOS,
-  ADICIONAL_FONDO_SOLIDARIDAD,
-  TASA_DEDUCCIONES_DESDE15BPC,
-  TASA_DEDUCCIONES_HASTA15BPC,
-  DEDUCCION_HIJO_SIN_DISCAPACIDAD,
-  DEDUCCION_HIJO_CON_DISCAPACIDAD,
+  RETIREMENT_CONTRIBUTIONS,
+  RETIREMENT_CONTRIBUTIONS_CAP,
+  HEALTH_INSURANCE_UNDER_25BPC,
+  HEALTH_INSURANCE_OVER_25BPC,
+  LABOR_RETRAINING_CONTRIBUTION,
+  PENSION_FUND_CAP,
+  TAXABLE_INCOME_INCREASE,
+  DEDUCTIONS_RATE_UNDER_15BPC,
+  DEDUCTIONS_RATE_OVER_15BPC,
+  CHILD_DEDUCTION,
+  DISABLED_CHILD_DEDUCTION,
+  ADDITIONAL_SOLIDARITY_FUND,
 };

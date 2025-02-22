@@ -14,15 +14,6 @@ import {
   SelectValue,
 } from "./ui/select";
 
-type FollowUpType = {
-  companyType?: companyType;
-  condition?: FormData[keyof FormData];
-  question: { label: string; value: keyof FormData };
-  type: "radio" | "checkbox" | "number" | "select";
-  options?: { label: string; value: FormData[keyof FormData] }[];
-  followups?: FollowUpType[];
-};
-
 export type QuestionType = {
   question: { label: string; value: keyof FormData };
   type: "radio" | "checkbox" | "number" | "select";
@@ -31,6 +22,14 @@ export type QuestionType = {
   placeholder?: string;
 };
 
+type FollowUpType = {
+  companyType?: companyType;
+  condition?: FormData[keyof FormData];
+  question: { label: string; value: keyof FormData };
+  type: "radio" | "checkbox" | "number" | "select";
+  options?: { label: string; value: FormData[keyof FormData] }[];
+  followups?: FollowUpType[];
+};
 interface QuestionProps extends QuestionType {
   register: UseFormRegister<FormData>;
   watch: UseFormWatch<FormData>;
@@ -48,11 +47,10 @@ export default function Question({
 }: QuestionProps) {
   const watchedAnswer = watch(question.value);
 
-  // Reset follow-up answers when the parent question changes
   useEffect(() => {
     if (followups) {
       followups.forEach((followup) => {
-        setValue(followup.question.value, undefined); // Clear the follow-up answer
+        setValue(followup.question.value, undefined);
         if (followup.followups) {
           followup.followups.forEach((subFollowup) =>
             setValue(subFollowup.question.value, undefined)
@@ -78,6 +76,7 @@ export default function Question({
                       </span>
                       <input
                         type={type}
+                        min={23604}
                         {...register(question.value, {
                           required: true,
                           valueAsNumber: true,

@@ -4,11 +4,10 @@ import Question, { QuestionType } from "./components/Question";
 import { companyType, INITIAL_INPUTS } from "./lib/constants";
 import { useState, useEffect } from "react";
 import { calculateSalaryForPath } from "./lib/utils";
-import { HoverBorderGradient } from "./components/ui/hover-border-gradient";
 import { motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
 import Layout from "./components/Layout";
 import ProductHeading from "./components/ProductHeading";
+import FancyButton from "./components/FancyButton";
 
 export interface FormData {
   originCompanyType: companyType;
@@ -108,7 +107,6 @@ function App() {
                   followups={input.followups}
                 />
               ))}
-              {/* Button */}
               <div
                 className={`flex justify-center w-full transition-opacity duration-1000 ${
                   isDisabledBtn
@@ -117,7 +115,7 @@ function App() {
                 }`}
               >
                 <button className="px-0 pt-5 cursor-pointer" type="submit">
-                  <HoverBorderGradientDemo />
+                  <FancyButton />
                 </button>
               </div>
             </form>
@@ -141,25 +139,6 @@ function App() {
         </motion.div>
       </main>
     </Layout>
-  );
-}
-function HoverBorderGradientDemo() {
-  return (
-    <div className="flex justify-center text-center">
-      <HoverBorderGradient
-        containerClassName="rounded-full"
-        as="button"
-        className="flex items-center space-x-2 text-white bg-black"
-      >
-        <div className="flex space-x-1">
-          <span className="flex items-center">
-            <ChevronRight className="w-[1.2rem]" />
-            <ChevronRight className="w-[1.2rem] -ml-3" />
-          </span>
-          <p>Calcular Sueldo De Contractor</p>
-        </div>
-      </HoverBorderGradient>
-    </div>
   );
 }
 
