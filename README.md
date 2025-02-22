@@ -1,50 +1,115 @@
-# React + TypeScript + Vite
+<div id="top"></div>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<div align="center">
 
-Currently, two official plugins are available:
+[![GitHub Contributors](https://img.shields.io/github/contributors/andy-viera/contractorsUy?style=for-the-badge)](https://github.com/andy-viera/contractorsUy/graphs/contributors)
+[![GitHub Forks](https://img.shields.io/github/forks/andy-viera/contractorsUy?style=for-the-badge)](https://github.com/andy-viera/contractorsUy/network/members)
+[![GitHub Stars](https://img.shields.io/github/stars/andy-viera/contractorsUy?style=for-the-badge)](https://github.com/andy-viera/contractorsUy/stargazers)
+[![GitHub Issues](https://img.shields.io/github/issues/andy-viera/contractorsUy?style=for-the-badge)](https://github.com/andy-viera/contractorsUy/issues)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+</div>
 
-## Expanding the ESLint configuration
+<br />
+<div align="center">
+  <img src="public/readme_accountant.webp" alt="Accountant Working with Software Engineers" height="300px">
+  <br/>
+  <br/>
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+  <p align="center">
+    <a href="https://www.walkito.com"><strong>Check out the project »</strong></a>
+    <br/>
+    <br/>
+    <a href="https://github.com/andy-viera/contractorsUy/issues/new?labels=enhancement">Suggest a Feature</a>
+    ·
+    <a href="https://github.com/andy-viera/contractorsUy/issues/new?labels=bug">Report a Bug</a>
+  </p>
+</div>
 
-- Configure the top-level `parserOptions` property like this:
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#overview">Overview</a>
+      <ul>
+         <li><a href="#key-features">Key Features</a></li>
+         <li><a href="#tech-stack">Technologies</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#contributing">Contributing</a>
+      <ul>
+        <li><a href="#reporting-bugs--suggesting-enhancements">Reporting Bugs & Suggesting Enhancements</a></li>
+        <li><a href="#fixing-issues">Fixing Issues</a></li>
+        <li><a href="#setting-up-locally">Setting Up Locally</a></li>
+      </ul>
+    </li>
+    <li><a href="#get-in-touch">Get in Touch</a></li>
+  </ol>
+</details>
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Overview
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+ContractorsUy is an open-source tool designed to help software developers in Uruguay transition from employees to independent contractors. It provides a detailed simulator and guide to help developers understand how taxes impact their earnings and how to optimize their financial strategies, whether they work for international or local companies.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+### Features
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+- Simulator: Estimate your optimal contractor's salary based on your current legal status and current salary as dependant employee.
+- Contractor's Guide: Detailed explanations of tax structures and legal considerations for the software industry.
+
+### Technologies
+
+- **Frontend:** TypeScript, React, Vite, TailwindCSS, Framer Motion
+- **Deployment & DevOps:** Vercel
+- **Design & Planning:** Excalidraw, Figma
+
+## Contributing
+
+Contributions are highly appreciated! Here's how you can get involved:
+
+### Reporting Bugs & Suggesting Enhancements
+
+If you encounter an issue or have a suggestion for improvement, please create a [GitHub issue](https://github.com/andy-viera/contractorsUy/issues).
+
+### Fixing Issues
+
+1. Find an open issue in the [Issues tab](https://github.com/andy-viera/contractorsUy/issues).
+2. Fork the repository and create a feature branch.
+3. Submit a pull request with a clear description of your changes.
+
+### Setting Up Locally
+
+#### Prerequisites
+
+- [pnpm](https://pnpm.io/)
+  ```sh
+  npm install -g pnpm
+  ```
+
+#### Installation
+
+1. Clone the repository:
+
+   ```sh
+   git clone https://github.com/andy-viera/contractorsUy.git
+   ```
+
+2. Navigate to the project folder:
+
+   ```sh
+   cd contractorsUy
+   ```
+
+3. Install dependencies:
+
+   ```sh
+   pnpm install
+   ```
+
+4. Start the development server:
+   ```sh
+   pnpm run dev
+   ```
+
+## Get in Touch
+
+Andrés Viera - contact@aviera.me
