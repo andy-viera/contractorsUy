@@ -49,7 +49,7 @@
 
 ## Overview
 
-ContractorsUy is an open-source tool designed to help software developers in Uruguay transition from employees to independent contractors. It provides a detailed simulator and guide to help developers understand how taxes impact their earnings and how to optimize their financial strategies, whether they work for international or local companies.
+**ContractorsUy** is an open-source tool designed to help software developers in Uruguay transition from employees to independent contractors. It provides a detailed simulator and guide to help developers understand how taxes impact their earnings and how to optimize their financial strategies, whether they work for international or local companies.
 
 ### Features
 
@@ -58,7 +58,7 @@ ContractorsUy is an open-source tool designed to help software developers in Uru
 
 ### Technologies
 
-- **Frontend:** TypeScript, React, Vite, TailwindCSS, Framer Motion
+- **Frontend:** TypeScript, React, Vite, TailwindCSS, Framer Motion, Aceternity UI
 - **Deployment & DevOps:** Vercel
 - **Design & Planning:** Excalidraw, Figma
 

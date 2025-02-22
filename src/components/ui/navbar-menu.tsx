@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 const transition = {
   type: "spring",
@@ -68,8 +69,8 @@ export const Menu = ({
 }) => {
   return (
     <nav
-      onMouseLeave={() => setActive(null)} // resets the state
-      className="relative rounded-full border border-neutral-300/[0.8] dark:bg-black dark:border-white/[0.2] bg-neutral-100/30 backdrop-blur-sm shadow-lg shadow-input flex justify-center space-x-4 px-8 py-6 "
+      onMouseLeave={() => setActive(null)}
+      className="relative rounded-full border border-neutral-300/[0.8] dark:bg-black dark:border-white/[0.2] bg-neutral-100/30 backdrop-blur-sm shadow-lg shadow-input flex justify-center space-x-4 px-8 py-6"
     >
       {children}
     </nav>
@@ -87,11 +88,21 @@ export const ProductItem = ({
   href: string;
   src: string;
 }) => {
+  const [width, setWidth] = useState(190);
+
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth < 500 ? 150 : 190);
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <a href={href} className="flex space-x-2">
       <img
         src={src}
-        width={190}
+        width={width}
         alt={title}
         className="flex-shrink-0 rounded-md shadow-2xl"
       />

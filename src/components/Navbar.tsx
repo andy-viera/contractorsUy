@@ -27,7 +27,7 @@ function Navbar({ className }: { className?: string }) {
           item=""
           icon={<Logo width={35} height={35} fill="#737373" />}
         >
-          <div className="grid grid-cols-2 gap-10 p-4 text-sm ">
+          <div className="grid grid-cols-1 gap-10 text-sm md:p-4 md:grid-cols-2 ">
             <ProductItem
               title="Simulator"
               href="/"
