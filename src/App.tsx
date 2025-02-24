@@ -3,7 +3,7 @@ import "./App.css";
 import Question, { QuestionType } from "./components/Question";
 import { companyType, INITIAL_INPUTS } from "./lib/constants";
 import { useState, useEffect } from "react";
-import { calculateSalaryForPath } from "./lib/utils";
+import { calculateSalaryForPath, parseWithDots } from "./lib/utils";
 import { motion } from "framer-motion";
 import Layout from "./components/Layout";
 import ProductHeading from "./components/ProductHeading";
@@ -126,13 +126,14 @@ function App() {
               <p className="mt-2 text-lg">
                 El sueldo de contractor que deberías pedir es de: <br />
                 <span className="font-semibold">
-                  U$ {Math.round(result)} {`(US$ ${Math.round(result / 45)})`}
+                  U$ {parseWithDots(Math.round(result))}{" "}
+                  {`(US$ ${parseWithDots(Math.round(result / 45))})`}
                 </span>
               </p>
               <p className="mt-2 text-xs text-neutral-300">
-                * Las estimaciones proporcionadas por éste simulador no incluyen
-                IVA ni gastos adicionales como honorarios de contador o
-                facturación electrónica.
+                * Las estimaciones proporcionadas por éste simulador no
+                incluyen: IVA, contribución a fondo de solidaridad, honorarios
+                de contador, facturación electrónica.
               </p>
             </div>
           )}

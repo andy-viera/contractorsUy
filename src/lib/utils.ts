@@ -341,3 +341,6 @@ export const calculateIrpfFromNetSalary = (
 
   return estimatedGrossSalary - netSalary;
 };
+
+export const parseWithDots = (value: number) =>
+  value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
