@@ -69,6 +69,7 @@
 - [React.js](https://react.dev/)
 - [Vite](https://vite.dev/)
 - [TailwindCSS](https://tailwindcss.com/)
+- [React Hook Form](https://react-hook-form.com/)
 - [Framer Motion](https://motion.dev/)
 - [Aceternity UI](https://www.aceternity.com/components)
 - [Shadcn UI](https://ui.shadcn.com/)
