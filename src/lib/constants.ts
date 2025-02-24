@@ -48,12 +48,16 @@ const RETIREMENT_CONTRIBUTIONS_CAP = 236309;
 /**
  * FONASA contributions percentage for people with salary up to 2.5 BPC.
  */
-const HEALTH_INSURANCE_UNDER_25BPC = { base: 3, spouse: 2, children: 0 };
+const HEALTH_INSURANCE_UNDER_25BPC = { base: 0.03, spouse: 0.02, children: 0 };
 
 /**
  * FONASA contributions percentage for people with salary above 2.5 BPC.
  */
-const HEALTH_INSURANCE_OVER_25BPC = { base: 4.5, spouse: 2, children: 1.5 };
+const HEALTH_INSURANCE_OVER_25BPC = {
+  base: 0.045,
+  spouse: 0.02,
+  children: 0.015,
+};
 
 /**
  * FRL contribution percentage.

@@ -10,6 +10,8 @@ import {
   DEDUCTIONS_RATE_OVER_15BPC,
   DEDUCTIONS_RATE_UNDER_15BPC,
   DISABLED_CHILD_DEDUCTION,
+  HEALTH_INSURANCE_OVER_25BPC,
+  HEALTH_INSURANCE_UNDER_25BPC,
   IRPF_FRANJAS,
   LABOR_RETRAINING_CONTRIBUTION,
   RETIREMENT_CONTRIBUTIONS,
@@ -82,14 +84,27 @@ const calculateFonasa = (
   hasChildsInCharge?: boolean,
   hasPartnerInCharge?: boolean
 ) => {
-  let fonasaTax = baseTaxableAmount * 0.095;
+  const greaterThan25BPC = baseTaxableAmount > 2.5 * BPC;
+  let fonasaTaxPercent = greaterThan25BPC
+    ? HEALTH_INSURANCE_OVER_25BPC.base
+    : HEALTH_INSURANCE_UNDER_25BPC.base;
 
   if (hasChildsInCharge && hasPartnerInCharge)
-    fonasaTax = baseTaxableAmount * 0.13;
-  else if (hasChildsInCharge) fonasaTax = baseTaxableAmount * 0.11;
-  else if (hasPartnerInCharge) fonasaTax = baseTaxableAmount * 0.115;
+    fonasaTaxPercent += greaterThan25BPC
+      ? HEALTH_INSURANCE_OVER_25BPC.children +
+        HEALTH_INSURANCE_OVER_25BPC.spouse
+      : HEALTH_INSURANCE_UNDER_25BPC.children +
+        HEALTH_INSURANCE_UNDER_25BPC.spouse;
+  else if (hasChildsInCharge)
+    fonasaTaxPercent += greaterThan25BPC
+      ? HEALTH_INSURANCE_OVER_25BPC.children
+      : HEALTH_INSURANCE_UNDER_25BPC.children;
+  else if (hasPartnerInCharge)
+    fonasaTaxPercent += greaterThan25BPC
+      ? HEALTH_INSURANCE_OVER_25BPC.spouse
+      : HEALTH_INSURANCE_UNDER_25BPC.spouse;
 
-  return fonasaTax;
+  return baseTaxableAmount * fonasaTaxPercent;
 };
 
 const calculateTaxes = ({
