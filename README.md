@@ -17,7 +17,7 @@
 <i>A tool that streamlines the transition from employment to independent contracting for software developers.</i>
   <br/>
   <br/>
-  <h1>contractorsUy</h1>
+  <h1><i>contractorsUy</i></h1>
   <h6 align="center" style="color: #666666">Last updated: February 2025</h6>
 
   <p align="center">
@@ -54,7 +54,7 @@
 
 ## Overview
 
-**ContractorsUy** is an open-source tool designed to help software developers in Uruguay transition from employees to independent contractors. It provides a detailed simulator and guide to help developers understand how taxes impact their earnings and how to optimize their financial strategies, whether they work for international or local companies.
+**_ContractorsUy_** is an open-source tool designed to help software developers in Uruguay transition from employees to independent contractors. It provides a detailed simulator and guide to help developers understand how taxes impact their earnings and how to optimize their financial strategies, whether they work for international or local companies.
 
 ### Features
 
