@@ -20,7 +20,7 @@ export default function Guide() {
               <a
                 target="_blank"
                 className=" text-sky-600"
-                href="https://github.com/andy-viera/contractorsUy/readme.txt"
+                href="https://github.com/andy-viera/contractorsUy/blob/main/README.md"
               >
                 cómo contribuir al proyecto
               </a>

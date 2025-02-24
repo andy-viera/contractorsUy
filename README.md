@@ -14,14 +14,19 @@
   <img src="public/readme_accountant.webp" alt="Accountant Working with Software Engineers" height="300px">
   <br/>
   <br/>
+<i>A tool that streamlines the transition from employment to independent contracting for software developers.</i>
+  <br/>
+  <br/>
+  <h1>contractorsUy</h1>
+  <p align="center"><small style="color: #666666">Last updated: February 2025</small></p>
 
   <p align="center">
-    <a href="https://contractors-uy.vercel.app/"><strong>Check out the project »</strong></a>
+    <a href="https://contractors-uy.vercel.app/"><strong><u>Check it out »</u></strong></a>
     <br/>
     <br/>
-    <a href="https://github.com/andy-viera/contractorsUy/issues/new?labels=enhancement">Suggest a Feature</a>
+    <a href="https://github.com/andy-viera/contractorsUy/issues/new?labels=enhancement"><u>Suggest a Feature</u></a>
     ·
-    <a href="https://github.com/andy-viera/contractorsUy/issues/new?labels=bug">Report a Bug</a>
+    <a href="https://github.com/andy-viera/contractorsUy/issues/new?labels=bug"><u>Report a Bug</u></a>
   </p>
 </div>
 
@@ -58,9 +63,24 @@
 
 ### Technologies
 
-- **Frontend:** TypeScript, React, Vite, TailwindCSS, Framer Motion, Aceternity UI
-- **Deployment & DevOps:** Vercel
-- **Design & Planning:** Excalidraw, Figma
+**Frontend:**
+
+- [TypeScript](https://www.typescriptlang.org/)
+- [React.js](https://react.dev/)
+- [Vite](https://vite.dev/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [Framer Motion](https://motion.dev/)
+- [Aceternity UI](https://www.aceternity.com/components)
+- [Shadcn UI](https://ui.shadcn.com/)
+
+**Deployment & DevOps:**
+
+- [Vercel](https://vercel.com/)
+
+**Design & Planning:**
+
+- [Excalidraw](https://excalidraw.com/)
+- [Figma](https://www.figma.com/)
 
 ## Contributing
 
@@ -81,6 +101,7 @@ If you encounter an issue or have a suggestion for improvement, please create a 
 #### Prerequisites
 
 - [pnpm](https://pnpm.io/)
+
   ```sh
   npm install -g pnpm
   ```
