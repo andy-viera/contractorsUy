@@ -114,9 +114,9 @@ function App() {
                     : "opacity-100 visible relative"
                 }`}
               >
-                <button className="px-0 pt-5 cursor-pointer" type="submit">
+                <div className="px-0 pt-5">
                   <FancyButton />
-                </button>
+                </div>
               </div>
             </form>
           </div>
