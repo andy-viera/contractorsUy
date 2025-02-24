@@ -36,9 +36,9 @@ const IRPF_FRANJAS = [
 ];
 
 /**
- * Retirement contributions percentage.
+ * Retirement contributions percentage (personal and employer).
  */
-const RETIREMENT_CONTRIBUTIONS = 15;
+const RETIREMENT_CONTRIBUTIONS = 0.225;
 
 /**
  * Maximum nominal salary on which retirement contributions apply.
@@ -58,7 +58,7 @@ const HEALTH_INSURANCE_OVER_25BPC = { base: 4.5, spouse: 2, children: 1.5 };
 /**
  * FRL contribution percentage.
  */
-const LABOR_RETRAINING_CONTRIBUTION = 0.1;
+const LABOR_RETRAINING_CONTRIBUTION = 0.01;
 
 /**
  * AFAP contribution cap.
@@ -73,7 +73,7 @@ const TAXABLE_INCOME_INCREASE = 0.06;
 /**
  * IRPF deduction percentage for people with salary up to 15 BPC.
  */
-const DEDUCTIONS_RATE_UNDER_15BPC = 0.1;
+const DEDUCTIONS_RATE_UNDER_15BPC = 0.14;
 
 /**
  * IRPF deduction percentage for people with salary from 15 BPC.

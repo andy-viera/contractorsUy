@@ -11,6 +11,8 @@ import {
   DEDUCTIONS_RATE_UNDER_15BPC,
   DISABLED_CHILD_DEDUCTION,
   IRPF_FRANJAS,
+  LABOR_RETRAINING_CONTRIBUTION,
+  RETIREMENT_CONTRIBUTIONS,
   TAXABLE_INCOME_INCREASE,
 } from "./constants";
 
@@ -51,8 +53,8 @@ const calculateContractorSalary = ({
   professionalCategory?: number;
   addIrpf?: boolean;
 }) => {
-  const grossSalary = addIrpf
-    ? calcularSalarioBrutoDesdeNeto(
+  const irpfTax = addIrpf
+    ? calculateIrpfFromNetSalary(
         realCurrentSalary,
         retirementTax,
         fonasaTax,
@@ -62,10 +64,10 @@ const calculateContractorSalary = ({
     : 0;
 
   const taxPercentage =
-    (retirementTax + fonasaTax + frlTax + professionalCategory) /
+    (retirementTax + fonasaTax + frlTax + irpfTax + professionalCategory) /
     realCurrentSalary;
 
-  return addIrpf ? grossSalary : realCurrentSalary / (1 - taxPercentage);
+  return realCurrentSalary / (1 - taxPercentage);
 };
 
 const calculateRealCurrentSalary = (salary: number) => {
@@ -101,8 +103,8 @@ const calculateTaxes = ({
   hasPartnerInCharge?: boolean;
   fonasaBaseTaxableAmount?: number;
 }) => {
-  const retirementTax = socialSecurityValue * 0.225;
-  const frlTax = socialSecurityValue * 0.001;
+  const retirementTax = socialSecurityValue * RETIREMENT_CONTRIBUTIONS;
+  const frlTax = socialSecurityValue * LABOR_RETRAINING_CONTRIBUTION;
   const fonasaTax = calculateFonasa(
     fonasaBaseTaxableAmount ?? socialSecurityValue,
     hasChildsInCharge,
@@ -168,129 +170,126 @@ export const calculateSalaryForPath = (data: FormData) => {
 };
 
 /**
- * @param salarioNominal - Salario nominal.
- * @param factorDeduccionPersonasACargo - Factor por el que se multiplica la deduccion correspondiente a
- *   las personas a cargo.
- * @param cantHijosSinDiscapacidad - Cantida de hijos sin discapacidad.
- * @param cantHijosConDiscapacidad - Cantida de hijos con discapacidad.
- * @param aportesJubilatorios - Aportes jubilatorios.
- * @param aportesFONASA - Aportes FONASA.
- * @param aporteFRL - Aporte FRL.
- * @param aportesFondoSolidaridad - Cantidad de BPC que se aportan al Fondo de Solidaridad.
- * @param adicionalFondoSolidaridad - True si corresponde aportar adicional al Fondo de Solidaridad.
- * @param aportesCJPPU - Aportes a la Caja de Profesionales Universitarios.
- * @param otrasDeducciones - Otras deducciones.
- *
- * @returns {ImpuestoIRPF} - El monto total de IRPF y los detalles de las distintas franjas y deducciones.
+ * @param nominalSalary - Nominal salary.
+ * @param dependentsDeductionFactor - Factor by which the deduction for dependents is multiplied.
+ * @param nonDisabledChildrenCount - Number of children without disabilities.
+ * @param disabledChildrenCount - Number of children with disabilities.
+ * @param retirementContributions - Retirement contributions.
+ * @param fonasaContributions - FONASA (healthcare) contributions.
+ * @param frlContribution - FRL (labor retraining) contribution.
+ * @param solidarityFundContributions - Amount of BPC contributed to the Solidarity Fund.
+ * @param additionalSolidarityFund - True if additional Solidarity Fund contribution applies.
+ * @param professionalFundContributions - Contributions to the Professional Fund.
+ * @param otherDeductions - Other deductions.
  */
-export const calcularIRPF = ({
-  salarioNominal,
-  aportesJubilatorios = 0,
-  aportesFONASA = 0,
-  aporteFRL = 0,
-  factorDeduccionPersonasACargo = 0,
-  cantHijosSinDiscapacidad = 0,
-  cantHijosConDiscapacidad = 0,
-  aportesFondoSolidaridad = 0,
-  adicionalFondoSolidaridad = false,
-  aportesCJPPU = 0,
-  otrasDeducciones = 0,
+export const calculateIRPF = ({
+  nominalSalary,
+  retirementContributions = 0,
+  fonasaContributions = 0,
+  frlContribution = 0,
+  dependentsDeductionFactor = 0,
+  nonDisabledChildrenCount = 0,
+  disabledChildrenCount = 0,
+  solidarityFundContributions = 0,
+  additionalSolidarityFund = false,
+  professionalFundContributions = 0,
+  otherDeductions = 0,
 }: {
-  salarioNominal: number;
-  aportesJubilatorios?: number;
-  aportesFONASA?: number;
-  aporteFRL?: number;
-  factorDeduccionPersonasACargo?: number;
-  cantHijosSinDiscapacidad?: number;
-  cantHijosConDiscapacidad?: number;
-  aportesFondoSolidaridad?: number;
-  adicionalFondoSolidaridad?: boolean;
-  aportesCJPPU?: number;
-  otrasDeducciones?: number;
+  nominalSalary: number;
+  retirementContributions?: number;
+  fonasaContributions?: number;
+  frlContribution?: number;
+  dependentsDeductionFactor?: number;
+  nonDisabledChildrenCount?: number;
+  disabledChildrenCount?: number;
+  solidarityFundContributions?: number;
+  additionalSolidarityFund?: boolean;
+  professionalFundContributions?: number;
+  otherDeductions?: number;
 }) => {
-  const salarioEnBPC = salarioNominal / BPC;
-  let tasaDeducciones = null;
-  if (salarioEnBPC > 15) tasaDeducciones = DEDUCTIONS_RATE_OVER_15BPC;
-  else tasaDeducciones = DEDUCTIONS_RATE_UNDER_15BPC;
+  const salaryInBPC = nominalSalary / BPC;
+  let deductionsRate = null;
+  if (salaryInBPC > 15) deductionsRate = DEDUCTIONS_RATE_OVER_15BPC;
+  else deductionsRate = DEDUCTIONS_RATE_UNDER_15BPC;
 
-  // Calcular si hay que aplicar el aumento a ingresos gravados Seguridad Social
-  if (salarioEnBPC > 10) salarioNominal *= 1 + TAXABLE_INCOME_INCREASE;
+  if (salaryInBPC > 10) nominalSalary *= 1 + TAXABLE_INCOME_INCREASE;
 
-  // Cantidad deducida del IRPF por los hijos
-  const deduccionesHijos =
-    factorDeduccionPersonasACargo *
-    (cantHijosSinDiscapacidad * CHILD_DEDUCTION +
-      cantHijosConDiscapacidad * DISABLED_CHILD_DEDUCTION);
+  const childDeductions =
+    dependentsDeductionFactor *
+    (nonDisabledChildrenCount * CHILD_DEDUCTION +
+      disabledChildrenCount * DISABLED_CHILD_DEDUCTION);
 
-  const aporteAdicionalFondoSolidaridad = adicionalFondoSolidaridad
+  const additionalSolidarityFundAmount = additionalSolidarityFund
     ? ADDITIONAL_SOLIDARITY_FUND
     : 0;
 
-  const deducciones =
-    deduccionesHijos +
-    aportesJubilatorios +
-    aportesFONASA +
-    aporteFRL +
-    (aportesFondoSolidaridad * BPC) / 12 +
-    aporteAdicionalFondoSolidaridad +
-    aportesCJPPU +
-    otrasDeducciones;
+  const deductions =
+    childDeductions +
+    retirementContributions +
+    fonasaContributions +
+    frlContribution +
+    (solidarityFundContributions * BPC) / 12 +
+    additionalSolidarityFundAmount +
+    professionalFundContributions +
+    otherDeductions;
 
-  // Cantidad de impuesto de IRPF de cada franja
-  const detalleIRPF: {
-    impuestoFranja: number[];
-    deducciones: number;
-    tasaDeducciones: number;
-  } = { impuestoFranja: [], deducciones, tasaDeducciones };
+  const taxDetails: {
+    bracketTax: number[];
+    deductions: number;
+    deductionsRate: number;
+  } = { bracketTax: [], deductions, deductionsRate };
 
-  IRPF_FRANJAS.forEach((franja: { from: number; to: number; rate: number }) => {
-    const to = franja.to !== 0 ? franja.to : 999;
-    if (salarioNominal > franja.from * BPC) {
-      const impuesto =
-        (Math.min(to * BPC, salarioNominal) - franja.from * BPC) * franja.rate;
+  IRPF_FRANJAS.forEach(
+    (bracket: { from: number; to: number; rate: number }) => {
+      const to = bracket.to !== 0 ? bracket.to : 999;
+      if (nominalSalary > bracket.from * BPC) {
+        const tax =
+          (Math.min(to * BPC, nominalSalary) - bracket.from * BPC) *
+          bracket.rate;
 
-      detalleIRPF.impuestoFranja.push(impuesto);
-    } else {
-      detalleIRPF.impuestoFranja.push(0);
+        taxDetails.bracketTax.push(tax);
+      } else {
+        taxDetails.bracketTax.push(0);
+      }
     }
-  });
+  );
 
   const totalIRPF = Math.max(
     0,
-    detalleIRPF.impuestoFranja.reduce((a, b) => a + b, 0) -
-      deducciones * tasaDeducciones
+    taxDetails.bracketTax.reduce((a, b) => a + b, 0) -
+      deductions * deductionsRate
   );
 
-  return { detalleIRPF, totalIRPF };
+  return { taxDetails, totalIRPF };
 };
 
 /**
  * @param netSalary - Desired net salary after taxes.
- * @param factorDeduccionPersonasACargo - Factor for deductions based on dependents.
- * @param cantHijosSinDiscapacidad - Number of children without disabilities.
- * @param cantHijosConDiscapacidad - Number of children with disabilities.
- * @param portesJubilatorios - Retirement contributions.
- * @param aportesFONASA - FONASA contributions.
- * @param aporteFRL - FRL contributions.
- * @param aportesFondoSolidaridad - Contributions to the Solidarity Fund (BPC).
- * @param adicionalFondoSolidaridad - Whether additional contributions to the Solidarity Fund apply.
- * @param aportesCJPPU - Contributions to the Caja de Profesionales Universitarios.
- * @param otrasDeducciones - Other deductions.
+ * @param dependentsDeductionFactor - Factor for deductions based on dependents.
+ * @param nonDisabledChildrenCount - Number of children without disabilities.
+ * @param disabledChildrenCount - Number of children with disabilities.
+ * @param retirementContributions - Retirement contributions.
+ * @param fonasaContributions - FONASA contributions.
+ * @param frlContribution - FRL contributions.
+ * @param solidarityFundContributions - Contributions to the Solidarity Fund (BPC).
+ * @param additionalSolidarityFund - Whether additional contributions to the Solidarity Fund apply.
+ * @param professionalFundContributions - Contributions to the Professional Fund.
+ * @param otherDeductions - Other deductions.
  *
  * @returns {number} - The gross salary (before taxes) that corresponds to the given net salary.
  */
-export const calcularSalarioBrutoDesdeNeto = (
+export const calculateIrpfFromNetSalary = (
   netSalary: number,
-  aportesJubilatorios?: number,
-  aportesFONASA?: number,
-  aporteFRL?: number,
-  aportesCJPPU?: number,
-  aportesFondoSolidaridad?: number,
-  adicionalFondoSolidaridad?: boolean,
-  factorDeduccionPersonasACargo?: number,
-  cantHijosSinDiscapacidad?: number,
-  cantHijosConDiscapacidad?: number,
-  otrasDeducciones?: number
+  retirementContributions?: number,
+  fonasaContributions?: number,
+  frlContribution?: number,
+  professionalFundContributions?: number,
+  solidarityFundContributions?: number,
+  additionalSolidarityFund?: boolean,
+  dependentsDeductionFactor?: number,
+  nonDisabledChildrenCount?: number,
+  disabledChildrenCount?: number,
+  otherDeductions?: number
 ) => {
   const TOLERANCE = 0.01;
   let lowerBound = netSalary;
@@ -298,26 +297,26 @@ export const calcularSalarioBrutoDesdeNeto = (
   let estimatedGrossSalary = (lowerBound + upperBound) / 2;
 
   while (upperBound - lowerBound > TOLERANCE) {
-    const { totalIRPF } = calcularIRPF({
-      salarioNominal: estimatedGrossSalary,
-      factorDeduccionPersonasACargo,
-      cantHijosSinDiscapacidad,
-      cantHijosConDiscapacidad,
-      aportesJubilatorios,
-      aportesFONASA,
-      aporteFRL,
-      aportesFondoSolidaridad,
-      adicionalFondoSolidaridad,
-      aportesCJPPU,
-      otrasDeducciones,
+    const { totalIRPF } = calculateIRPF({
+      nominalSalary: estimatedGrossSalary,
+      dependentsDeductionFactor,
+      nonDisabledChildrenCount,
+      disabledChildrenCount,
+      retirementContributions,
+      fonasaContributions,
+      frlContribution,
+      solidarityFundContributions,
+      additionalSolidarityFund,
+      professionalFundContributions,
+      otherDeductions,
     });
 
     const calculatedNetSalary =
       estimatedGrossSalary -
       totalIRPF -
-      (aportesJubilatorios || 0) -
-      (aportesFONASA || 0) -
-      (aporteFRL || 0);
+      (retirementContributions || 0) -
+      (fonasaContributions || 0) -
+      (frlContribution || 0);
 
     if (calculatedNetSalary < netSalary) lowerBound = estimatedGrossSalary;
     else upperBound = estimatedGrossSalary;
@@ -325,5 +324,5 @@ export const calcularSalarioBrutoDesdeNeto = (
     estimatedGrossSalary = (lowerBound + upperBound) / 2;
   }
 
-  return estimatedGrossSalary;
+  return estimatedGrossSalary - netSalary;
 };
