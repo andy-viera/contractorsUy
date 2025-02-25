@@ -1,6 +1,7 @@
 import Layout from "@/components/Layout";
 import ProductHeading from "@/components/ProductHeading";
 import { BFC, BPC } from "@/lib/constants";
+import { parseWithDots } from "@/lib/utils";
 
 export default function Guide() {
   return (
@@ -20,7 +21,7 @@ export default function Guide() {
               <a
                 target="_blank"
                 className=" text-sky-600"
-                href="https://github.com/andy-viera/contractorsUy/blob/main/README.md"
+                href="https://github.com/andy-viera/contractorsUy/blob/main/README.md#contributing"
               >
                 cómo contribuir al proyecto
               </a>
@@ -70,7 +71,7 @@ export default function Guide() {
               Si exportás software y el cliente te provee la computadora,
               calificás como "sin combinación de capital y trabajo". Esto
               significa que quedás exonerado del IRPF y solo tenés que pagar BPS
-              y FONASA.
+              y FONASA o caja de profesionales si sos profesional universitario.
             </li>
           </ul>
 
@@ -97,14 +98,15 @@ export default function Guide() {
           <ul className="mb-4 ml-6 list-disc">
             <li>
               El aporte jubilatorio mínimo es el 15% (aporte personal /
-              montepío) + 7.5% (aporte patronal) más el 0,1% para el FRL, todo
-              sobre el monto imponible de 15 BFC (1 BFC = U${BFC}).
+              montepío) + 7.5% (aporte patronal) más el 0.1% para el FRL, todo
+              sobre el monto mínimo imponible de 15 BFC (1 BFC = U$
+              {parseWithDots(BFC)}).
             </li>
             <li>
               El aporte a FONASA depende de tu situación familiar y se calcula
-              sobre 6,5 BPC (1 BPC = $U{BPC}). Por ejemplo: si no tenés hijos ni
-              cónyuge a cargo y la remuneración es mayor a 2,5 BPC, pagás el
-              4,5% (
+              sobre 6.5 BPC (1 BPC = $U{parseWithDots(BPC)}). Por ejemplo: si no
+              tenés hijos ni cónyuge a cargo y la remuneración es mayor a 2.5
+              BPC, pagás el 4.5% + 5% de aporte patronal (
               <a
                 target="_blank"
                 className="text-sky-600"
@@ -119,8 +121,8 @@ export default function Guide() {
           <h3 className="mb-2 text-xl font-semibold">Para Unipersonales</h3>
           <ul className="mb-4 ml-6 list-disc">
             <li>
-              El aporte jubilatorio y el FRL dependen de la categoría que
-              elijas, siendo la primera 11 BFC y la décima 60 BFC (
+              El aporte jubilatorio y el FRL dependen de la categoría de ficto
+              que elijas, siendo la primera 11 BFC y la décima 60 BFC (
               <a
                 target="_blank"
                 className="text-sky-600"
@@ -131,8 +133,18 @@ export default function Guide() {
               ), los porcentajes son los mismos mencionados para SAS.
             </li>
             <li>
-              El aporte a FONASA se calcula como &lt;remuneración&gt; * 0,7 *
-              &lt;porcentaje de fonasa aplicable&gt;.{" "}
+              El aporte a FONASA
+              <sub className="ml-0.5 ">
+                <a href="#9" className="text-sky-600">
+                  9
+                </a>
+              </sub>{" "}
+              depende de si combinás capital y trabajo, en caso afirmativo se te
+              categoriza en el régimen de industria y comercio, y se calcula
+              como: &lt;porcentaje de fonasa aplicable&gt; * 6.5 BPC. En caso de
+              que no combines capitál y trabajo se te categoriza en servicios
+              personales no profesionales y se calcula: &lt;remuneración&gt; *
+              0,7 * &lt;porcentaje de fonasa aplicable&gt;.
             </li>
           </ul>
         </section>
@@ -323,9 +335,10 @@ export default function Guide() {
         </section>
         <section className="mb-6">
           <h2 className="mb-4 text-2xl font-semibold">Fuentes</h2>
-          <ul className="ml-6 list-disc">
+          <ul className="ml-6 list-decimal">
             <li>
               <a
+                id="1"
                 target="_blank"
                 className="text-sky-600"
                 href="https://www.bps.gub.uy/17795/aportacion-de-administradores-y-representantes-legales-sas.html"
@@ -335,6 +348,7 @@ export default function Guide() {
             </li>
             <li>
               <a
+                id="2"
                 target="_blank"
                 className="text-sky-600"
                 href="https://www.bps.gub.uy/10314/"
@@ -344,6 +358,7 @@ export default function Guide() {
             </li>
             <li>
               <a
+                id="3"
                 target="_blank"
                 className="text-sky-600"
                 href="https://www.bps.gub.uy/835/tasas.html"
@@ -353,6 +368,7 @@ export default function Guide() {
             </li>
             <li>
               <a
+                id="4"
                 target="_blank"
                 className="text-sky-600"
                 href="https://www.bps.gub.uy/bps/valores.jsp?contentid=5478"
@@ -362,6 +378,7 @@ export default function Guide() {
             </li>
             <li>
               <a
+                id="5"
                 target="_blank"
                 className="text-sky-600"
                 href="https://www.dbc.com.uy/post/novedades07032022"
@@ -371,6 +388,7 @@ export default function Guide() {
             </li>
             <li>
               <a
+                id="6"
                 target="_blank"
                 className="text-sky-600"
                 href="https://www.bps.gub.uy/6665/industria-y-comercio.html"
@@ -380,6 +398,7 @@ export default function Guide() {
             </li>
             <li>
               <a
+                id="7"
                 target="_blank"
                 className="text-sky-600"
                 href="https://www.gub.uy/direccion-general-impositiva/comunicacion/publicaciones/deducciones-admitidas-liquidacion-del-irpf"
@@ -389,6 +408,7 @@ export default function Guide() {
             </li>
             <li>
               <a
+                id="8"
                 target="_blank"
                 className="text-sky-600"
                 href="https://www.gub.uy/direccion-general-impositiva/comunicacion/publicaciones/irpf-para-trabajadores-independientes"
@@ -398,13 +418,23 @@ export default function Guide() {
             </li>
             <li>
               <a
+                id="9"
+                target="_blank"
+                className="text-sky-600"
+                href="https://www.bps.gub.uy/16500/trabajadores-no-dependientes.html"
+              >
+                Trabajadores no dependientes - BPS
+              </a>
+            </li>
+            <li>
+              <a
+                id="10"
                 target="_blank"
                 className="text-sky-600"
                 href="https://www.reddit.com/r/CharruaDevs/"
               >
                 Se utilizó también información proporcionada por la comunidad
-                del subreddit CharruaDevs, particularmente los aportes del
-                usuario "The Contador"
+                del subreddit CharruaDevs.
               </a>
             </li>
           </ul>

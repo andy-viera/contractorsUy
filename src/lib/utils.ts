@@ -40,6 +40,9 @@ export const parseBooleans = (data: FormData): ParseBooleans<FormData> => {
   return Object.fromEntries(convertedEntries) as ParseBooleans<FormData>;
 };
 
+export const parseWithDots = (value: number) =>
+  value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
 const calculateContractorSalary = ({
   realCurrentSalary,
   retirementTax = 0,
@@ -56,7 +59,7 @@ const calculateContractorSalary = ({
   addIrpf?: boolean;
 }) => {
   const irpfTax = addIrpf
-    ? calculateIrpfFromNetSalary(
+    ? calculateIrpfFromNetSalaryBS(
         realCurrentSalary,
         retirementTax,
         fonasaTax,
@@ -68,6 +71,16 @@ const calculateContractorSalary = ({
   const taxPercentage =
     (retirementTax + fonasaTax + frlTax + irpfTax + professionalCategory) /
     realCurrentSalary;
+
+  console.log(
+    fonasaTax,
+    retirementTax,
+    frlTax,
+    irpfTax,
+    professionalCategory,
+    realCurrentSalary,
+    taxPercentage
+  );
 
   return realCurrentSalary / (1 - taxPercentage);
 };
@@ -88,6 +101,7 @@ const calculateFonasa = (
   let fonasaTaxPercent = greaterThan25BPC
     ? HEALTH_INSURANCE_OVER_25BPC.base
     : HEALTH_INSURANCE_UNDER_25BPC.base;
+  console.log(baseTaxableAmount, "test");
 
   if (hasChildsInCharge && hasPartnerInCharge)
     fonasaTaxPercent += greaterThan25BPC
@@ -104,7 +118,12 @@ const calculateFonasa = (
       ? HEALTH_INSURANCE_OVER_25BPC.spouse
       : HEALTH_INSURANCE_UNDER_25BPC.spouse;
 
-  return baseTaxableAmount * fonasaTaxPercent;
+  console.log(fonasaTaxPercent);
+
+  return {
+    percentage: fonasaTaxPercent,
+    value: baseTaxableAmount * fonasaTaxPercent,
+  };
 };
 
 const calculateTaxes = ({
@@ -154,7 +173,11 @@ export const calculateSalaryForPath = (data: FormData) => {
   }
 
   if (originCompanyType === companyType.SAS) {
-    const { retirementTax, frlTax, fonasaTax } = calculateTaxes({
+    const {
+      retirementTax,
+      frlTax,
+      fonasaTax: { value: fonasaValue },
+    } = calculateTaxes({
       socialSecurityValue: 15 * BFC,
       fonasaBaseTaxableAmount: 6.5 * BPC,
       hasChildsInCharge,
@@ -163,24 +186,38 @@ export const calculateSalaryForPath = (data: FormData) => {
     return calculateContractorSalary({
       realCurrentSalary,
       retirementTax,
-      fonasaTax,
+      fonasaTax: fonasaValue,
       frlTax,
     });
   }
 
   if (originCompanyType === companyType.unipersonal && socialSecurityCategory) {
-    const { retirementTax, frlTax, fonasaTax } = calculateTaxes({
-      socialSecurityValue: socialSecurityCategory,
-      hasChildsInCharge,
-      hasPartnerInCharge,
-    });
-    return calculateContractorSalary({
-      realCurrentSalary,
-      retirementTax,
-      fonasaTax,
-      frlTax,
-      addIrpf: combinesCapitalAndWork || targetCompanyType === "national",
-    });
+    if (!combinesCapitalAndWork && targetCompanyType === "national") {
+      return findGrossUnipersonalNoCapitalWorkNational({
+        desiredNet: realCurrentSalary,
+        socialSecurityCategory,
+        hasChildsInCharge,
+        hasPartnerInCharge,
+      });
+    } else {
+      const {
+        retirementTax,
+        frlTax,
+        fonasaTax: { value: fonasaValue },
+      } = calculateTaxes({
+        socialSecurityValue: socialSecurityCategory,
+        fonasaBaseTaxableAmount: 6.5 * BPC,
+        hasChildsInCharge,
+        hasPartnerInCharge,
+      });
+      return calculateContractorSalary({
+        realCurrentSalary,
+        retirementTax,
+        fonasaTax: fonasaValue,
+        frlTax,
+        addIrpf: combinesCapitalAndWork || targetCompanyType === "national",
+      });
+    }
   }
 };
 
@@ -293,7 +330,7 @@ export const calculateIRPF = ({
  *
  * @returns {number} - The gross salary (before taxes) that corresponds to the given net salary.
  */
-export const calculateIrpfFromNetSalary = (
+export const calculateIrpfFromNetSalaryBS = (
   netSalary: number,
   retirementContributions?: number,
   fonasaContributions?: number,
@@ -306,10 +343,11 @@ export const calculateIrpfFromNetSalary = (
   disabledChildrenCount?: number,
   otherDeductions?: number
 ) => {
-  const TOLERANCE = 0.01;
+  const TOLERANCE = 0.1;
   let lowerBound = netSalary;
   let upperBound = netSalary * 2;
   let estimatedGrossSalary = (lowerBound + upperBound) / 2;
+  let calculatedIrpf = 0;
 
   while (upperBound - lowerBound > TOLERANCE) {
     const { totalIRPF } = calculateIRPF({
@@ -335,12 +373,75 @@ export const calculateIrpfFromNetSalary = (
 
     if (calculatedNetSalary < netSalary) lowerBound = estimatedGrossSalary;
     else upperBound = estimatedGrossSalary;
-
+    calculatedIrpf = totalIRPF;
+    console.log(calculatedNetSalary, "calculatedNetSalary");
     estimatedGrossSalary = (lowerBound + upperBound) / 2;
   }
 
-  return estimatedGrossSalary - netSalary;
+  return calculatedIrpf;
 };
 
-export const parseWithDots = (value: number) =>
-  value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+function computeNetUnipersonalNoCapitalWorkNationalBS({
+  gross,
+  socialSecurityCategory,
+  hasChildsInCharge,
+  hasPartnerInCharge,
+}: {
+  gross: number;
+  socialSecurityCategory: number;
+  hasChildsInCharge?: boolean;
+  hasPartnerInCharge?: boolean;
+}) {
+  const retirementTax = socialSecurityCategory * RETIREMENT_CONTRIBUTIONS;
+
+  const frlTax = socialSecurityCategory * LABOR_RETRAINING_CONTRIBUTION;
+
+  const fonasaBase = 0.7 * gross;
+  const fonasaRate = calculateFonasa(
+    fonasaBase,
+    hasChildsInCharge,
+    hasPartnerInCharge
+  );
+  const fonasaTax = fonasaBase * fonasaRate.percentage;
+
+  const { totalIRPF } = calculateIRPF({
+    nominalSalary: gross,
+    retirementContributions: retirementTax,
+    fonasaContributions: fonasaTax,
+    frlContribution: frlTax,
+  });
+
+  return gross - (retirementTax + frlTax + fonasaTax + totalIRPF);
+}
+
+function findGrossUnipersonalNoCapitalWorkNational({
+  desiredNet,
+  socialSecurityCategory,
+  hasChildsInCharge,
+  hasPartnerInCharge,
+}: {
+  desiredNet: number;
+  socialSecurityCategory: number;
+  hasChildsInCharge?: boolean;
+  hasPartnerInCharge?: boolean;
+}) {
+  let lower = 0;
+  let upper = 100000000;
+  const TOLERANCE = 0.1;
+
+  while (upper - lower > TOLERANCE) {
+    const mid = (lower + upper) / 2;
+    const net = computeNetUnipersonalNoCapitalWorkNationalBS({
+      gross: mid,
+      socialSecurityCategory,
+      hasChildsInCharge,
+      hasPartnerInCharge,
+    });
+    console.log(net, "net", desiredNet, "desiredNet");
+
+    if (net < desiredNet) lower = mid;
+    else upper = mid;
+  }
+
+  return (lower + upper) / 2;
+}

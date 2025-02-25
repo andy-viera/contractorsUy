@@ -48,13 +48,13 @@ const RETIREMENT_CONTRIBUTIONS_CAP = 236309;
 /**
  * FONASA contributions percentage for people with salary up to 2.5 BPC.
  */
-const HEALTH_INSURANCE_UNDER_25BPC = { base: 0.03, spouse: 0.02, children: 0 };
+const HEALTH_INSURANCE_UNDER_25BPC = { base: 0.08, spouse: 0.02, children: 0 };
 
 /**
  * FONASA contributions percentage for people with salary above 2.5 BPC.
  */
 const HEALTH_INSURANCE_OVER_25BPC = {
-  base: 0.045,
+  base: 0.095,
   spouse: 0.02,
   children: 0.015,
 };
@@ -126,7 +126,6 @@ const INITIAL_INPUTS: QuestionType[] = [
         type: "radio",
         followups: [
           {
-            condition: "foreign",
             companyType: companyType.unipersonal,
             question: {
               label:
@@ -161,17 +160,17 @@ const INITIAL_INPUTS: QuestionType[] = [
             },
             type: "select",
             options: [
-              { label: "1ra. Especial", value: 3054 },
-              { label: "1ra.", value: 6075 },
-              { label: "2da.", value: 11491 },
-              { label: "3ra.", value: 16285 },
-              { label: "4ta.", value: 20427 },
-              { label: "5ta.", value: 23918 },
-              { label: "6ta.", value: 26792 },
-              { label: "7ma.", value: 29041 },
-              { label: "8va.", value: 30628 },
-              { label: "9na.", value: 31591 },
-              { label: "10ma.", value: 31900 },
+              { label: "1ra. Especial", value: 3241 },
+              { label: "1ra.", value: 6447 },
+              { label: "2da.", value: 12196 },
+              { label: "3ra.", value: 17282 },
+              { label: "4ta.", value: 21679 },
+              { label: "5ta.", value: 25383 },
+              { label: "6ta.", value: 28434 },
+              { label: "7ma.", value: 30822 },
+              { label: "8va.", value: 32506 },
+              { label: "9na.", value: 33527 },
+              { label: "10ma.", value: 33855 },
             ],
           },
           {
@@ -207,12 +206,16 @@ const INITIAL_INPUTS: QuestionType[] = [
             },
             type: "select",
             options: [
-              { label: "11 BFC", value: 4337 },
-              { label: "15 BFC", value: 5914 },
-              { label: "20 BFC", value: 7885 },
-              { label: "25 BFC", value: 9856 },
-              { label: "30 BFC", value: 11827 },
-              { label: "36 BFC", value: 14192 },
+              { label: "11 BFC", value: 19188 },
+              { label: "15 BFC", value: 26.166 },
+              { label: "20 BFC", value: 34.888 },
+              { label: "25 BFC", value: 43.61 },
+              { label: "30 BFC", value: 52.332 },
+              { label: "36 BFC", value: 62.798 },
+              { label: "42 BFC", value: 73.265 },
+              { label: "48 BFC", value: 83.731 },
+              { label: "54 BFC", value: 94.198 },
+              { label: "60 BFC", value: 104.664 },
             ],
           },
         ],
