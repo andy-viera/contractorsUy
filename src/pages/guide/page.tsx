@@ -6,7 +6,7 @@ import { parseWithDots } from "@/lib/utils";
 export default function Guide() {
   return (
     <Layout>
-      <main className="px-8 py-8 text-gray-800 border rounded-lg shadow-lg sm:px-20 sm:py-14">
+      <main className="px-8 py-8  text-gray-800 border rounded-lg shadow-lg w-[85%] mx-auto sm:px-20 sm:py-14">
         <ProductHeading
           productName="Contractor's Guide"
           productDescription={
@@ -100,21 +100,17 @@ export default function Guide() {
               El aporte jubilatorio mínimo es el 15% (aporte personal /
               montepío) + 7.5% (aporte patronal) más el 0.1% para el FRL, todo
               sobre el monto mínimo imponible de 15 BFC (1 BFC = U$
-              {parseWithDots(BFC)}).
+              {parseWithDots(BFC)})
+              <SubIndex indexes={[1, 3]} />.
             </li>
             <li>
               El aporte a FONASA depende de tu situación familiar y se calcula
-              sobre 6.5 BPC (1 BPC = $U{parseWithDots(BPC)}). Por ejemplo: si no
-              tenés hijos ni cónyuge a cargo y la remuneración es mayor a 2.5
-              BPC, pagás el 4.5% + 5% de aporte patronal (
-              <a
-                target="_blank"
-                className="text-sky-600"
-                href="https://www.bps.gub.uy/10314/"
-              >
-                ver tasas FONASA
-              </a>
-              ).
+              sobre 6.5 BPC (1 BPC = $U{parseWithDots(BPC)}
+              <SubIndex indexes={9} />
+              ). Por ejemplo: si no tenés hijos ni cónyuge a cargo y la
+              remuneración es mayor a 2.5 BPC, pagás el 4.5% + 5% de aporte
+              patronal
+              <SubIndex indexes={2} />.
             </li>
           </ul>
 
@@ -122,38 +118,27 @@ export default function Guide() {
           <ul className="mb-4 ml-6 list-disc">
             <li>
               El aporte jubilatorio y el FRL dependen de la categoría de ficto
-              que elijas, siendo la primera 11 BFC y la décima 60 BFC (
-              <a
-                target="_blank"
-                className="text-sky-600"
-                href="https://www.bps.gub.uy/6665/industria-y-comercio.html"
-              >
-                ver todas las categorías
-              </a>
-              ), los porcentajes son los mismos mencionados para SAS.
+              que elijas, siendo la primera 11 BFC y la décima 60 BFC
+              <SubIndex indexes={5} />, los porcentajes son los mismos
+              mencionados para SAS.
             </li>
             <li>
               El aporte a FONASA
-              <sub className="ml-0.5 ">
-                <a href="#9" className="text-sky-600">
-                  9
-                </a>
-              </sub>{" "}
-              depende de si combinás capital y trabajo, en caso afirmativo se te
-              categoriza en el régimen de industria y comercio, y se calcula
-              como: &lt;porcentaje de fonasa aplicable&gt; * 6.5 BPC. En caso de
-              que no combines capitál y trabajo se te categoriza en servicios
-              personales no profesionales y se calcula: &lt;remuneración&gt; *
-              0,7 * &lt;porcentaje de fonasa aplicable&gt;.
+              <SubIndex indexes={8} /> depende de si combinás capital y trabajo,
+              en caso afirmativo se te categoriza en el régimen de industria y
+              comercio, y se calcula como: &lt;porcentaje de fonasa
+              aplicable&gt; * 6.5 BPC. En caso de que no combines capitál y
+              trabajo se te categoriza en servicios personales no profesionales
+              y se calcula: &lt;remuneración&gt; * 0,7 * &lt;porcentaje de
+              fonasa aplicable&gt;.
             </li>
           </ul>
         </section>
         <section className="mb-6">
           <h2 className="mb-4 text-2xl font-semibold">IRPF, IRAE e IVA</h2>
           <p className="mb-2">
-            Si seguís un camino legal óptimo no deberías de pagar IRPF / IRAE
-            debido a las exoneraciones actuales al rubro de "Profesionales de la
-            informática" (como hace referencia la DGI).
+            Si seguís un camino legal óptimo no deberías de pagar IRPF/IRAE
+            debido a las exoneraciones actuales al rubro de software.
           </p>
           <div className="overflow-x-scroll xl:overflow-x-hidden">
             <table className="!border-separate border-spacing-0 w-full mt-6 text-left table-auto">
@@ -297,14 +282,19 @@ export default function Guide() {
                 </tr>
               </tbody>
             </table>
+            <small className="ml-1 text-neutral-500">
+              Fuente: DB consultora
+              <SubIndex indexes={4} />
+            </small>
           </div>
         </section>
 
         <section className="mb-6">
           <h2 className="mb-4 text-2xl font-semibold">Deducciones de IRPF</h2>
           <p className="mb-1.5">
-            Podés aplicar las siguientes deducciones en tu liquidación de
-            impuestos:
+            En caso de seguir un camino no óptimo y pagar IRPF, podés aplicar
+            las siguientes deducciones en tu liquidación de impuestos:
+            <SubIndex indexes={[6, 7]} />
           </p>
           <ul className="ml-6 list-disc">
             <li>20 BPC anuales por cada hijo menor de edad a cargo.</li>
@@ -366,19 +356,10 @@ export default function Guide() {
                 Tasas aporte jubilatorio
               </a>
             </li>
+
             <li>
               <a
                 id="4"
-                target="_blank"
-                className="text-sky-600"
-                href="https://www.bps.gub.uy/bps/valores.jsp?contentid=5478"
-              >
-                Valores actuales de BPC y BFC
-              </a>
-            </li>
-            <li>
-              <a
-                id="5"
                 target="_blank"
                 className="text-sky-600"
                 href="https://www.dbc.com.uy/post/novedades07032022"
@@ -388,17 +369,17 @@ export default function Guide() {
             </li>
             <li>
               <a
-                id="6"
+                id="5"
                 target="_blank"
                 className="text-sky-600"
                 href="https://www.bps.gub.uy/6665/industria-y-comercio.html"
               >
-                Aportes mínimos - industria y comercio
+                Aportes mínimos - Industria y comercio
               </a>
             </li>
             <li>
               <a
-                id="7"
+                id="6"
                 target="_blank"
                 className="text-sky-600"
                 href="https://www.gub.uy/direccion-general-impositiva/comunicacion/publicaciones/deducciones-admitidas-liquidacion-del-irpf"
@@ -408,7 +389,7 @@ export default function Guide() {
             </li>
             <li>
               <a
-                id="8"
+                id="7"
                 target="_blank"
                 className="text-sky-600"
                 href="https://www.gub.uy/direccion-general-impositiva/comunicacion/publicaciones/irpf-para-trabajadores-independientes"
@@ -418,12 +399,22 @@ export default function Guide() {
             </li>
             <li>
               <a
-                id="9"
+                id="8"
                 target="_blank"
                 className="text-sky-600"
                 href="https://www.bps.gub.uy/16500/trabajadores-no-dependientes.html"
               >
                 Trabajadores no dependientes - BPS
+              </a>
+            </li>
+            <li>
+              <a
+                id="9"
+                target="_blank"
+                className="text-sky-600"
+                href="https://www.bps.gub.uy/bps/valores.jsp?contentid=5478"
+              >
+                Valores actuales de BPC y BFC
               </a>
             </li>
             <li>
@@ -441,5 +432,19 @@ export default function Guide() {
         </section>
       </main>
     </Layout>
+  );
+}
+
+function SubIndex({ indexes }: { indexes: number[] | number }) {
+  const multipleIndexes = Array.isArray(indexes);
+  return (
+    <sub className="ml-0.5">
+      <a
+        href={`#${multipleIndexes ? indexes[0] : indexes}`}
+        className="text-sky-600"
+      >
+        {multipleIndexes ? indexes.map((index) => index).join(",") : indexes}
+      </a>
+    </sub>
   );
 }

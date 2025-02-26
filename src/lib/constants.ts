@@ -232,6 +232,8 @@ const INITIAL_INPUTS: QuestionType[] = [
   },
 ];
 
+export const LAST_UPDATE = 2025;
+
 export {
   INITIAL_INPUTS,
   BPC,

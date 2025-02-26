@@ -74,7 +74,7 @@ function App() {
 
   return (
     <Layout>
-      <main className="flex flex-wrap items-center justify-center flex-1 w-full bg-white gap-x-3">
+      <main className="flex items-center justify-center flex-1 w-[85%] mx-auto bg-white gap-x-3">
         <motion.div
           layout
           transition={{
