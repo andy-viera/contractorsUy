@@ -10,11 +10,11 @@ export default function FancyButton() {
         className="flex items-center space-x-2 text-white bg-black"
       >
         <div className="flex space-x-1">
+          <p>Calcular Sueldo De Contractor</p>
           <span className="flex items-center">
             <ChevronRight className="w-[1.2rem]" />
             <ChevronRight className="w-[1.2rem] -ml-3" />
           </span>
-          <p>Calcular Sueldo De Contractor</p>
         </div>
       </HoverBorderGradient>
     </div>
