@@ -2,7 +2,7 @@ name: "Update BFC and BPC from BPS"
 
 on:
   schedule:
-    - cron: '25 22 26 2 3'
+    - cron: "5 * * * *"
 
 jobs:
   update-bps:
