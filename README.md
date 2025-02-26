@@ -18,7 +18,6 @@
   <br/>
   <br/>
   <h1><i>contractorsUy</i></h1>
-  <h6 align="center" style="color: #666666">Last updated: February 2025</h6>
 
   <p align="center">
     <a href="https://contractors-uy.vercel.app/"><strong><u>Check it out »</u></strong></a>
