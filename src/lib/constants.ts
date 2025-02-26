@@ -6,14 +6,14 @@ export enum companyType {
 }
 
 /**
- * BPC value 2025.
+ * BPC value.
  */
-const BPC = 6576;
+let BPC = 6576.0;
 
 /**
- * BFC value 2025.
+ * BFC value.
  */
-const BFC = 1744.4;
+let BFC = 1744.4;
 
 /**
  * IRPF tax brackets.
