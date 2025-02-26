@@ -17,6 +17,7 @@ import {
   RETIREMENT_CONTRIBUTIONS,
   TAXABLE_INCOME_INCREASE,
 } from "./constants";
+import { QuestionType } from "@/components/Question";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -445,3 +446,38 @@ function findGrossUnipersonalNoCapitalWorkNational({
 
   return (lower + upper) / 2;
 }
+
+export const areAllQuestionsAnswered = (
+  questions: QuestionType[],
+  formValues: FormData
+): boolean => {
+  for (const question of questions) {
+    const answer = formValues[question.question.value];
+
+    if (answer === undefined || answer === null) {
+      return false;
+    }
+
+    if (question.followups) {
+      for (const followup of question.followups) {
+        const shouldDisplay =
+          (followup.condition === undefined ||
+            String(followup.condition) === answer) &&
+          (!followup.companyType ||
+            followup.companyType === formValues.originCompanyType);
+
+        if (shouldDisplay) {
+          const followupAnswered = areAllQuestionsAnswered(
+            [followup],
+            formValues
+          );
+          if (!followupAnswered) {
+            return false;
+          }
+        }
+      }
+    }
+  }
+
+  return true;
+};
