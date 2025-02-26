@@ -8,12 +8,12 @@ export enum companyType {
 /**
  * BPC value.
  */
-let BPC = 6576.0;
+let BPC = 0;
 
 /**
  * BFC value.
  */
-let BFC = 1744.4;
+let BFC = 0;
 
 /**
  * IRPF tax brackets.
