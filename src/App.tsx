@@ -108,7 +108,7 @@ function App() {
                 />
               ))}
               <div
-                className={`flex justify-center w-full transition-opacity duration-1000 ${
+                className={`flex justify-center transition-opacity duration-1000 ${
                   isDisabledBtn
                     ? "opacity-0 invisible absolute"
                     : "opacity-100 visible relative"
