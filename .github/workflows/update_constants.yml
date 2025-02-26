@@ -35,6 +35,6 @@ jobs:
             exit 0
           fi
 
-          git add constants.ts
+          git add src/lib/constants.ts
           git commit -m "chore: update BFC and BPC from BPS"
           git push
