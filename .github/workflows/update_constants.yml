@@ -30,11 +30,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          if git diff --quiet HEAD -- constants.ts; then
+          if git diff --quiet HEAD -- src/lib/constants.ts; then
             echo "No changes to commit."
             exit 0
           fi
 
-          git add src/lib/constants.ts
+          git add .
           git commit -m "chore: update BFC and BPC from BPS"
           git push
