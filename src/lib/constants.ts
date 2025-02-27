@@ -18,7 +18,7 @@ const BFC = 1744.4;
 /**
  * Last time BPC and BFC values where atomatically updated.
  */
-export const LAST_UPDATE = 2025;
+const LAST_UPDATE = 2025;
 
 /**
  * IRPF tax brackets.
@@ -29,7 +29,7 @@ export const LAST_UPDATE = 2025;
  *    The last bracket has a value of 0 in 'to'.
  *  - 'rate' is the tax percentage.
  */
-const IRPF_FRANJAS = [
+const IRPF_BRACKETS = [
   { from: 0, to: 7, rate: 0 },
   { from: 7, to: 10, rate: 0.1 },
   { from: 10, to: 15, rate: 0.15 },
@@ -48,7 +48,7 @@ const RETIREMENT_CONTRIBUTIONS = 0.225;
 /**
  * Maximum nominal salary on which retirement contributions apply.
  */
-const RETIREMENT_CONTRIBUTIONS_CAP = 236309;
+const RETIREMENT_CONTRIBUTIONS_CAP = 272564;
 
 /**
  * FONASA contributions percentage for people with salary up to 2.5 BPC.
@@ -68,11 +68,6 @@ const HEALTH_INSURANCE_OVER_25BPC = {
  * FRL contribution percentage.
  */
 const LABOR_RETRAINING_CONTRIBUTION = 0.01;
-
-/**
- * AFAP contribution cap.
- */
-const PENSION_FUND_CAP = 236309;
 
 /**
  * Percentage increase in taxable income that applies if computable income is greater than 10 BPC.
@@ -103,6 +98,8 @@ const DISABLED_CHILD_DEDUCTION = (40 * BPC) / 12;
  * Additional solidarity fund contribution that must be paid for careers with duration equal to or greater than five years.
  */
 const ADDITIONAL_SOLIDARITY_FUND = ((5 / 4) * BPC) / 12;
+
+const MINIMUM_WAGE = 23604;
 
 const INITIAL_INPUTS: QuestionType[] = [
   {
@@ -241,17 +238,18 @@ export {
   INITIAL_INPUTS,
   BPC,
   BFC,
-  IRPF_FRANJAS,
+  LAST_UPDATE,
+  IRPF_BRACKETS,
   RETIREMENT_CONTRIBUTIONS,
   RETIREMENT_CONTRIBUTIONS_CAP,
   HEALTH_INSURANCE_UNDER_25BPC,
   HEALTH_INSURANCE_OVER_25BPC,
   LABOR_RETRAINING_CONTRIBUTION,
-  PENSION_FUND_CAP,
   TAXABLE_INCOME_INCREASE,
   DEDUCTIONS_RATE_UNDER_15BPC,
   DEDUCTIONS_RATE_OVER_15BPC,
   CHILD_DEDUCTION,
   DISABLED_CHILD_DEDUCTION,
   ADDITIONAL_SOLIDARITY_FUND,
+  MINIMUM_WAGE,
 };

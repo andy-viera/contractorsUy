@@ -80,7 +80,7 @@ def update_constants_file(bfc_value: float, bpc_value: float):
     )   
 
     content = re.sub(
-        r"(export\s+const\s+LAST_UPDATE\s*=\s*)(\d+)(\s*;)",  
+        r"(const\s+LAST_UPDATE\s*=\s*)(\d+)(\s*;)",  
         lambda m: f"{m.group(1)}{datetime.now().year}{m.group(3)}",  
         content
     )

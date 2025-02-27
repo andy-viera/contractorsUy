@@ -12,7 +12,7 @@ import {
   DISABLED_CHILD_DEDUCTION,
   HEALTH_INSURANCE_OVER_25BPC,
   HEALTH_INSURANCE_UNDER_25BPC,
-  IRPF_FRANJAS,
+  IRPF_BRACKETS,
   LABOR_RETRAINING_CONTRIBUTION,
   RETIREMENT_CONTRIBUTIONS,
   TAXABLE_INCOME_INCREASE,
@@ -292,7 +292,7 @@ export const calculateIRPF = ({
     deductionsRate: number;
   } = { bracketTax: [], deductions, deductionsRate };
 
-  IRPF_FRANJAS.forEach(
+  IRPF_BRACKETS.forEach(
     (bracket: { from: number; to: number; rate: number }) => {
       const to = bracket.to !== 0 ? bracket.to : 999;
       if (nominalSalary > bracket.from * BPC) {
