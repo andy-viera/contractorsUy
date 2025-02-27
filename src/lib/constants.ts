@@ -8,12 +8,17 @@ export enum companyType {
 /**
  * BPC value.
  */
-let BPC = 6576.0;
+const BPC = 0;
 
 /**
  * BFC value.
  */
-let BFC = 1744.4;
+const BFC = 0;
+
+/**
+ * Last time BPC and BFC values where atomatically updated.
+ */
+export const LAST_UPDATE = 2024;
 
 /**
  * IRPF tax brackets.
@@ -231,8 +236,6 @@ const INITIAL_INPUTS: QuestionType[] = [
     ],
   },
 ];
-
-export const LAST_UPDATE = 2025;
 
 export {
   INITIAL_INPUTS,

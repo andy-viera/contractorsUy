@@ -2,6 +2,7 @@ import os
 import re
 import requests
 from bs4 import BeautifulSoup
+from datetime import datetime
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 CONSTANTS_FILE = os.path.join(SCRIPT_DIR, "../src/lib/constants.ts")
@@ -67,16 +68,22 @@ def update_constants_file(bfc_value: float, bpc_value: float):
         content = f.read()
 
     content = re.sub(
-        r"(let\s+BFC\s*=\s*)([-+]?\d*\.?\d+)(\s*;)",  
+        r"(const\s+BFC\s*=\s*)([-+]?\d*\.?\d+)(\s*;)",  
         lambda m: f"{m.group(1)}{bfc_value}{m.group(3)}",  
         content
     )
 
     content = re.sub(
-        r"(let\s+BPC\s*=\s*)([-+]?\d*\.?\d+)(\s*;)",  
+        r"(const\s+BPC\s*=\s*)([-+]?\d*\.?\d+)(\s*;)",  
         lambda m: f"{m.group(1)}{bpc_value}{m.group(3)}",  
         content
     )   
+
+    content = re.sub(
+        r"(export\s+const\s+LAST_UPDATE\s*=\s*)(\d+)(\s*;)",  
+        lambda m: f"{m.group(1)}{datetime.now().year}{m.group(3)}",  
+        content
+    )
 
     with open(CONSTANTS_FILE, "w", encoding="utf-8") as f:
         f.write(content)

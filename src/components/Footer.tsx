@@ -3,11 +3,16 @@ import { GithubIcon } from "./icons/GithubIcon";
 import { Logo } from "./icons/Logo";
 import { cn } from "@/lib/utils";
 import { LAST_UPDATE } from "@/lib/constants";
+import { InfoIcon } from "lucide-react";
+import { motion } from "framer-motion";
+import { useState } from "react";
 
 export default function Footer() {
   const location = useLocation();
   const { pathname } = location;
   const updatedYearsAgo = new Date().getFullYear() - LAST_UPDATE;
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <footer className="w-full py-20 mt-24 text-sm bg-white border-t border-neutral-100 text-neutral-600">
       <div className="flex flex-col justify-between max-w-screen-xl px-8 mx-auto space-y-8 md:flex-row md:space-y-0">
@@ -42,13 +47,40 @@ export default function Footer() {
                 )}
               ></span>
             </span>
-            <p className="text-neutral-500">
-              {updatedYearsAgo === 0
-                ? "updated for the current year"
-                : `updated ${updatedYearsAgo} ${
-                    updatedYearsAgo > 1 ? "years" : "year"
-                  }  ago`}
-            </p>
+            <span className="flex items-center space-x-1">
+              <p className="text-neutral-500">
+                {updatedYearsAgo === 0
+                  ? "updated for the current year"
+                  : `updated ${updatedYearsAgo} ${
+                      updatedYearsAgo > 1 ? "years" : "year"
+                    }  ago`}
+              </p>
+              <div
+                className="relative"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
+                <InfoIcon className="w-4 text-neutral-400" />
+                {isHovered && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="top-[-7rem] right-[-6rem] break-words max-w-24 sm:max-w-48 absolute z-50 p-3 text-xs sm:text-sm text-black transform -translate-x-1/2 bg-transparent backdrop-blur-sm rounded-lg shadow-lg sm:top-[-4rem] sm:right-[-12rem]"
+                  >
+                    <p className="text-xs break-words">
+                      BFC, BPC, and other anually updated values{" "}
+                      {updatedYearsAgo === 0
+                        ? "are up to date"
+                        : `were last updated ${updatedYearsAgo} ${
+                            updatedYearsAgo > 1 ? "years" : "year"
+                          }  ago`}
+                      .
+                    </p>
+                  </motion.div>
+                )}
+              </div>
+            </span>
           </div>
         </div>
 
