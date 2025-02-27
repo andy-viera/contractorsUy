@@ -7,10 +7,10 @@ from datetime import datetime
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 CONSTANTS_FILE = os.path.join(SCRIPT_DIR, "../src/lib/constants.ts")
 
-def fetch_bfc_bpc():
+def fetch_constants():
     """
-    Fetches the most recent BFC and BPC from the BPS page.
-    Returns a tuple (bfc_value, bpc_value) as floats.
+    Fetches the most recent anually updated values from the BPS page.
+    Returns the fetched values as a tuple (bfc, bpc, minimum_wage). 
     """
     url = "https://www.bps.gub.uy/bps/valores.jsp?contentid=5478"
     response = requests.get(url)
@@ -25,6 +25,7 @@ def fetch_bfc_bpc():
 
     bfc_value = None
     bpc_value = None
+    minimum_wage = None
 
     for row in table.find_all("tr"):
         cols = [td.get_text(strip=True) for td in row.find_all(["td", "th"])]
@@ -48,16 +49,20 @@ def fetch_bfc_bpc():
             bfc_value = numeric_value
         elif "prestaciones" in concept or "bpc" in concept:
             bpc_value = numeric_value
+        elif "salario mínimo nacional" in concept:
+            minimum_wage = numeric_value
 
-    if bfc_value is None or bpc_value is None:
-        raise RuntimeError("Could not find both BFC and BPC values in the table.")
+    if bfc_value is None or bpc_value is None or minimum_wage is None:
+        raise RuntimeError("Could not find some values in the table.")
 
-    return (bfc_value, bpc_value)
+    return (bfc_value, bpc_value, minimum_wage)
 
-def update_constants_file(bfc_value: float, bpc_value: float):
+
+
+
+def update_constants_file(bfc_value: float, bpc_value: float, minimum_wage: float):
     """
-    Updates the lines `let BPC = 0;` and `let BFC = 0;` in constants.ts
-    with the new float values for BPC and BFC.
+    Updates the anually updated constants in constants.ts file
     """
     print(f"Updating constants.ts with BPC={bpc_value}, BFC={bfc_value}")
 
@@ -80,6 +85,12 @@ def update_constants_file(bfc_value: float, bpc_value: float):
     )   
 
     content = re.sub(
+        r"(const\s+MINIMUM_WAGE\s*=\s*)([-+]?\d*\.?\d+)(\s*;)",  
+        lambda m: f"{m.group(1)}{minimum_wage}{m.group(3)}",  
+        content
+    )   
+
+    content = re.sub(
         r"(const\s+LAST_UPDATE\s*=\s*)(\d+)(\s*;)",  
         lambda m: f"{m.group(1)}{datetime.now().year}{m.group(3)}",  
         content
@@ -91,10 +102,10 @@ def update_constants_file(bfc_value: float, bpc_value: float):
     print(f"constants.ts successfully updated at {CONSTANTS_FILE}")
 
 def main():
-    bfc, bpc = fetch_bfc_bpc()
-    print(f"Fetched from BPS site -> BFC: {bfc}, BPC: {bpc}")
+    bfc, bpc, minimum_wage = fetch_constants()
+    print(f"Fetched from BPS site -> BFC: {bfc}, BPC: {bpc}, Minimum Wage: {minimum_wage}")
 
-    update_constants_file(bfc, bpc)
+    update_constants_file(bfc, bpc, minimum_wage)
     print("constants.ts updated successfully.")
 
 if __name__ == "__main__":

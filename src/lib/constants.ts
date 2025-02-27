@@ -99,7 +99,7 @@ const DISABLED_CHILD_DEDUCTION = (40 * BPC) / 12;
  */
 const ADDITIONAL_SOLIDARITY_FUND = ((5 / 4) * BPC) / 12;
 
-const MINIMUM_WAGE = 23604;
+const MINIMUM_WAGE = 23604.0;
 
 const INITIAL_INPUTS: QuestionType[] = [
   {

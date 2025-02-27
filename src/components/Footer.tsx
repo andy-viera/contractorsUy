@@ -68,10 +68,10 @@ export default function Footer() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="top-[-7rem] right-[-6rem] break-words max-w-24 sm:max-w-48 absolute z-50 p-3 text-xs sm:text-sm text-black transform -translate-x-1/2 bg-transparent backdrop-blur-sm rounded-lg shadow-lg sm:top-[-4rem] sm:right-[-12rem]"
+                    className="top-[-5rem] right-[-6rem] break-words max-w-24 sm:max-w-48 absolute z-50 p-3 text-xs sm:text-sm text-black transform -translate-x-1/2 bg-transparent backdrop-blur-sm rounded-lg shadow-lg sm:top-[-3rem] sm:right-[-12rem]"
                   >
                     <p className="text-xs break-words">
-                      BFC, BPC, and other anually updated values{" "}
+                      Anually updated values{" "}
                       {updatedYearsAgo === 0
                         ? "are up to date"
                         : `were last updated ${updatedYearsAgo} ${
