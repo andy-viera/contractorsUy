@@ -186,6 +186,37 @@ const INITIAL_INPUTS: QuestionType[] = [
               { label: "Si", value: "true" },
               { label: "No", value: "false" },
             ],
+            followups: [
+              {
+                condition: "true",
+                question: {
+                  label: "¿Cuántos hijos sin discapacidad tenés a cargo?",
+                  value: "childsInChargeCount",
+                },
+                type: "number",
+              },
+              {
+                condition: "true",
+                question: {
+                  label: "¿Cuántos hijos con discapacidad tenés a cargo?",
+                  value: "disabledChildsInChargeCount",
+                },
+                type: "number",
+              },
+              {
+                condition: "true",
+                question: {
+                  label: "Porcentaje de deducción de las personas a cargo",
+                  value: "dependentsDeductionFactor",
+                },
+                type: "select",
+                options: [
+                  { label: "0%", value: 0 },
+                  { label: "50%", value: 0.5 },
+                  { label: "100%", value: 1 },
+                ],
+              },
+            ],
           },
           {
             condition: "false",
@@ -208,16 +239,16 @@ const INITIAL_INPUTS: QuestionType[] = [
             },
             type: "select",
             options: [
-              { label: "11 BFC", value: 19188 },
-              { label: "15 BFC", value: 26.166 },
-              { label: "20 BFC", value: 34.888 },
-              { label: "25 BFC", value: 43.61 },
-              { label: "30 BFC", value: 52.332 },
-              { label: "36 BFC", value: 62.798 },
-              { label: "42 BFC", value: 73.265 },
-              { label: "48 BFC", value: 83.731 },
-              { label: "54 BFC", value: 94.198 },
-              { label: "60 BFC", value: 104.664 },
+              { label: "11 BFC", value: 11 * BFC },
+              { label: "15 BFC", value: 15 * BFC },
+              { label: "20 BFC", value: 20 * BFC },
+              { label: "25 BFC", value: 25 * BFC },
+              { label: "30 BFC", value: 30 * BFC },
+              { label: "36 BFC", value: 36 * BFC },
+              { label: "42 BFC", value: 42 * BFC },
+              { label: "48 BFC", value: 48 * BFC },
+              { label: "54 BFC", value: 54 * BFC },
+              { label: "60 BFC", value: 60 * BFC },
             ],
           },
         ],
@@ -225,10 +256,10 @@ const INITIAL_INPUTS: QuestionType[] = [
       {
         question: {
           label:
-            "¿Cuál es tu sueldo líquido actual (sin incluir aguinaldo ni salario vacacional)?",
+            "¿Cuál es tu sueldo líquido actual (mensual, sin incluir aguinaldo ni salario vacacional)?",
           value: "currentSalary",
         },
-        type: "number",
+        type: "salary",
       },
     ],
   },

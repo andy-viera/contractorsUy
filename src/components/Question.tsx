@@ -5,7 +5,7 @@ import {
   UseFormSetValue,
 } from "react-hook-form";
 import { FormData } from "../App";
-import { companyType } from "../lib/constants";
+import { companyType, MINIMUM_WAGE } from "../lib/constants";
 import {
   Select,
   SelectContent,
@@ -13,10 +13,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { cn } from "@/lib/utils";
 
 export type QuestionType = {
   question: { label: string; value: keyof FormData };
-  type: "radio" | "checkbox" | "number" | "select";
+  type: "radio" | "checkbox" | "select" | "salary" | "number";
   options?: { label: string; value: FormData[keyof FormData] }[];
   followups?: FollowUpType[];
   placeholder?: string;
@@ -26,7 +27,7 @@ type FollowUpType = {
   companyType?: companyType;
   condition?: FormData[keyof FormData];
   question: { label: string; value: keyof FormData };
-  type: "radio" | "checkbox" | "number" | "select";
+  type: "radio" | "checkbox" | "select" | "salary" | "number";
   options?: { label: string; value: FormData[keyof FormData] }[];
   followups?: FollowUpType[];
 };
@@ -68,20 +69,26 @@ export default function Question({
           <div>
             {(() => {
               switch (type) {
+                case "salary":
                 case "number":
                   return (
                     <div className="relative text-sm">
-                      <span className="absolute inset-y-0 left-0 flex items-center p-2 ">
-                        U$
-                      </span>
+                      {type === "salary" && (
+                        <span className="absolute inset-y-0 left-0 flex items-center p-2 ">
+                          U$
+                        </span>
+                      )}
                       <input
-                        type={type}
-                        min={23604}
+                        type={"number"}
+                        min={type === "salary" ? MINIMUM_WAGE : 0}
                         {...register(question.value, {
                           required: true,
                           valueAsNumber: true,
                         })}
-                        className="w-full py-2 pl-8 pr-2 border rounded-md form-input"
+                        className={cn(
+                          type === "salary" ? "pl-8 w-full" : "pl-2 w-32",
+                          "py-2 pr-2 border rounded-md form-input"
+                        )}
                         placeholder="0"
                       />
                     </div>

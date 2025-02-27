@@ -28,6 +28,9 @@ export interface FormData {
   combinesCapitalAndWork?: "true" | "false";
   professionalCategory?: number;
   hasChildsInCharge?: "true" | "false";
+  childsInChargeCount?: number;
+  disabledChildsInChargeCount?: number;
+  dependentsDeductionFactor?: number;
   hasPartnerInCharge?: "true" | "false";
   socialSecurityCategory?: number;
 }
