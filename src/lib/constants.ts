@@ -8,17 +8,17 @@ export enum companyType {
 /**
  * BPC value.
  */
-const BPC = 0;
+const BPC = 6576.0;
 
 /**
  * BFC value.
  */
-const BFC = 0;
+const BFC = 1744.4;
 
 /**
  * Last time BPC and BFC values where atomatically updated.
  */
-export const LAST_UPDATE = 2024;
+export const LAST_UPDATE = 2025;
 
 /**
  * IRPF tax brackets.
