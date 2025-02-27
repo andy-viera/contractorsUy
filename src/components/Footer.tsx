@@ -17,9 +17,11 @@ export default function Footer() {
     <footer className="w-full py-20 mt-24 text-sm bg-white border-t border-neutral-100 text-neutral-600">
       <div className="flex flex-col justify-between max-w-screen-xl px-8 mx-auto space-y-8 md:flex-row md:space-y-0">
         <div className="space-y-2">
-          <div className="flex items-center mb-4 space-x-2">
-            <Logo width={32} height={32} />
-            <h1 className="text-2xl font-bold text-black">contractorsUy</h1>
+          <div className="mb-4">
+            <a href="/" className="flex items-center space-x-2">
+              <Logo width={32} height={32} />
+              <h1 className="text-2xl font-bold text-black">contractorsUy</h1>
+            </a>
           </div>
           <p className="text-neutral-500">
             A project by{" "}
@@ -91,7 +93,7 @@ export default function Footer() {
             <li>
               <a
                 href={pathname === "/guide" ? "/" : "/guide"}
-                className="text-neutral-600 hover:text-neutral-800"
+                className="transition-colors text-neutral-600 hover:text-neutral-800"
               >
                 {pathname === "/guide" ? "Simulator" : "Contractor's Guide"}
               </a>
@@ -99,7 +101,7 @@ export default function Footer() {
             <li>
               <a
                 href="https://salarioliquidouruguay.com"
-                className="text-neutral-600 hover:text-neutral-800"
+                className="transition-colors text-neutral-600 hover:text-neutral-800"
               >
                 Salario Líquido Uruguay
               </a>
@@ -116,9 +118,9 @@ export default function Footer() {
             <li>
               <a
                 href="https://github.com/andy-viera/contractorsUy"
-                className="flex items-center space-x-2 "
+                className="flex items-center space-x-2 transition-colors text-neutral-500 hover:text-neutral-800"
               >
-                <p className="text-neutral-500">Contribute on</p>
+                <p className="">Contribute on</p>
                 <GithubIcon width="18px" height="18px" />
               </a>
             </li>
