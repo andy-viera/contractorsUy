@@ -76,6 +76,12 @@
 **Deployment & DevOps:**
 
 - [Vercel](https://vercel.com/)
+- [GitHub Actions](https://github.com/features/actions)
+
+**Scripting & Web Scraping:**
+
+- [Python](https://www.python.org/)
+- [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
 
 **Design & Planning:**
 
