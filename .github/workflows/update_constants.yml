@@ -1,4 +1,4 @@
-name: "Update BFC and BPC from BPS"
+name: "Update annual values"
 
 permissions:
   contents: write
