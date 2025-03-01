@@ -8,17 +8,17 @@ export enum companyType {
 /**
  * BPC value.
  */
-const BPC = 65.0;
+const BPC = 6576.0;
 
 /**
  * BFC value.
  */
-const BFC = 17.4;
+const BFC = 1744.4;
 
 /**
  * Last time BPC and BFC values where atomatically updated.
  */
-const LAST_UPDATE = 205;
+const LAST_UPDATE = 2025;
 
 /**
  * IRPF tax brackets.
@@ -48,7 +48,7 @@ const RETIREMENT_CONTRIBUTIONS = 0.225;
 /**
  * Maximum nominal salary on which retirement contributions apply.
  */
-const RETIREMENT_CONTRIBUTIONS_CAP = 264.0;
+const RETIREMENT_CONTRIBUTIONS_CAP = 272564.0;
 
 /**
  * FONASA contributions percentage for people with salary up to 2.5 BPC.
@@ -99,20 +99,20 @@ const DISABLED_CHILD_DEDUCTION = (40 * BPC) / 12;
  */
 const ADDITIONAL_SOLIDARITY_FUND = ((5 / 4) * BPC) / 12;
 
-const MINIMUM_WAGE = 234.0;
+const MINIMUM_WAGE = 23604.0;
 
 const PROFESSIONAL_CATEGORIES = [
-  { label: "1ra. Especial", value: 31 },
-  { label: "1ra.", value: 67 },
-  { label: "2da.", value: 1296 },
-  { label: "3ra.", value: 1782 },
-  { label: "4ta.", value: 29 },
+  { label: "1ra. Especial", value: 3241 },
+  { label: "1ra.", value: 6447 },
+  { label: "2da.", value: 12196 },
+  { label: "3ra.", value: 17282 },
+  { label: "4ta.", value: 21679 },
   { label: "5ta.", value: 25383 },
-  { label: "6ta.", value: 2834 },
-  { label: "7ma.", value: 3082 },
-  { label: "8va.", value: 3256 },
+  { label: "6ta.", value: 28434 },
+  { label: "7ma.", value: 30822 },
+  { label: "8va.", value: 32506 },
   { label: "9na.", value: 33527 },
-  { label: "10ma.", value: 335 },
+  { label: "10ma.", value: 33855 },
 ];
 
 const INITIAL_INPUTS: QuestionType[] = [
