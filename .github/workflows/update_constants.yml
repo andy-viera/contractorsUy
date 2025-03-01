@@ -24,7 +24,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install requests beautifulsoup4
+          pip install requests beautifulsoup4 pdfplumber
 
       - name: Run update BPS script
         run: python scripts/update_bps.py
