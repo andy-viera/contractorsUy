@@ -422,6 +422,26 @@ export default function Guide() {
                 id="10"
                 target="_blank"
                 className="text-sky-600"
+                href="https://www.impo.com.uy/bases/leyes/16713-1995/7"
+              >
+                Ley de la seguridad social (16713), Artículo 7
+              </a>
+            </li>
+            <li>
+              <a
+                id="11"
+                target="_blank"
+                className="text-sky-600"
+                href="https://www.impo.com.uy/bases/decretos/148-2007"
+              >
+                Decreto N° 148/007, Articulo 60
+              </a>
+            </li>
+            <li>
+              <a
+                id="12"
+                target="_blank"
+                className="text-sky-600"
                 href="https://www.reddit.com/r/CharruaDevs/"
               >
                 Se utilizó también información proporcionada por la comunidad

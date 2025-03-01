@@ -26,8 +26,11 @@ jobs:
         run: |
           pip install requests beautifulsoup4
 
-      - name: Run update script
-        run: python scripts/update_constants.py
+      - name: Run update BPS script
+        run: python scripts/update_bps.py
+
+      - name: Run update CJPPU script
+        run: python scripts/update_cjppu.py
 
       - name: Commit and push changes
         run: |
@@ -40,5 +43,5 @@ jobs:
           fi
 
           git add .
-          git commit -m "chore: update BFC and BPC from BPS"
+          git commit -m "chore: update annual values"
           git push
