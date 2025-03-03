@@ -33,6 +33,8 @@ export interface FormData {
   dependentsDeductionFactor?: number;
   hasPartnerInCharge?: "true" | "false";
   socialSecurityCategory?: number;
+  solidarityFundContribution?: number;
+  appliesSolidarityFundAditional?: "true" | "false";
 }
 
 function App() {

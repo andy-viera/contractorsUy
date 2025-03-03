@@ -1,4 +1,5 @@
 import { QuestionType } from "../components/Question";
+import { parseWithDots } from "./utils";
 
 export enum companyType {
   unipersonal = "unipersonal",
@@ -44,6 +45,16 @@ const IRPF_BRACKETS = [
  * Retirement contributions percentage (personal and employer).
  */
 const RETIREMENT_CONTRIBUTIONS = 0.225;
+
+/**
+ * Base amount for SAS retirement contributions.
+ */
+const SAS_RETIREMENT_CONTRIBUTIONS_BASE = 15 * BFC;
+
+/**
+ * Base amount for FONASA contribution calculation for SAS.
+ */
+const SAS_FONASA_BASE = 6.5 * BPC;
 
 /**
  * Maximum nominal salary on which retirement contributions apply.
@@ -178,6 +189,47 @@ const INITIAL_INPUTS: QuestionType[] = [
             options: PROFESSIONAL_CATEGORIES,
           },
           {
+            condition: "true",
+            question: {
+              label: "Aporte a el fondo de solidaridad",
+              value: "solidarityFundContribution",
+            },
+            type: "select",
+            defaultValue: 0,
+            options: [
+              {
+                label: `1/2 BPC (U$ ${parseWithDots(0.5 * BPC)})`,
+                value: 0.5 * BPC,
+              },
+              {
+                label: `1 BPC (U$ ${parseWithDots(BPC)})`,
+                value: BPC,
+              },
+              {
+                label: `2 BPC (U$ ${parseWithDots(2 * BPC)})`,
+                value: 2 * BPC,
+              },
+              {
+                label: "Ninguno",
+                value: 0,
+              },
+            ],
+            followups: [
+              {
+                condition: [0.5 * BPC, BPC, 2 * BPC],
+                question: {
+                  label: "Aporte adicional (carreras de 5 años o más)",
+                  value: "appliesSolidarityFundAditional",
+                },
+                type: "radio",
+                options: [
+                  { label: "Si", value: "true" },
+                  { label: "No", value: "false" },
+                ],
+              },
+            ],
+          },
+          {
             condition: "false",
             question: {
               label: "¿Tenés hijos a cargo?",
@@ -273,6 +325,8 @@ export {
   BFC,
   LAST_UPDATE,
   IRPF_BRACKETS,
+  SAS_RETIREMENT_CONTRIBUTIONS_BASE,
+  SAS_FONASA_BASE,
   RETIREMENT_CONTRIBUTIONS,
   RETIREMENT_CONTRIBUTIONS_CAP,
   HEALTH_INSURANCE_UNDER_25BPC,

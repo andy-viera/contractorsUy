@@ -3,7 +3,6 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import {
   ADDITIONAL_SOLIDARITY_FUND,
-  BFC,
   BPC,
   CHILD_DEDUCTION,
   companyType,
@@ -15,68 +14,117 @@ import {
   IRPF_BRACKETS,
   LABOR_RETRAINING_CONTRIBUTION,
   RETIREMENT_CONTRIBUTIONS,
+  RETIREMENT_CONTRIBUTIONS_CAP,
+  SAS_FONASA_BASE,
+  SAS_RETIREMENT_CONTRIBUTIONS_BASE,
   TAXABLE_INCOME_INCREASE,
 } from "./constants";
-import { QuestionType } from "@/components/Question";
+import { conditionType, QuestionType } from "@/components/Question";
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+/**
+ * This is the main function, it calculates the contractor's salary based on various parameters from form data,
+ * taking into account different calculation paths depending on company type,
+ * professional status, and other factors.
+ *
+ * @param data.originCompanyType - The type of company of the contractor
+ * @param data.currentSalary - The contractor's current salary
+ * @param data.combinesCapitalAndWork - Whether the contractor combines capital and work
+ * @param data.isProfessional - Whether the contractor is a professional
+ * @param data.professionalCategory - The professional category of the contractor
+ * @param data.socialSecurityCategory - The social security category of the contractor
+ * @param data.hasChildsInCharge - Whether the contractor has children in charge
+ * @param data.hasPartnerInCharge - Whether the contractor has a partner in charge
+ * @param data.targetCompanyType - The type of company the contractor bills
+ * @param data.childsInChargeCount - Number of children in charge
+ * @param data.disabledChildsInChargeCount - Number of disabled children in charge
+ * @param data.dependentsDeductionFactor - Factor for deducting dependents from calculation
+ *
+ * @returns The calculated salary based on the provided parameters and applicable rules.
+ */
+export const calculateSalaryForPath = (data: FormData) => {
+  const {
+    originCompanyType,
+    currentSalary,
+    combinesCapitalAndWork,
+    isProfessional,
+    professionalCategory,
+    socialSecurityCategory,
+    hasChildsInCharge,
+    hasPartnerInCharge,
+    targetCompanyType,
+    childsInChargeCount,
+    disabledChildsInChargeCount,
+    dependentsDeductionFactor,
+    solidarityFundContribution,
+    appliesSolidarityFundAditional,
+  } = parseBooleans(data);
 
-export const parseWithDots = (value: number) =>
-  value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  const realCurrentSalary = calculateRealCurrentSalary(currentSalary);
 
-type ParseBooleans<T> = {
-  [K in keyof T]: T[K] extends "true" | "false" | undefined
-    ? boolean | undefined
-    : T[K];
-};
-
-export const parseBooleans = (data: FormData): ParseBooleans<FormData> => {
-  const convertedEntries = Object.entries(data).map(([key, value]) => {
-    if (value === "true") {
-      return [key, true];
-    } else if (value === "false") {
-      return [key, false];
-    } else return [key, value];
-  });
-
-  return Object.fromEntries(convertedEntries) as ParseBooleans<FormData>;
-};
-
-export const areAllQuestionsAnswered = (
-  questions: QuestionType[],
-  formValues: FormData
-): boolean => {
-  for (const question of questions) {
-    const answer = formValues[question.question.value];
-
-    if (answer === undefined || answer === null) {
-      return false;
-    }
-
-    if (question.followups) {
-      for (const followup of question.followups) {
-        const shouldDisplay =
-          (followup.condition === undefined ||
-            String(followup.condition) === answer) &&
-          (!followup.companyType ||
-            followup.companyType === formValues.originCompanyType);
-
-        if (shouldDisplay) {
-          const followupAnswered = areAllQuestionsAnswered(
-            [followup],
-            formValues
-          );
-          if (!followupAnswered) {
-            return false;
-          }
-        }
-      }
-    }
+  if (isProfessional && professionalCategory) {
+    return calculateContractorSalary({
+      realCurrentSalary,
+      professionalCategory,
+      childsInChargeCount,
+      disabledChildsInChargeCount,
+      dependentsDeductionFactor,
+      solidarityFundContribution,
+      appliesSolidarityFundAditional,
+      addIrpf:
+        originCompanyType === companyType.unipersonal &&
+        (combinesCapitalAndWork || targetCompanyType === "national"),
+    });
   }
 
-  return true;
+  if (originCompanyType === companyType.SAS) {
+    const { retirementTax, frlTax, fonasaTax } = calculateTaxes({
+      socialSecurityValue: SAS_RETIREMENT_CONTRIBUTIONS_BASE,
+      fonasaBaseTaxableAmount: SAS_FONASA_BASE,
+      hasChildsInCharge,
+      hasPartnerInCharge,
+    });
+    return calculateContractorSalary({
+      realCurrentSalary,
+      retirementTax,
+      fonasaTax,
+      frlTax,
+    });
+  }
+
+  if (originCompanyType === companyType.unipersonal && socialSecurityCategory) {
+    if (!combinesCapitalAndWork && targetCompanyType === "national") {
+      return findGrossUnipersonalNoCapitalWorkNationalBS({
+        desiredNet: realCurrentSalary,
+        socialSecurityCategory,
+        hasChildsInCharge,
+        hasPartnerInCharge,
+        childsInChargeCount,
+        disabledChildsInChargeCount,
+        dependentsDeductionFactor,
+        solidarityFundContribution,
+        appliesSolidarityFundAditional,
+      });
+    } else {
+      const { retirementTax, frlTax, fonasaTax } = calculateTaxes({
+        socialSecurityValue: socialSecurityCategory,
+        fonasaBaseTaxableAmount: 6.5 * BPC,
+        hasChildsInCharge,
+        hasPartnerInCharge,
+      });
+      return calculateContractorSalary({
+        realCurrentSalary,
+        retirementTax,
+        fonasaTax,
+        frlTax,
+        childsInChargeCount,
+        disabledChildsInChargeCount,
+        dependentsDeductionFactor,
+        solidarityFundContribution,
+        appliesSolidarityFundAditional,
+        addIrpf: combinesCapitalAndWork || targetCompanyType === "national",
+      });
+    }
+  }
 };
 
 /**
@@ -108,6 +156,8 @@ const calculateContractorSalary = ({
   childsInChargeCount,
   disabledChildsInChargeCount,
   dependentsDeductionFactor,
+  solidarityFundContribution,
+  appliesSolidarityFundAditional,
   addIrpf = false,
 }: {
   realCurrentSalary: number;
@@ -118,6 +168,8 @@ const calculateContractorSalary = ({
   childsInChargeCount?: number;
   disabledChildsInChargeCount?: number;
   dependentsDeductionFactor?: number;
+  solidarityFundContribution?: number;
+  appliesSolidarityFundAditional?: boolean;
   addIrpf?: boolean;
 }) => {
   const irpfTax = addIrpf
@@ -130,11 +182,23 @@ const calculateContractorSalary = ({
         nonDisabledChildrenCount: childsInChargeCount,
         disabledChildrenCount: disabledChildsInChargeCount,
         dependentsDeductionFactor,
+        solidarityFundContributions: solidarityFundContribution,
+        additionalSolidarityFund: appliesSolidarityFundAditional,
       })
+    : 0;
+  solidarityFundContribution = solidarityFundContribution ?? 0;
+  const additionalSolidarityFundAmount = appliesSolidarityFundAditional
+    ? ADDITIONAL_SOLIDARITY_FUND
     : 0;
 
   const taxPercentage =
-    (retirementTax + fonasaTax + frlTax + irpfTax + professionalCategory) /
+    (retirementTax +
+      fonasaTax +
+      frlTax +
+      irpfTax +
+      professionalCategory +
+      solidarityFundContribution / 12 +
+      additionalSolidarityFundAmount) /
     realCurrentSalary;
 
   return realCurrentSalary / (1 - taxPercentage);
@@ -169,9 +233,7 @@ const calculateRealCurrentSalary = (salary: number) => {
  * @param hasChildsInCharge - Whether the person has dependent children
  * @param hasPartnerInCharge - Whether the person has a dependent spouse/partner
  *
- * @returns An object containing:
- *   - percentage: The calculated FONASA percentage based on family situation
- *   - value: The monetary value of the FONASA contribution (baseTaxableAmount × percentage)
+ * @returns The monetary value of the FONASA contribution (baseTaxableAmount × percentage)
  *
  * @remarks
  * The calculation applies different rates based on whether the base taxable amount
@@ -203,10 +265,7 @@ const calculateFonasa = (
       ? HEALTH_INSURANCE_OVER_25BPC.spouse
       : HEALTH_INSURANCE_UNDER_25BPC.spouse;
 
-  return {
-    percentage: fonasaTaxPercent,
-    value: baseTaxableAmount * fonasaTaxPercent,
-  };
+  return baseTaxableAmount * fonasaTaxPercent;
 };
 
 /**
@@ -233,120 +292,18 @@ const calculateTaxes = ({
   hasPartnerInCharge?: boolean;
   fonasaBaseTaxableAmount?: number;
 }) => {
-  const retirementTax = socialSecurityValue * RETIREMENT_CONTRIBUTIONS;
+  const retirementTax = Math.min(
+    socialSecurityValue * RETIREMENT_CONTRIBUTIONS,
+    RETIREMENT_CONTRIBUTIONS_CAP
+  );
   const frlTax = socialSecurityValue * LABOR_RETRAINING_CONTRIBUTION;
   const fonasaTax = calculateFonasa(
     fonasaBaseTaxableAmount ?? socialSecurityValue,
     hasChildsInCharge,
     hasPartnerInCharge
   );
+
   return { retirementTax, frlTax, fonasaTax };
-};
-
-/**
- * Calculates the contractor's salary based on various parameters from form data,
- * taking into account different calculation paths depending on company type,
- * professional status, and other factors.
- *
- * @param data.originCompanyType - The type of company of the contractor
- * @param data.currentSalary - The contractor's current salary
- * @param data.combinesCapitalAndWork - Whether the contractor combines capital and work
- * @param data.isProfessional - Whether the contractor is a professional
- * @param data.professionalCategory - The professional category of the contractor
- * @param data.socialSecurityCategory - The social security category of the contractor
- * @param data.hasChildsInCharge - Whether the contractor has children in charge
- * @param data.hasPartnerInCharge - Whether the contractor has a partner in charge
- * @param data.targetCompanyType - The type of company the contractor bills
- * @param data.childsInChargeCount - Number of children in charge
- * @param data.disabledChildsInChargeCount - Number of disabled children in charge
- * @param data.dependentsDeductionFactor - Factor for deducting dependents from calculation
- *
- * @returns The calculated salary based on the provided parameters and applicable rules.
- */
-export const calculateSalaryForPath = (data: FormData) => {
-  const {
-    originCompanyType,
-    currentSalary,
-    combinesCapitalAndWork,
-    isProfessional,
-    professionalCategory,
-    socialSecurityCategory,
-    hasChildsInCharge,
-    hasPartnerInCharge,
-    targetCompanyType,
-    childsInChargeCount,
-    disabledChildsInChargeCount,
-    dependentsDeductionFactor,
-  } = parseBooleans(data);
-
-  const realCurrentSalary = calculateRealCurrentSalary(currentSalary);
-
-  if (isProfessional && professionalCategory) {
-    return calculateContractorSalary({
-      realCurrentSalary,
-      professionalCategory,
-      childsInChargeCount,
-      disabledChildsInChargeCount,
-      dependentsDeductionFactor,
-      addIrpf:
-        originCompanyType === companyType.unipersonal &&
-        (combinesCapitalAndWork || targetCompanyType === "national"),
-    });
-  }
-
-  if (originCompanyType === companyType.SAS) {
-    const {
-      retirementTax,
-      frlTax,
-      fonasaTax: { value: fonasaValue },
-    } = calculateTaxes({
-      socialSecurityValue: 15 * BFC,
-      fonasaBaseTaxableAmount: 6.5 * BPC,
-      hasChildsInCharge,
-      hasPartnerInCharge,
-    });
-    return calculateContractorSalary({
-      realCurrentSalary,
-      retirementTax,
-      fonasaTax: fonasaValue,
-      frlTax,
-    });
-  }
-
-  if (originCompanyType === companyType.unipersonal && socialSecurityCategory) {
-    if (!combinesCapitalAndWork && targetCompanyType === "national") {
-      return findGrossUnipersonalNoCapitalWorkNationalBS({
-        desiredNet: realCurrentSalary,
-        socialSecurityCategory,
-        hasChildsInCharge,
-        hasPartnerInCharge,
-        childsInChargeCount,
-        disabledChildsInChargeCount,
-        dependentsDeductionFactor,
-      });
-    } else {
-      const {
-        retirementTax,
-        frlTax,
-        fonasaTax: { value: fonasaValue },
-      } = calculateTaxes({
-        socialSecurityValue: socialSecurityCategory,
-        fonasaBaseTaxableAmount: 6.5 * BPC,
-        hasChildsInCharge,
-        hasPartnerInCharge,
-      });
-      return calculateContractorSalary({
-        realCurrentSalary,
-        retirementTax,
-        fonasaTax: fonasaValue,
-        frlTax,
-        childsInChargeCount,
-        disabledChildsInChargeCount,
-        dependentsDeductionFactor,
-        addIrpf: combinesCapitalAndWork || targetCompanyType === "national",
-      });
-    }
-  }
 };
 
 /**
@@ -410,7 +367,7 @@ export const calculateIRPF = ({
     retirementContributions +
     fonasaContributions +
     frlContribution +
-    (solidarityFundContributions * BPC) / 12 +
+    solidarityFundContributions / 12 +
     additionalSolidarityFundAmount +
     professionalFundContributions +
     otherDeductions;
@@ -545,6 +502,8 @@ function findGrossUnipersonalNoCapitalWorkNationalBS({
   childsInChargeCount,
   disabledChildsInChargeCount,
   dependentsDeductionFactor,
+  solidarityFundContribution,
+  appliesSolidarityFundAditional,
 }: {
   desiredNet: number;
   socialSecurityCategory: number;
@@ -553,6 +512,8 @@ function findGrossUnipersonalNoCapitalWorkNationalBS({
   childsInChargeCount?: number;
   disabledChildsInChargeCount?: number;
   dependentsDeductionFactor?: number;
+  solidarityFundContribution?: number;
+  appliesSolidarityFundAditional?: boolean;
 }) {
   let lower = 0;
   let upper = 100000000;
@@ -568,6 +529,8 @@ function findGrossUnipersonalNoCapitalWorkNationalBS({
       childsInChargeCount,
       disabledChildsInChargeCount,
       dependentsDeductionFactor,
+      solidarityFundContribution,
+      appliesSolidarityFundAditional,
     });
 
     if (net < desiredNet) lower = mid;
@@ -597,6 +560,8 @@ function computeNetUnipersonalNoCapitalWorkNational({
   childsInChargeCount,
   disabledChildsInChargeCount,
   dependentsDeductionFactor,
+  solidarityFundContribution,
+  appliesSolidarityFundAditional,
 }: {
   gross: number;
   socialSecurityCategory: number;
@@ -605,18 +570,16 @@ function computeNetUnipersonalNoCapitalWorkNational({
   childsInChargeCount?: number;
   disabledChildsInChargeCount?: number;
   dependentsDeductionFactor?: number;
+  solidarityFundContribution?: number;
+  appliesSolidarityFundAditional?: boolean;
 }) {
-  const retirementTax = socialSecurityCategory * RETIREMENT_CONTRIBUTIONS;
-
-  const frlTax = socialSecurityCategory * LABOR_RETRAINING_CONTRIBUTION;
-
   const fonasaBase = 0.7 * gross;
-  const fonasaRate = calculateFonasa(
-    fonasaBase,
+  const { retirementTax, frlTax, fonasaTax } = calculateTaxes({
+    socialSecurityValue: socialSecurityCategory,
+    fonasaBaseTaxableAmount: fonasaBase,
     hasChildsInCharge,
-    hasPartnerInCharge
-  );
-  const fonasaTax = fonasaBase * fonasaRate.percentage;
+    hasPartnerInCharge,
+  });
 
   const { totalIRPF } = calculateIRPF({
     nominalSalary: gross,
@@ -626,7 +589,88 @@ function computeNetUnipersonalNoCapitalWorkNational({
     dependentsDeductionFactor,
     nonDisabledChildrenCount: childsInChargeCount,
     disabledChildrenCount: disabledChildsInChargeCount,
+    solidarityFundContributions: solidarityFundContribution,
+    additionalSolidarityFund: appliesSolidarityFundAditional,
   });
 
   return gross - (retirementTax + frlTax + fonasaTax + totalIRPF);
 }
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+export const parseWithDots = (value: number) =>
+  value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+type ParseBooleans<T> = {
+  [K in keyof T]: T[K] extends "true" | "false" | undefined
+    ? boolean | undefined
+    : T[K];
+};
+
+export const parseBooleans = (data: FormData): ParseBooleans<FormData> => {
+  const convertedEntries = Object.entries(data).map(([key, value]) => {
+    if (value === "true") {
+      return [key, true];
+    } else if (value === "false") {
+      return [key, false];
+    } else return [key, value];
+  });
+
+  return Object.fromEntries(convertedEntries) as ParseBooleans<FormData>;
+};
+
+export const normalizeValue = (value: conditionType) => {
+  if (value === "true") return true;
+  if (value === "false") return false;
+  return value;
+};
+
+export const normalizeConditions = (
+  conditions: conditionType | conditionType[] | undefined
+) => {
+  if (conditions === undefined) return [];
+  if (!Array.isArray(conditions)) {
+    return [normalizeValue(conditions)];
+  }
+  return conditions.map((c) => normalizeValue(c));
+};
+
+export const areAllQuestionsAnswered = (
+  questions: QuestionType[],
+  formValues: FormData
+) => {
+  for (const question of questions) {
+    const answer = formValues[question.question.value];
+    if (answer === undefined || answer === null) {
+      return false;
+    }
+
+    if (question.followups) {
+      for (const followup of question.followups) {
+        const conditionsArray = normalizeConditions(followup.condition);
+
+        const conditionMatched =
+          conditionsArray.length === 0 ||
+          conditionsArray.some((cond) => String(cond) === String(answer));
+
+        const companyTypeMatched =
+          followup.companyType === undefined ||
+          followup.companyType === formValues.originCompanyType;
+
+        if (conditionMatched && companyTypeMatched) {
+          const followupAnswered = areAllQuestionsAnswered(
+            [followup],
+            formValues
+          );
+          if (!followupAnswered) {
+            return false;
+          }
+        }
+      }
+    }
+  }
+
+  return true;
+};

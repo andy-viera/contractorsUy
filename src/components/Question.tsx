@@ -13,7 +13,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { cn } from "@/lib/utils";
+import { cn, normalizeConditions, normalizeValue } from "@/lib/utils";
+
+export type conditionType =
+  | number
+  | companyType
+  | "foreign"
+  | "national"
+  | "true"
+  | "false";
 
 export type QuestionType = {
   question: { label: string; value: keyof FormData };
@@ -25,10 +33,11 @@ export type QuestionType = {
 
 type FollowUpType = {
   companyType?: companyType;
-  condition?: FormData[keyof FormData];
+  condition?: conditionType | conditionType[];
   question: { label: string; value: keyof FormData };
   type: "radio" | "checkbox" | "select" | "salary" | "number";
   options?: { label: string; value: FormData[keyof FormData] }[];
+  defaultValue?: FormData[keyof FormData];
   followups?: FollowUpType[];
 };
 interface QuestionProps extends QuestionType {
@@ -51,7 +60,11 @@ export default function Question({
   useEffect(() => {
     if (followups) {
       followups.forEach((followup) => {
-        setValue(followup.question.value, undefined);
+        const valueToSet =
+          followup.defaultValue !== undefined
+            ? followup.defaultValue
+            : undefined;
+        setValue(followup.question.value, valueToSet);
         if (followup.followups) {
           followup.followups.forEach((subFollowup) =>
             setValue(subFollowup.question.value, undefined)
@@ -98,10 +111,14 @@ export default function Question({
                     <>
                       <Select
                         value={
-                          !watchedAnswer ? undefined : String(watchedAnswer)
+                          watchedAnswer !== undefined
+                            ? String(watchedAnswer)
+                            : ""
                         }
                         onValueChange={(value) =>
-                          setValue(question.value, Number(value))
+                          setValue(question.value, Number(value), {
+                            shouldValidate: true,
+                          })
                         }
                       >
                         <SelectTrigger className="w-48">
@@ -148,14 +165,25 @@ export default function Question({
       </div>
       <div className="space-y-4">
         {followups &&
-          watchedAnswer &&
-          followups?.length > 0 &&
-          followups?.map(
-            (f, i) =>
-              (f.condition === undefined ||
-                watchedAnswer === String(f.condition)) &&
-              (f.companyType === undefined ||
-                watch("originCompanyType") === f.companyType) && (
+          watchedAnswer !== undefined &&
+          followups.length > 0 &&
+          followups.map((f, i) => {
+            const normalizedWatchedAnswer = normalizeValue(watchedAnswer);
+            const normalizedConditions = normalizeConditions(f.condition);
+
+            const conditionMatched =
+              f.condition === undefined ||
+              normalizedConditions.some(
+                (cond) => cond === normalizedWatchedAnswer
+              );
+
+            const companyTypeMatched =
+              f.companyType === undefined ||
+              watch("originCompanyType") === f.companyType;
+
+            return (
+              conditionMatched &&
+              companyTypeMatched && (
                 <Question
                   key={i}
                   register={register}
@@ -167,7 +195,8 @@ export default function Question({
                   followups={f.followups}
                 />
               )
-          )}
+            );
+          })}
       </div>
     </>
   );
