@@ -15,9 +15,10 @@ export default function Guide() {
               software, requiere entender cómo funciona el sistema de impuestos.
               Si tomás las decisiones correctas, podés optimizar costos y
               trabajar en un marco legal adecuado. Acá te cuento lo más
-              importante desde mi humilde punto de vista como fellow developer
-              en base a lo que yo he entendido. Si encontrás errores podés
-              aportar tu granito de arena reportándolo, para ello mirá{" "}
+              importante desde mi humilde punto de vista en base a lo que he
+              aprendido por experiencia propia, asesoramiento con contadores, e
+              investigación sobre el tema. Si encontrás errores podés aportar tu
+              granito de arena reportándolo, para ello mirá{" "}
               <a
                 target="_blank"
                 className=" text-sky-600"
@@ -440,6 +441,17 @@ export default function Guide() {
             <li>
               <a
                 id="12"
+                target="_blank"
+                className="text-sky-600"
+                href="https://egresados.fondodesolidaridad.edu.uy/aportes-y-montos
+"
+              >
+                Fondo de solidaridad - Aportes y montos
+              </a>
+            </li>
+            <li>
+              <a
+                id="13"
                 target="_blank"
                 className="text-sky-600"
                 href="https://www.reddit.com/r/CharruaDevs/"

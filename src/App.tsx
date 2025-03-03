@@ -103,6 +103,7 @@ function SimulatorForm({
                 particular. Nuestro simulador calcula tu salario considerando
                 impuestos, aportes y exoneraciones para que tomes decisiones
                 informadas y optimices tus ingresos."
+        addDisclaimer
         productStatus="beta"
       />
 
@@ -149,8 +150,7 @@ function Result({ result }: { result: number | undefined }) {
         </p>
         <p className="mt-2 text-xs text-neutral-300">
           * Las estimaciones proporcionadas por éste simulador no incluyen: IVA,
-          contribución a fondo de solidaridad, honorarios de contador,
-          facturación electrónica.
+          honorarios de contador, facturación electrónica.
         </p>
       </div>
     )

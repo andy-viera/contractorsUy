@@ -1,14 +1,17 @@
 import { ReactNode } from "react";
 import { BackLightButton } from "./BacklightButton";
+import { CircleAlert } from "lucide-react";
 
 export default function ProductHeading({
   productName,
   productDescription,
   productStatus = "stable",
+  addDisclaimer,
 }: {
   productName: string;
   productDescription: string | ReactNode;
   productStatus?: "alfa" | "beta" | "stable";
+  addDisclaimer?: boolean;
 }) {
   return (
     <section className="mb-10">
@@ -25,7 +28,22 @@ export default function ProductHeading({
           />
         )}
       </div>
-      <p className="text-[0.97rem] text-neutral-600">{productDescription}</p>
+      <p className="text-[0.97rem] text-neutral-600 mb-2.5 md:mb-1.5">
+        {productDescription}
+      </p>
+      {addDisclaimer && (
+        <div className="flex items-center space-x-1.5 md:space-x-0 text-neutral-400">
+          <CircleAlert className="inline-block w-5 h-5 md:w-3.5 md:h-3.5 mr-2" />
+          <small>
+            ¿Empezando desde cero? Lee la{" "}
+            <a href="/guide" className="text-sky-400">
+              {" "}
+              Contractor´s Guide
+            </a>{" "}
+            primero.
+          </small>
+        </div>
+      )}
     </section>
   );
 }
