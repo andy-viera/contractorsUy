@@ -69,19 +69,24 @@
 - [Vite](https://vite.dev/)
 - [TailwindCSS](https://tailwindcss.com/)
 - [React Hook Form](https://react-hook-form.com/)
-- [Framer Motion](https://motion.dev/)
+- [Motion](https://motion.dev/)
 - [Aceternity UI](https://www.aceternity.com/components)
 - [Shadcn UI](https://ui.shadcn.com/)
 
-**Deployment & DevOps:**
+**DevOps & Analytics:**
 
 - [Vercel](https://vercel.com/)
 - [GitHub Actions](https://github.com/features/actions)
+- [PostHog](https://posthog.com/)
 
 **Scripting & Web Scraping:**
 
 - [Python](https://www.python.org/)
 - [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
+
+**Testing:**
+
+- [Vitest](https://vitest.dev/)
 
 **Design & Planning:**
 
