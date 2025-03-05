@@ -7,9 +7,9 @@ export default function FancyButton() {
       <HoverBorderGradient
         containerClassName="rounded-full"
         as="button"
-        className="flex items-center space-x-2 text-white bg-black"
+        className="flex items-center space-x-2 text-black bg-white dark:bg-black dark:text-white"
       >
-        <div className="flex space-x-1">
+        <div className="flex space-x-1 dark:text-neutral-300">
           <p>Calcular Sueldo De Contractor</p>
           <span className="flex items-center">
             <ChevronRight className="w-[1.2rem]" />

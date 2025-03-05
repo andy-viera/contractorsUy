@@ -1,12 +1,15 @@
+import { useDarkMode } from "@/components/DarkModeContext";
 import Layout from "@/components/Layout";
 import ProductHeading from "@/components/ProductHeading";
 import { BFC, BPC } from "@/lib/constants";
 import { parseWithDots } from "@/lib/utils";
 
 export default function Guide() {
+  const { darkMode } = useDarkMode();
+
   return (
     <Layout>
-      <main className="px-8 py-8  text-gray-800 border rounded-lg shadow-lg w-[85%] mx-auto sm:px-20 sm:py-14">
+      <main className="max-w-6xl px-8 py-8 mx-auto text-gray-800 border dark:border-white/[0.2] rounded-lg shadow-lg dark:text-neutral-300 sm:px-20 sm:py-14">
         <ProductHeading
           productName="Contractor's Guide"
           productDescription={
@@ -21,7 +24,7 @@ export default function Guide() {
               granito de arena reportándolo, para ello mirá{" "}
               <a
                 target="_blank"
-                className=" text-sky-600"
+                className=" text-sky-600 dark:text-sky-700"
                 href="https://github.com/andy-viera/contractorsUy/blob/main/README.md#contributing"
               >
                 cómo contribuir al proyecto
@@ -31,10 +34,9 @@ export default function Guide() {
           }
           productStatus="beta"
         />
-        <section className="mb-6">
-          <h2 className="mb-4 text-2xl font-semibold">
-            Pasos para pasar de empleado a contractor
-          </h2>
+
+        <Section>
+          <Title>Pasos para pasar de empleado a contractor</Title>
           <ol className="ml-6 list-decimal">
             <li>Analizá tu situación laboral actual y evaluá tus ingresos.</li>
             <li>Decidí si te conviene abrir una unipersonal o una SAS.</li>
@@ -49,7 +51,7 @@ export default function Guide() {
                 </li>
                 <li>
                   Para una unipersonal: Registrate en la DGI y el BPS, y elegí
-                  la categoría de aportes que te convenga. Abir una unipersonal
+                  la categoría de aportes que te convenga. Abrir una unipersonal
                   es mucho menos costoso y más rápido, pero no siempre lo más
                   conveniente para todos los casos.
                 </li>
@@ -61,12 +63,12 @@ export default function Guide() {
               las exoneraciones fiscales.
             </li>
           </ol>
-        </section>
-        <section className="mb-6">
-          <h2 className="mb-4 text-2xl font-semibold">
-            Elegí la figura legal adecuada
-          </h2>
-          <h3 className="mb-2 text-xl font-semibold">Unipersonal</h3>
+        </Section>
+
+        <Section>
+          <Title>Elegí la figura legal adecuada</Title>
+
+          <Subtitle>Unipersonal</Subtitle>
           <ul className="mb-4 ml-6 list-disc">
             <li>
               Si exportás software y el cliente te provee la computadora,
@@ -76,7 +78,7 @@ export default function Guide() {
             </li>
           </ul>
 
-          <h3 className="mb-2 text-xl font-semibold">SAS</h3>
+          <Subtitle>SAS</Subtitle>
           <ul className="mb-4 ml-6 list-disc">
             <li>
               Si bien es más costosa, te permite evitar el IRAE, exportar
@@ -89,20 +91,18 @@ export default function Guide() {
               dependiendo del proveedor).
             </li>
           </ul>
-        </section>
+        </Section>
 
-        <section className="mb-6">
-          <h2 className="mb-4 text-2xl font-semibold">Aportes al BPS</h2>
-          <h3 className="mb-2 text-xl font-semibold">
-            Para SAS (Sociedad por Acciones Simplificada)
-          </h3>
+        <Section>
+          <Title>Aportes al BPS</Title>
+
+          <Subtitle>Para SAS (Sociedad por Acciones Simplificada)</Subtitle>
           <ul className="mb-4 ml-6 list-disc">
             <li>
               El aporte jubilatorio mínimo es el 15% (aporte personal /
               montepío) + 7.5% (aporte patronal) más el 0.1% para el FRL, todo
               sobre el monto mínimo imponible de 15 BFC (1 BFC = U$
-              {parseWithDots(BFC)})
-              <SubIndex indexes={[1, 3]} />.
+              {parseWithDots(BFC)})<SubIndex indexes={[1, 3]} />.
             </li>
             <li>
               El aporte a FONASA depende de tu situación familiar y se calcula
@@ -115,7 +115,7 @@ export default function Guide() {
             </li>
           </ul>
 
-          <h3 className="mb-2 text-xl font-semibold">Para Unipersonales</h3>
+          <Subtitle>Para Unipersonales</Subtitle>
           <ul className="mb-4 ml-6 list-disc">
             <li>
               El aporte jubilatorio y el FRL dependen de la categoría de ficto
@@ -134,9 +134,10 @@ export default function Guide() {
               fonasa aplicable&gt;.
             </li>
           </ul>
-        </section>
-        <section className="mb-6">
-          <h2 className="mb-4 text-2xl font-semibold">IRPF, IRAE e IVA</h2>
+        </Section>
+
+        <Section>
+          <Title>IRPF, IRAE e IVA</Title>
           <p className="mb-2">
             Si seguís un camino legal óptimo no deberías de pagar IRPF/IRAE
             debido a las exoneraciones actuales al rubro de software.
@@ -144,140 +145,140 @@ export default function Guide() {
           <div className="overflow-x-scroll xl:overflow-x-hidden">
             <table className="!border-separate border-spacing-0 w-full mt-6 text-left table-auto">
               <thead>
-                <tr className="bg-neutral-50">
-                  <th className="px-4 py-2 border-t border-l border-gray-300 rounded-tl-xl">
+                <tr className="bg-neutral-50 dark:bg-neutral-950">
+                  <th className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1] rounded-tl-xl">
                     Actividad a facturar
                   </th>
-                  <th className="px-4 py-2 border-t border-l border-gray-300">
+                  <th className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     Lugar de producción del Software
                   </th>
-                  <th className="px-4 py-2 border-t border-l border-gray-300">
+                  <th className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     Exoneración IRAE / IRPF e IVA
                   </th>
-                  <th className="px-4 py-2 border-t border-l border-gray-300">
+                  <th className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     IVA
                   </th>
-                  <th className="px-4 py-2 border-t border-l border-r border-gray-300 rounded-tr-xl">
+                  <th className="px-4 py-2 border-t border-l border-r border-gray-300 dark:border-white/[0.1] rounded-tr-xl">
                     Requisitos
                   </th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td className="px-4 py-2 border-t border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     Uso, cesión de uso o venta de software propio
                   </td>
-                  <td className="px-4 py-2 border-t border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     Al menos una parte en Uruguay
                   </td>
-                  <td className="px-4 py-2 border-t border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     Parcialmente exonerada de IRAE (Coeficiente)
                   </td>
-                  <td className="px-4 py-2 border-t border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     Tasa 22% a las ventas locales. Sin IVA en caso de
                     exportación.
                   </td>
-                  <td className="px-4 py-2 border-t border-l border-r border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-r border-gray-300 dark:border-white/[0.1]">
                     Registrar el activo (Ley de Propiedad Intelectual).
                   </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-2 border-t border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     Desarrollo de software (no registrado por el desarrollador)
                     y servicios vinculados facturados a empresa local Forma
                     Jurídica: SAS, SA o SRL
                   </td>
-                  <td className="px-4 py-2 border-t border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     Más del 50% de los costos directos en el Uruguay
                   </td>
-                  <td className="px-4 py-2 border-t border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     100% exonerada de IRAE.
                   </td>
-                  <td className="px-4 py-2 border-t border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     Tasa 22%
                   </td>
-                  <td className="px-4 py-2 border-t border-l border-r border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-r border-gray-300 dark:border-white/[0.1]">
                     Factura electrónica con la adenda: Contribuyente 100%
                     exonerado de IRAE por el Art. 161 Bis inc ii del Decreto
                     150/007.
                   </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-2 border-t border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     Desarrollo de software (no registrado) y servicios
                     vinculados facturados al exterior y por Unipersonal.
                   </td>
-                  <td className="px-4 py-2 border-t border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     Realizado en Uruguay
                   </td>
-                  <td className="px-4 py-2 border-t border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     100% exonerada de IRPF si el equipo informático lo aporta la
                     empresa del exterior.
                   </td>
-                  <td className="px-4 py-2 border-t border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     Sin IVA
                   </td>
-                  <td className="px-4 py-2 border-t border-l border-r border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-r border-gray-300 dark:border-white/[0.1]">
                     Factura electrónica con la adenda: Contribuyente 100%
                     exonerado de IRPF por el literal K del Art. 34 del Decreto
                     148/007.
                   </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-2 border-t border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     Desarrollo de software (no registrado) y servicios
                     vinculados facturados al exterior y por Unipersonal.
                   </td>
-                  <td className="px-4 py-2 border-t border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     Realizado en Uruguay
                   </td>
-                  <td className="px-4 py-2 border-t border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     100% exonerada de IRAE si el equipo informático NO lo aporta
                     la empresa del exterior.
                   </td>
-                  <td className="px-4 py-2 border-t border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     Sin IVA
                   </td>
-                  <td className="px-4 py-2 border-t border-l border-r border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-r border-gray-300 dark:border-white/[0.1]">
                     Factura electrónica con la adenda: Contribuyente 100%
                     exonerado de IRAE por el Art. 163 bis del Decreto 150/007.
                   </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-2 border-t border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     Desarrollo de software (no registrado) y servicios
                     vinculados facturados al exterior y por Forma Jurídica: SAS,
                     SA o SRL.
                   </td>
-                  <td className="px-4 py-2 border-t border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     Realizado en Uruguay
                   </td>
-                  <td className="px-4 py-2 border-t border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     100% exonerada de IRAE
                   </td>
-                  <td className="px-4 py-2 border-t border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-gray-300 dark:border-white/[0.1]">
                     Sin IVA
                   </td>
-                  <td className="px-4 py-2 border-t border-l border-r border-gray-300">
+                  <td className="px-4 py-2 border-t border-l border-r border-gray-300 dark:border-white/[0.1]">
                     Factura electrónica con la adenda: Contribuyente 100%
                     exonerado de IRAE por el Art. 163 bis del Decreto 150/007.
                   </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-2 border-t border-b border-l border-gray-300 rounded-bl-xl">
+                  <td className="px-4 py-2 border-t border-b border-l border-gray-300 dark:border-white/[0.1] rounded-bl-xl">
                     Desarrollo de software (no registrado) y servicios
                     vinculados facturados localmente y por Unipersonal.
                   </td>
-                  <td className="px-4 py-2 border-t border-b border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-b border-l border-gray-300 dark:border-white/[0.1]">
                     Realizado en Uruguay
                   </td>
-                  <td className="px-4 py-2 border-t border-b border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-b border-l border-gray-300 dark:border-white/[0.1]">
                     Sin exoneración IRPF
                   </td>
-                  <td className="px-4 py-2 border-t border-b border-l border-gray-300">
+                  <td className="px-4 py-2 border-t border-b border-l border-gray-300 dark:border-white/[0.1]">
                     Tasa 22%
                   </td>
-                  <td className="px-4 py-2 border-t border-b border-l border-r border-gray-300 rounded-br-xl">
+                  <td className="px-4 py-2 border-t border-b border-l border-r border-gray-300 dark:border-white/[0.1] rounded-br-xl">
                     N/A
                   </td>
                 </tr>
@@ -288,10 +289,10 @@ export default function Guide() {
               <SubIndex indexes={4} />
             </small>
           </div>
-        </section>
+        </Section>
 
-        <section className="mb-6">
-          <h2 className="mb-4 text-2xl font-semibold">Deducciones de IRPF</h2>
+        <Section>
+          <Title>Deducciones de IRPF</Title>
           <p className="mb-1.5">
             En caso de seguir un camino no óptimo y pagar IRPF, podés aplicar
             las siguientes deducciones en tu liquidación de impuestos:
@@ -311,27 +312,32 @@ export default function Guide() {
               1.000.000, tope de deducción anual de 36 BPC).
             </li>
           </ul>
-        </section>
+        </Section>
 
-        <section className="mb-6">
-          <h2 className="mb-4 text-2xl font-semibold">Recursos visuales</h2>
-          <h3 className="mb-2 text-xl font-semibold">
-            Diagrama de decisión del simulador{" "}
-          </h3>
-          <img
-            className="w-full roudned-lg"
-            src="/diagram.png"
-            alt="Diagrama simulador"
-          />
-        </section>
-        <section className="mb-6">
-          <h2 className="mb-4 text-2xl font-semibold">Fuentes</h2>
+        <Section>
+          <Title>Recursos visuales</Title>
+          <Subtitle>Diagrama de decisión del simulador</Subtitle>
+
+          <a
+            href={darkMode ? "/diagram-dark.png" : "/diagram-light.png"}
+            target="_blank"
+          >
+            <img
+              className="w-full rounded-xl"
+              src={darkMode ? "/diagram-dark.png" : "/diagram-light.png"}
+              alt="Diagrama simulador"
+            />
+          </a>
+        </Section>
+
+        <Section>
+          <Title>Fuentes</Title>
           <ul className="ml-6 list-decimal">
             <li>
               <a
                 id="1"
                 target="_blank"
-                className="text-sky-600"
+                className="text-sky-600 dark:text-sky-700"
                 href="https://www.bps.gub.uy/17795/aportacion-de-administradores-y-representantes-legales-sas.html"
               >
                 Aportación de administradores y representantes legales SAS
@@ -341,7 +347,7 @@ export default function Guide() {
               <a
                 id="2"
                 target="_blank"
-                className="text-sky-600"
+                className="text-sky-600 dark:text-sky-700"
                 href="https://www.bps.gub.uy/10314/"
               >
                 Tasas Fonasa
@@ -351,18 +357,17 @@ export default function Guide() {
               <a
                 id="3"
                 target="_blank"
-                className="text-sky-600"
+                className="text-sky-600 dark:text-sky-700"
                 href="https://www.bps.gub.uy/835/tasas.html"
               >
                 Tasas aporte jubilatorio
               </a>
             </li>
-
             <li>
               <a
                 id="4"
                 target="_blank"
-                className="text-sky-600"
+                className="text-sky-600 dark:text-sky-700"
                 href="https://www.dbc.com.uy/post/novedades07032022"
               >
                 Software: Exoneración IRAE e IRPF (DB consultora)
@@ -372,7 +377,7 @@ export default function Guide() {
               <a
                 id="5"
                 target="_blank"
-                className="text-sky-600"
+                className="text-sky-600 dark:text-sky-700"
                 href="https://www.bps.gub.uy/6665/industria-y-comercio.html"
               >
                 Aportes mínimos - Industria y comercio
@@ -382,7 +387,7 @@ export default function Guide() {
               <a
                 id="6"
                 target="_blank"
-                className="text-sky-600"
+                className="text-sky-600 dark:text-sky-700"
                 href="https://www.gub.uy/direccion-general-impositiva/comunicacion/publicaciones/deducciones-admitidas-liquidacion-del-irpf"
               >
                 Deducciones admitidas en la liquidación del IRPF
@@ -392,7 +397,7 @@ export default function Guide() {
               <a
                 id="7"
                 target="_blank"
-                className="text-sky-600"
+                className="text-sky-600 dark:text-sky-700"
                 href="https://www.gub.uy/direccion-general-impositiva/comunicacion/publicaciones/irpf-para-trabajadores-independientes"
               >
                 IRPF para trabajadores independientes
@@ -402,7 +407,7 @@ export default function Guide() {
               <a
                 id="8"
                 target="_blank"
-                className="text-sky-600"
+                className="text-sky-600 dark:text-sky-700"
                 href="https://www.bps.gub.uy/16500/trabajadores-no-dependientes.html"
               >
                 Trabajadores no dependientes - BPS
@@ -412,7 +417,7 @@ export default function Guide() {
               <a
                 id="9"
                 target="_blank"
-                className="text-sky-600"
+                className="text-sky-600 dark:text-sky-700"
                 href="https://www.bps.gub.uy/bps/valores.jsp?contentid=5478"
               >
                 Valores actuales de BPC y BFC
@@ -422,7 +427,7 @@ export default function Guide() {
               <a
                 id="10"
                 target="_blank"
-                className="text-sky-600"
+                className="text-sky-600 dark:text-sky-700"
                 href="https://www.impo.com.uy/bases/leyes/16713-1995/7"
               >
                 Ley de la seguridad social (16713), Artículo 7
@@ -432,7 +437,7 @@ export default function Guide() {
               <a
                 id="11"
                 target="_blank"
-                className="text-sky-600"
+                className="text-sky-600 dark:text-sky-700"
                 href="https://www.impo.com.uy/bases/decretos/148-2007"
               >
                 Decreto N° 148/007, Articulo 60
@@ -442,9 +447,8 @@ export default function Guide() {
               <a
                 id="12"
                 target="_blank"
-                className="text-sky-600"
-                href="https://egresados.fondodesolidaridad.edu.uy/aportes-y-montos
-"
+                className="text-sky-600 dark:text-sky-700"
+                href="https://egresados.fondodesolidaridad.edu.uy/aportes-y-montos"
               >
                 Fondo de solidaridad - Aportes y montos
               </a>
@@ -453,7 +457,7 @@ export default function Guide() {
               <a
                 id="13"
                 target="_blank"
-                className="text-sky-600"
+                className="text-sky-600 dark:text-sky-700"
                 href="https://www.reddit.com/r/CharruaDevs/"
               >
                 Se utilizó también información proporcionada por la comunidad
@@ -461,10 +465,26 @@ export default function Guide() {
               </a>
             </li>
           </ul>
-        </section>
+        </Section>
       </main>
     </Layout>
   );
+}
+
+function Section({ children }: { children: React.ReactNode }) {
+  return <section className="mb-6">{children}</section>;
+}
+
+function Title({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 className="mb-4 text-2xl font-semibold dark:text-neutral-300">
+      {children}
+    </h2>
+  );
+}
+
+function Subtitle({ children }: { children: React.ReactNode }) {
+  return <h3 className="mb-2 text-xl font-semibold">{children}</h3>;
 }
 
 function SubIndex({ indexes }: { indexes: number[] | number }) {
@@ -473,7 +493,7 @@ function SubIndex({ indexes }: { indexes: number[] | number }) {
     <sub className="ml-0.5">
       <a
         href={`#${multipleIndexes ? indexes[0] : indexes}`}
-        className="text-sky-600"
+        className="text-sky-600 dark:text-sky-700"
       >
         {multipleIndexes ? indexes.map((index) => index).join(",") : indexes}
       </a>

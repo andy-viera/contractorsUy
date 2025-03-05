@@ -55,7 +55,7 @@ function App() {
 
   return (
     <Layout>
-      <main className="flex items-center justify-center flex-1 w-[85%] mx-auto bg-white gap-x-3">
+      <main className="flex items-center justify-center flex-1 max-w-6xl mx-auto gap-x-3">
         <motion.div
           layout
           transition={{
@@ -63,7 +63,7 @@ function App() {
             stiffness: 300,
             damping: 40,
           }}
-          className="w-full mx-auto border rounded-lg shadow-lg sm:w-2/3"
+          className="w-full mx-auto border dark:border-white/[0.2] rounded-lg shadow-lg sm:w-2/3"
         >
           <SimulatorForm
             handleSubmit={handleSubmit}
@@ -139,7 +139,7 @@ function SimulatorForm({
 function Result({ result }: { result: number | undefined }) {
   return (
     result && (
-      <div className="w-full px-8 py-4 mx-auto mt-8 text-white rounded-b-lg shadow-sm bg-neutral-500">
+      <div className="w-full px-8 py-4 mx-auto mt-8 text-white rounded-b-lg shadow-sm bg-neutral-500 dark:bg-neutral-950 dark:border-t border-white/[0.2]">
         <h2 className="text-xl font-semibold">Resultado</h2>
         <p className="mt-2 text-lg">
           El sueldo de contractor que deberías pedir es de: <br />
@@ -148,7 +148,7 @@ function Result({ result }: { result: number | undefined }) {
             {`(US$ ${parseWithDots(Math.round(result / 45))})`}
           </span>
         </p>
-        <p className="mt-2 text-xs text-neutral-300">
+        <p className="mt-2 text-xs text-neutral-300 dark:text-neutral-500">
           * Las estimaciones proporcionadas por éste simulador no incluyen: IVA,
           honorarios de contador, facturación electrónica.
         </p>

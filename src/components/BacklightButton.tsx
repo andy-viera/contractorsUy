@@ -27,7 +27,9 @@ export function BackLightButton({
       onMouseLeave={() => setIsHovered(false)}
     >
       <BackgroundGradient className="rounded-[22px] max-w-sm py-1 px-2 bg-transparent">
-        <p className="text-xs font-semibold text-white">{text}</p>
+        <p className="text-xs font-semibold text-white dark:text-black">
+          {text}
+        </p>
       </BackgroundGradient>
 
       {isHovered && hoverText && (
@@ -35,7 +37,7 @@ export function BackLightButton({
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          className="top-[-6rem] right-[-6rem] break-words max-w-24 sm:max-w-fit absolute z-50 p-3 text-xs sm:text-sm text-black transform -translate-x-1/2 bg-transparent backdrop-blur-sm rounded-lg shadow-lg sm:top-[-2.7rem] sm:right-[-20rem]"
+          className="top-[-6rem] dark:bg-white/60 right-[-6rem] break-words max-w-24 sm:max-w-fit absolute z-50 p-3 text-xs sm:text-sm text-black transform -translate-x-1/2 bg-transparent backdrop-blur-sm rounded-lg shadow-lg sm:top-[-2.7rem] sm:right-[-20rem]"
         >
           <p className="break-words">{hoverText}</p>
         </motion.div>

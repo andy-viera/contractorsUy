@@ -38,3 +38,33 @@ input:focus {
   outline: none !important;
   border: 2px solid black;
 }
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+::-webkit-scrollbar {
+  height: 10px;
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d1d5db; /* Light gray */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f3f4f6; /* Lighter gray */
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: #a3a3a3; /* Darker gray */
+}
+
+.dark ::-webkit-scrollbar-track {
+  background-color: #ffffff1a; /* Almost black */
+}

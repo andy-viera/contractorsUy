@@ -11,7 +11,7 @@ export function GithubIcon(props: React.SVGProps<SVGSVGElement>) {
     >
       <g
         transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
-        fill="#09090b99"
+        fill={props.fill ?? "#09090b99"}
         stroke="none"
       >
         <path

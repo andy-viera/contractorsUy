@@ -77,8 +77,10 @@ export default function Question({
   return (
     <>
       <div>
-        <label className="block mb-2 font-medium">{question.label}</label>
-        <div className="space-y-1 text-sm">
+        <label className="block mb-2 font-medium dark:text-neutral-300">
+          {question.label}
+        </label>
+        <div className="space-y-1 text-sm dark:text-neutral-300">
           <div>
             {(() => {
               switch (type) {
@@ -100,7 +102,7 @@ export default function Question({
                         })}
                         className={cn(
                           type === "salary" ? "pl-8 w-full" : "pl-2 w-32",
-                          "py-2 pr-2 border rounded-md form-input"
+                          "py-2 pr-2 border rounded-md form-input dark:border-neutral-800 dark:bg-neutral-950 dark:ring-offset-neutral-950 dark:placeholder:text-neutral-400 dark:focus:ring-neutral-30"
                         )}
                         placeholder="0"
                       />
@@ -166,6 +168,7 @@ export default function Question({
       <div className="space-y-4">
         {followups &&
           watchedAnswer !== undefined &&
+          watchedAnswer !== null &&
           followups.length > 0 &&
           followups.map((f, i) => {
             const normalizedWatchedAnswer = normalizeValue(watchedAnswer);
