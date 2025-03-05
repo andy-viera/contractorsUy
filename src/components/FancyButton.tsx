@@ -1,9 +1,17 @@
 import { ChevronRight } from "lucide-react";
 import { HoverBorderGradient } from "./ui/hover-border-gradient";
+import posthog from "posthog-js";
 
 export default function FancyButton() {
   return (
-    <div className="flex justify-center text-center">
+    <div
+      onClick={() =>
+        posthog.capture("Button click", {
+          btn: "Calcular Sueldo De Contractor",
+        })
+      }
+      className="flex justify-center text-center"
+    >
       <HoverBorderGradient
         containerClassName="rounded-full"
         as="button"
