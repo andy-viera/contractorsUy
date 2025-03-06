@@ -78,7 +78,7 @@ const HEALTH_INSURANCE_OVER_25BPC = {
 /**
  * FRL contribution percentage.
  */
-const LABOR_RETRAINING_CONTRIBUTION = 0.01;
+const LABOR_RETRAINING_CONTRIBUTION = 0.001;
 
 /**
  * Percentage increase in taxable income that applies if computable income is greater than 10 BPC.

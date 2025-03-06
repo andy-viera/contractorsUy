@@ -41,7 +41,7 @@ import { conditionType, QuestionType } from "@/components/Question";
  *
  * @returns The calculated salary based on the provided parameters and applicable rules.
  */
-export const calculateSalaryForPath = (data: FormData) => {
+const calculateSalaryForPath = (data: FormData) => {
   const {
     originCompanyType,
     currentSalary,
@@ -321,7 +321,7 @@ const calculateTaxes = ({
  *
  * @returns - The total IRPF tax and the tax details for each bracket.
  */
-export const calculateIRPF = ({
+const calculateIRPF = ({
   nominalSalary,
   retirementContributions = 0,
   fonasaContributions = 0,
@@ -417,7 +417,7 @@ export const calculateIRPF = ({
  *
  * @returns - The gross salary (before taxes) that corresponds to the given net salary.
  */
-export const calculateIrpfFromNetSalaryBS = ({
+const calculateIrpfFromNetSalaryBS = ({
   netSalary,
   retirementContributions,
   fonasaContributions,
@@ -487,7 +487,7 @@ export const calculateIrpfFromNetSalaryBS = ({
  * using the computeNetUnipersonalNoCapitalWorkNational function.
  *
  * @param params.desiredNet - The target net amount to achieve
- * @param params.socialSecurityCategory - The social security category of the individual
+ * @param params.socialSecurityCategory - The value associated to the social security category of the individual
  * @param params.hasChildsInCharge - Whether the individual has children in charge
  * @param params.hasPartnerInCharge - Whether the individual has a partner in charge
  *
@@ -596,11 +596,11 @@ function computeNetUnipersonalNoCapitalWorkNational({
   return gross - (retirementTax + frlTax + fonasaTax + totalIRPF);
 }
 
-export function cn(...inputs: ClassValue[]) {
+function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const parseWithDots = (value: number) =>
+const parseWithDots = (value: number) =>
   value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
 type ParseBooleans<T> = {
@@ -609,7 +609,7 @@ type ParseBooleans<T> = {
     : T[K];
 };
 
-export const parseBooleans = (data: FormData): ParseBooleans<FormData> => {
+const parseBooleans = (data: FormData): ParseBooleans<FormData> => {
   const convertedEntries = Object.entries(data).map(([key, value]) => {
     if (value === "true") {
       return [key, true];
@@ -621,13 +621,13 @@ export const parseBooleans = (data: FormData): ParseBooleans<FormData> => {
   return Object.fromEntries(convertedEntries) as ParseBooleans<FormData>;
 };
 
-export const normalizeValue = (value: conditionType) => {
+const normalizeValue = (value: conditionType) => {
   if (value === "true") return true;
   if (value === "false") return false;
   return value;
 };
 
-export const normalizeConditions = (
+const normalizeConditions = (
   conditions: conditionType | conditionType[] | undefined
 ) => {
   if (conditions === undefined) return [];
@@ -637,7 +637,7 @@ export const normalizeConditions = (
   return conditions.map((c) => normalizeValue(c));
 };
 
-export const areAllQuestionsAnswered = (
+const areAllQuestionsAnswered = (
   questions: QuestionType[],
   formValues: FormData
 ) => {
@@ -673,4 +673,22 @@ export const areAllQuestionsAnswered = (
   }
 
   return true;
+};
+
+export {
+  calculateSalaryForPath,
+  calculateContractorSalary,
+  calculateRealCurrentSalary,
+  calculateFonasa,
+  calculateTaxes,
+  calculateIRPF,
+  calculateIrpfFromNetSalaryBS,
+  findGrossUnipersonalNoCapitalWorkNationalBS,
+  computeNetUnipersonalNoCapitalWorkNational,
+  cn,
+  parseWithDots,
+  parseBooleans,
+  normalizeConditions,
+  areAllQuestionsAnswered,
+  normalizeValue,
 };
