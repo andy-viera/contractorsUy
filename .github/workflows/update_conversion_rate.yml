@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-bps:
+  update-conversion-rate:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
