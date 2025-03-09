@@ -17,6 +17,11 @@ const BPC = 6576.0;
 const BFC = 1744.4;
 
 /**
+ * Dolar-Uyu rate.
+ */
+const DOLAR_UYU_RATE = 0;
+
+/**
  * Last time BPC and BFC values where atomatically updated.
  */
 const LAST_UPDATE = 2025;
@@ -339,4 +344,5 @@ export {
   DISABLED_CHILD_DEDUCTION,
   ADDITIONAL_SOLIDARITY_FUND,
   MINIMUM_WAGE,
+  DOLAR_UYU_RATE,
 };

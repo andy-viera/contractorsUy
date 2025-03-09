@@ -1,0 +1,44 @@
+name: "Update conversion rate"
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+
+jobs:
+  update-bps:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4 pandas openpyxl
+
+      - name: Run update currency conversion rate script
+        run: python scripts/update_currency_conversion_rate.py
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet HEAD -- src/lib/constants.ts; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git add .
+          git commit -m "chore: update conversion rate value"
+          git push

@@ -158,6 +158,8 @@ def main() -> None:
         pdf_path: str = download_pdf(pdf_url)
 
         cuota_unificada_values: List[int] = extract_cuota_unificada(pdf_path)
+        
+        os.remove(pdf_path)
 
         print(f"Extracted CUOTA UNIFICADA values: {cuota_unificada_values}")
         

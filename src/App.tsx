@@ -8,7 +8,7 @@ import {
 } from "react-hook-form";
 import "./App.css";
 import Question from "./components/Question";
-import { companyType, INITIAL_INPUTS } from "./lib/constants";
+import { companyType, DOLAR_UYU_RATE, INITIAL_INPUTS } from "./lib/constants";
 import { useState, useEffect } from "react";
 import {
   areAllQuestionsAnswered,
@@ -145,7 +145,7 @@ function Result({ result }: { result: number | undefined }) {
           El sueldo de contractor que deberías pedir es de: <br />
           <span className="font-semibold">
             U$ {parseWithDots(Math.round(result))}{" "}
-            {`(US$ ${parseWithDots(Math.round(result / 45))})`}
+            {`(US$ ${parseWithDots(Math.round(result / DOLAR_UYU_RATE))})`}
           </span>
         </p>
         <p className="mt-2 text-xs text-neutral-300 dark:text-neutral-500">
