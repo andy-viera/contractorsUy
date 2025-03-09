@@ -83,6 +83,7 @@
 
 - [Python](https://www.python.org/)
 - [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
+- [Pandas](https://pandas.pydata.org/)
 
 **Testing:**
 
