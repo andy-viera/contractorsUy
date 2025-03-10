@@ -113,7 +113,7 @@ const DISABLED_CHILD_DEDUCTION = (40 * BPC) / 12;
 /**
  * Additional solidarity fund contribution that must be paid for careers with duration equal to or greater than five years.
  */
-const ADDITIONAL_SOLIDARITY_FUND = ((5 / 4) * BPC) / 12;
+const ADDITIONAL_SOLIDARITY_FUND = ((5 / 6) * BPC) / 12;
 
 const MINIMUM_WAGE = 23604.0;
 
