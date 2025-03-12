@@ -26,7 +26,6 @@ body {
 input[type="radio"]:checked {
   accent-color: black;
 }
-/* For text areas, apply the same border effect */
 
 @media (prefers-color-scheme: light) {
   :root {

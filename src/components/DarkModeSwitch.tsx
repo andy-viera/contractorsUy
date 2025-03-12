@@ -40,7 +40,6 @@ export function DarkModeSwitch({
         )}
       >
         <motion.div
-          // The thumb's initial position
           initial={
             isSmallScreen
               ? { x: 0, y: darkMode ? -16 : 16 }
@@ -59,7 +58,6 @@ export function DarkModeSwitch({
           className="h-[20px] w-[20px] block rounded-full bg-white dark:bg-white/60 shadow-md z-10"
         />
 
-        {/* Icons */}
         {darkMode ? (
           <MoonIcon size={13.5} className={moonIconClass} />
         ) : (

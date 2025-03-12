@@ -4,8 +4,8 @@ import {
   UseFormWatch,
   UseFormSetValue,
 } from "react-hook-form";
-import { FormData } from "../App";
-import { companyType, MINIMUM_WAGE } from "../lib/constants";
+import { companyType, FormData } from "../lib/types";
+import { MINIMUM_WAGE } from "../lib/constants";
 import {
   Select,
   SelectContent,

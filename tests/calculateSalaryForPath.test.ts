@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
-import { BFC, BPC, companyType } from "../src/lib/constants";
+import { BFC, BPC } from "../src/lib/constants";
 import { calculateSalaryForPath } from "../src/lib/utils";
+import { companyType, FormData } from "../src/lib/types";
 
 vi.mock("../src/lib/utils", async () => {
   const actual = await vi.importActual("../src/lib/utils");
@@ -13,17 +14,18 @@ vi.mock("../src/lib/utils", async () => {
 
 describe("calculateSalaryForPath", () => {
   it("calculates salary correctly for professional contractors", () => {
-    const data = {
+    const data: FormData = {
       originCompanyType: companyType.unipersonal,
       currentSalary: 100000,
-      isProfessional: true,
+      targetCompanyType: "national",
+      isProfessional: "true",
       professionalCategory: 17282,
-      combinesCapitalAndWork: true,
+      combinesCapitalAndWork: "true",
       childsInChargeCount: 2,
-      disabledChildsInCharge: 0,
+      disabledChildsInChargeCount: 0,
       dependentsDeductionFactor: 0.5,
       solidarityFundContribution: BPC,
-      appliesSolidarityFundAditional: true,
+      appliesSolidarityFundAditional: "true",
     };
 
     const result = calculateSalaryForPath(data);
@@ -32,11 +34,13 @@ describe("calculateSalaryForPath", () => {
   });
 
   it("calculates salary correctly for SAS type contractors", () => {
-    const data = {
+    const data: FormData = {
       originCompanyType: companyType.SAS,
+      targetCompanyType: "foreign",
+      isProfessional: "false",
       currentSalary: 80000,
-      hasChildsInCharge: false,
-      hasPartnerInCharge: false,
+      hasChildsInCharge: "false",
+      hasPartnerInCharge: "false",
     };
 
     const result = calculateSalaryForPath(data);
@@ -45,15 +49,16 @@ describe("calculateSalaryForPath", () => {
   });
 
   it("calculates salary correctly for unipersonal contractors billing national without combining capital and work", () => {
-    const data = {
+    const data: FormData = {
       originCompanyType: companyType.unipersonal,
       currentSalary: 150000,
-      combinesCapitalAndWork: false,
+      combinesCapitalAndWork: "false",
       targetCompanyType: "national",
+      isProfessional: "false",
       socialSecurityCategory: 15 * BFC,
-      hasChildsInCharge: true,
+      hasChildsInCharge: "true",
       childsInChargeCount: 2,
-      disabledChildsInCharge: 1,
+      disabledChildsInChargeCount: 1,
       dependentsDeductionFactor: 1,
     };
 
@@ -63,14 +68,15 @@ describe("calculateSalaryForPath", () => {
   });
 
   it("calculates salary correctly for unipersonal contractors billing foreign combining capital and work", () => {
-    const data = {
+    const data: FormData = {
+      targetCompanyType: "foreign",
       originCompanyType: companyType.unipersonal,
       currentSalary: 85000,
-      combinesCapitalAndWork: true,
+      combinesCapitalAndWork: "true",
       socialSecurityCategory: 25 * BFC,
-      isProfessional: false,
-      hasChildsInCharge: false,
-      hasPartnerInCharge: true,
+      isProfessional: "false",
+      hasChildsInCharge: "false",
+      hasPartnerInCharge: "true",
     };
 
     const result = calculateSalaryForPath(data);
@@ -79,10 +85,11 @@ describe("calculateSalaryForPath", () => {
   });
 
   it("handles scenario with minimal inputs", () => {
-    const data = {
+    const data: FormData = {
+      targetCompanyType: "foreign",
       originCompanyType: companyType.unipersonal,
       currentSalary: 30000,
-      isProfessional: false,
+      isProfessional: "false",
       socialSecurityCategory: 11 * BFC,
     };
 

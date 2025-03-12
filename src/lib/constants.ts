@@ -1,10 +1,6 @@
 import { QuestionType } from "../components/Question";
+import { companyType } from "./types";
 import { parseWithDots } from "./utils";
-
-export enum companyType {
-  unipersonal = "unipersonal",
-  SAS = "SAS",
-}
 
 /**
  * BPC value.

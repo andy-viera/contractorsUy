@@ -43,8 +43,8 @@ describe("calculateContractorSalary", () => {
     const addIrpf = false;
 
     const expectedGross =
-      realCurrentSalary /
-      (1 - (retirementTax + fonasaTax + frlTax) / realCurrentSalary);
+      realCurrentSalary *
+      (1 + (retirementTax + fonasaTax + frlTax) / realCurrentSalary);
 
     const result = calculateContractorSalary({
       realCurrentSalary,
@@ -70,8 +70,8 @@ describe("calculateContractorSalary", () => {
     });
 
     const expectedGross =
-      realCurrentSalary /
-      (1 -
+      realCurrentSalary *
+      (1 +
         (retirementTax + fonasaTax + frlTax + totalIRPF) / realCurrentSalary);
 
     const result = calculateContractorSalary({
@@ -103,8 +103,8 @@ describe("calculateContractorSalary", () => {
     });
 
     const expectedGross =
-      realCurrentSalary /
-      (1 -
+      realCurrentSalary *
+      (1 +
         (retirementTax +
           fonasaTax +
           frlTax +

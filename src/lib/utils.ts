@@ -1,11 +1,9 @@
-import { FormData, TaxDetail } from "@/App";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import {
   ADDITIONAL_SOLIDARITY_FUND,
   BPC,
   CHILD_DEDUCTION,
-  companyType,
   DEDUCTIONS_RATE_OVER_15BPC,
   DEDUCTIONS_RATE_UNDER_15BPC,
   DISABLED_CHILD_DEDUCTION,
@@ -20,6 +18,7 @@ import {
   TAXABLE_INCOME_INCREASE,
 } from "./constants";
 import { conditionType, QuestionType } from "@/components/Question";
+import { companyType, FormData, TaxDetail } from "./types";
 
 /**
  * This is the main function, it calculates the contractor's salary based on various parameters from form data,
@@ -654,7 +653,7 @@ const parseWithDots = (value: number) => {
     : formattedInteger;
 };
 
-type ParseBooleans<T> = {
+export type ParseBooleans<T> = {
   [K in keyof T]: T[K] extends "true" | "false" | undefined
     ? boolean | undefined
     : T[K];
