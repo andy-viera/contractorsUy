@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Menu, MenuItem, ProductItem } from "./ui/navbar-menu";
 import { Logo } from "./icons/Logo";
 import { DarkModeSwitch } from "./DarkModeSwitch";
-import { useDarkMode } from "./DarkModeContext";
+import { useDarkMode } from "../contexts/DarkModeContext";
 
 let scrollTimeout: number | null = null;
 

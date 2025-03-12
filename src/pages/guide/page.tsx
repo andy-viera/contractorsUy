@@ -1,4 +1,4 @@
-import { useDarkMode } from "@/components/DarkModeContext";
+import { useDarkMode } from "@/contexts/DarkModeContext";
 import Layout from "@/components/Layout";
 import ProductHeading from "@/components/ProductHeading";
 import { BFC, BPC } from "@/lib/constants";

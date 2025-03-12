@@ -1,4 +1,4 @@
-import { useDarkMode } from "./DarkModeContext";
+import { useDarkMode } from "../contexts/DarkModeContext";
 import Footer from "./Footer";
 import MainNavbar from "./Navbar";
 

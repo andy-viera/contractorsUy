@@ -6,7 +6,7 @@ import { LAST_UPDATE } from "@/lib/constants";
 import { InfoIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { useDarkMode } from "./DarkModeContext";
+import { useDarkMode } from "../contexts/DarkModeContext";
 
 export default function Footer() {
   const location = useLocation();
