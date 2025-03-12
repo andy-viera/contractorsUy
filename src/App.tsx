@@ -19,6 +19,12 @@ import { motion } from "framer-motion";
 import Layout from "./components/Layout";
 import ProductHeading from "./components/ProductHeading";
 import FancyButton from "./components/FancyButton";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./components/ui/accordion";
 
 export interface FormData {
   originCompanyType: companyType;
@@ -37,10 +43,25 @@ export interface FormData {
   appliesSolidarityFundAditional?: "true" | "false";
 }
 
+export enum TaxDetail {
+  retirementTax = "Aportes jubilatorios",
+  fonasaTax = "Aportes a FONASA",
+  frlTax = "Aportes a FRL",
+  irpfTax = "IRPF",
+  professionalCategory = "Aporte a caja de profesionales",
+  solidarityFundContribution = "Aporte a fondo de solidaridad",
+  additionalSolidarityFundAmount = "Aporte adicional al fondo de solidaridad",
+}
+
+type ResultType = {
+  contractorSalary: number;
+  taxDetail: Partial<Record<keyof typeof TaxDetail, number>>;
+};
+
 function App() {
   const { register, handleSubmit, watch, setValue } = useForm<FormData>();
   const [isDisabledBtn, setIsDisabledBtn] = useState(true);
-  const [result, setResult] = useState<number | undefined>(undefined);
+  const [result, setResult] = useState<ResultType | undefined>(undefined);
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     setResult(calculateSalaryForPath(data));
@@ -136,7 +157,7 @@ function SimulatorForm({
   );
 }
 
-function Result({ result }: { result: number | undefined }) {
+function Result({ result }: { result: ResultType | undefined }) {
   return (
     result && (
       <div className="w-full px-8 py-4 mx-auto mt-8 text-white rounded-b-lg shadow-sm bg-neutral-500 dark:bg-neutral-950 dark:border-t border-white/[0.2]">
@@ -144,10 +165,38 @@ function Result({ result }: { result: number | undefined }) {
         <p className="mt-2 text-lg">
           El sueldo de contractor que deberías pedir es de: <br />
           <span className="font-semibold">
-            U$ {parseWithDots(Math.round(result))}{" "}
-            {`(US$ ${parseWithDots(Math.round(result / DOLAR_UYU_RATE))})`}
+            U$ {parseWithDots(Math.round(result.contractorSalary))}{" "}
+            {`(US$ ${parseWithDots(
+              Math.round(result.contractorSalary / DOLAR_UYU_RATE)
+            )})`}
           </span>
         </p>
+        <Accordion type="single" collapsible className="w-full mt-1.5 mb-5">
+          <AccordionItem value="item-1" className="border-white/[0.2]">
+            <AccordionTrigger className="text-sm font-semibold text-neutral-200 dark:text-neutral-400 hover:no-underline">
+              Ver detalle de impuestos
+            </AccordionTrigger>
+            <AccordionContent>
+              <ul>
+                {Object.entries(result.taxDetail).map(([key, value]) =>
+                  value ? (
+                    <li
+                      key={key}
+                      className="flex items-center mt-0.5 space-x-1"
+                    >
+                      <p className="font-medium">
+                        {TaxDetail[key as keyof typeof TaxDetail]}:
+                      </p>
+                      <span className="text-xs">{`U$ ${parseWithDots(
+                        value
+                      )}`}</span>
+                    </li>
+                  ) : null
+                )}
+              </ul>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
         <p className="mt-2 text-xs text-neutral-300 dark:text-neutral-500">
           * Las estimaciones proporcionadas por éste simulador no incluyen: IVA,
           honorarios de contador, facturación electrónica.

@@ -1,4 +1,4 @@
-import { FormData } from "@/App";
+import { FormData, TaxDetail } from "@/App";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import {
@@ -143,9 +143,10 @@ const calculateSalaryForPath = (data: FormData) => {
  * @param  params.dependentsDeductionFactor - Deduction factor based on dependents
  * @param  params.addIrpf - Whether to include IRPF (income tax) calculations
  *
- * @returns The calculated gross salary required to achieve the specified net salary
- * after all applicable taxes and contributions
- * });
+ * @returns An object containing:
+ *          - contractorSalary: The calculated gross salary required to achieve the specified net salary
+ *          - taxDetail: Breakdown of all tax contributions including retirement, FONASA, FRL, IRPF,
+ *            professional category, and solidarity fund contributions
  */
 const calculateContractorSalary = ({
   realCurrentSalary,
@@ -201,7 +202,18 @@ const calculateContractorSalary = ({
       additionalSolidarityFundAmount) /
     realCurrentSalary;
 
-  return realCurrentSalary / (1 - taxPercentage);
+  return {
+    contractorSalary: realCurrentSalary / (1 - taxPercentage),
+    taxDetail: {
+      retirementTax,
+      fonasaTax,
+      frlTax,
+      irpfTax,
+      professionalCategory,
+      solidarityFundContribution: solidarityFundContribution / 12,
+      additionalSolidarityFundAmount,
+    },
+  };
 };
 
 /**
@@ -491,7 +503,10 @@ const calculateIrpfFromNetSalaryBS = ({
  * @param params.hasChildsInCharge - Whether the individual has children in charge
  * @param params.hasPartnerInCharge - Whether the individual has a partner in charge
  *
- * @returns The gross amount that will result in the desired net amount (with tolerance of 0.1)
+ * @returns  Object containing:
+ *          - contractorSalary: The gross amount that will result in the desired net amount (with tolerance of 0.1)
+ *          - taxDetail: Breakdown of all tax deductions including retirement, FONASA, FRL, IRPF,
+ *            and solidarity fund contributions
  * });
  */
 function findGrossUnipersonalNoCapitalWorkNationalBS({
@@ -515,29 +530,33 @@ function findGrossUnipersonalNoCapitalWorkNationalBS({
   solidarityFundContribution?: number;
   appliesSolidarityFundAditional?: boolean;
 }) {
+  const TOLERANCE = 0.1;
   let lower = 0;
   let upper = 100000000;
-  const TOLERANCE = 0.1;
+  let taxDetail: Partial<Record<keyof typeof TaxDetail, number>> = {};
 
   while (upper - lower > TOLERANCE) {
     const mid = (lower + upper) / 2;
-    const net = computeNetUnipersonalNoCapitalWorkNational({
-      gross: mid,
-      socialSecurityCategory,
-      hasChildsInCharge,
-      hasPartnerInCharge,
-      childsInChargeCount,
-      disabledChildsInChargeCount,
-      dependentsDeductionFactor,
-      solidarityFundContribution,
-      appliesSolidarityFundAditional,
-    });
+    const { net, currentTaxDetail } =
+      computeNetUnipersonalNoCapitalWorkNational({
+        gross: mid,
+        socialSecurityCategory,
+        hasChildsInCharge,
+        hasPartnerInCharge,
+        childsInChargeCount,
+        disabledChildsInChargeCount,
+        dependentsDeductionFactor,
+        solidarityFundContribution,
+        appliesSolidarityFundAditional,
+      });
 
     if (net < desiredNet) lower = mid;
     else upper = mid;
+
+    taxDetail = currentTaxDetail;
   }
 
-  return (lower + upper) / 2;
+  return { contractorSalary: (lower + upper) / 2, taxDetail };
 }
 
 /**
@@ -549,8 +568,10 @@ function findGrossUnipersonalNoCapitalWorkNationalBS({
  * @param params.hasChildsInCharge - Whether the person has children in charge, affects FONASA rate
  * @param params.hasPartnerInCharge - Whether the person has a partner in charge, affects FONASA rate
  *
- * @returns  The net income after deducting retirement tax, labor retraining contribution,
- *                   FONASA (healthcare) tax, and IRPF (income tax)
+ * @returns Object containing:
+ *          - net: The net income after deducting all taxes and contributions
+ *          - currentTaxDetail: Breakdown of all deductions including retirement, FONASA, FRL, IRPF,
+ *            and solidarity fund contributions
  */
 function computeNetUnipersonalNoCapitalWorkNational({
   gross,
@@ -593,15 +614,44 @@ function computeNetUnipersonalNoCapitalWorkNational({
     additionalSolidarityFund: appliesSolidarityFundAditional,
   });
 
-  return gross - (retirementTax + frlTax + fonasaTax + totalIRPF);
+  const solidarityFundContributionAmount = solidarityFundContribution
+    ? solidarityFundContribution / 12
+    : 0;
+  const additionalSolidarityFundAmount = appliesSolidarityFundAditional
+    ? ADDITIONAL_SOLIDARITY_FUND
+    : 0;
+
+  return {
+    net:
+      gross -
+      (retirementTax +
+        frlTax +
+        fonasaTax +
+        totalIRPF +
+        solidarityFundContributionAmount +
+        additionalSolidarityFundAmount),
+    currentTaxDetail: {
+      retirementTax,
+      frlTax,
+      fonasaTax,
+      irpfTax: totalIRPF,
+      solidarityFundContribution: solidarityFundContributionAmount,
+      additionalSolidarityFundAmount,
+    },
+  };
 }
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const parseWithDots = (value: number) =>
-  value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+const parseWithDots = (value: number) => {
+  const [integerPart, decimalPart] = value.toString().split(".");
+  const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return decimalPart
+    ? `${formattedInteger},${decimalPart.substring(0, 2)}`
+    : formattedInteger;
+};
 
 type ParseBooleans<T> = {
   [K in keyof T]: T[K] extends "true" | "false" | undefined
