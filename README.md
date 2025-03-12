@@ -20,7 +20,7 @@
   <h1><i>contractorsUy</i></h1>
 
   <p align="center">
-    <a href="https://contractors-uy.vercel.app/"><strong><u>Check it out »</u></strong></a>
+    <a href="https://contractorsuy.aviera.me/"><strong><u>Check it out »</u></strong></a>
     <br/>
     <br/>
     <a href="https://github.com/andy-viera/contractorsUy/issues/new?labels=enhancement"><u>Suggest a Feature</u></a>
