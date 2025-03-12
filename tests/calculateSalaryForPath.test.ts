@@ -20,7 +20,7 @@ describe("calculateSalaryForPath", () => {
       professionalCategory: 17282,
       combinesCapitalAndWork: true,
       childsInChargeCount: 2,
-      disabledChildsInChargeCount: 0,
+      disabledChildsInCharge: 0,
       dependentsDeductionFactor: 0.5,
       solidarityFundContribution: BPC,
       appliesSolidarityFundAditional: true,
@@ -28,7 +28,7 @@ describe("calculateSalaryForPath", () => {
 
     const result = calculateSalaryForPath(data);
     expect(result).toBeDefined();
-    expect(result).toBeGreaterThan(data.currentSalary);
+    expect(result?.contractorSalary).toBeGreaterThan(data.currentSalary);
   });
 
   it("calculates salary correctly for SAS type contractors", () => {
@@ -41,7 +41,7 @@ describe("calculateSalaryForPath", () => {
 
     const result = calculateSalaryForPath(data);
     expect(result).toBeDefined();
-    expect(result).toBeGreaterThan(data.currentSalary);
+    expect(result?.contractorSalary).toBeGreaterThan(data.currentSalary);
   });
 
   it("calculates salary correctly for unipersonal contractors billing national without combining capital and work", () => {
@@ -53,13 +53,13 @@ describe("calculateSalaryForPath", () => {
       socialSecurityCategory: 15 * BFC,
       hasChildsInCharge: true,
       childsInChargeCount: 2,
-      disabledChildsInChargeCount: 1,
+      disabledChildsInCharge: 1,
       dependentsDeductionFactor: 1,
     };
 
     const result = calculateSalaryForPath(data);
     expect(result).toBeDefined();
-    expect(result).toBeGreaterThan(data.currentSalary);
+    expect(result?.contractorSalary).toBeGreaterThan(data.currentSalary);
   });
 
   it("calculates salary correctly for unipersonal contractors billing foreign combining capital and work", () => {
@@ -75,7 +75,7 @@ describe("calculateSalaryForPath", () => {
 
     const result = calculateSalaryForPath(data);
     expect(result).toBeDefined();
-    expect(result).toBeGreaterThan(data.currentSalary);
+    expect(result?.contractorSalary).toBeGreaterThan(data.currentSalary);
   });
 
   it("handles scenario with minimal inputs", () => {
@@ -88,6 +88,6 @@ describe("calculateSalaryForPath", () => {
 
     const result = calculateSalaryForPath(data);
     expect(result).toBeDefined();
-    expect(result).toBeGreaterThan(data.currentSalary);
+    expect(result?.contractorSalary).toBeGreaterThan(data.currentSalary);
   });
 });

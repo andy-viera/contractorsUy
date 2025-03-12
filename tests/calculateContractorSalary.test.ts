@@ -46,14 +46,14 @@ describe("calculateContractorSalary", () => {
       realCurrentSalary /
       (1 - (retirementTax + fonasaTax + frlTax) / realCurrentSalary);
 
-    const gross = calculateContractorSalary({
+    const result = calculateContractorSalary({
       realCurrentSalary,
       retirementTax,
       fonasaTax,
       frlTax,
       addIrpf,
     });
-    expect(gross).toBeCloseTo(expectedGross, 1);
+    expect(result.contractorSalary).toBeCloseTo(expectedGross, 1);
   });
 
   it("calculates gross salary correctly with IRPF included", () => {
@@ -74,7 +74,7 @@ describe("calculateContractorSalary", () => {
       (1 -
         (retirementTax + fonasaTax + frlTax + totalIRPF) / realCurrentSalary);
 
-    const gross = calculateContractorSalary({
+    const result = calculateContractorSalary({
       realCurrentSalary,
       retirementTax,
       fonasaTax,
@@ -82,8 +82,9 @@ describe("calculateContractorSalary", () => {
       addIrpf: true,
     });
 
-    expect(gross).toBeCloseTo(expectedGross, 0);
+    expect(result.contractorSalary).toBeCloseTo(expectedGross, 0);
   });
+
   it("calculates gross salary correctly with solidarity fund contribution and additional solidarity fund", () => {
     const realCurrentSalary = 200000;
     const retirementTax = socialSecurityValue * 0.225;
@@ -112,7 +113,7 @@ describe("calculateContractorSalary", () => {
           ADDITIONAL_SOLIDARITY_FUND) /
           realCurrentSalary);
 
-    const gross = calculateContractorSalary({
+    const result = calculateContractorSalary({
       realCurrentSalary,
       retirementTax,
       fonasaTax,
@@ -122,6 +123,6 @@ describe("calculateContractorSalary", () => {
       appliesSolidarityFundAditional,
     });
 
-    expect(gross).toBeCloseTo(expectedGross, 0);
+    expect(result.contractorSalary).toBeCloseTo(expectedGross, 0);
   });
 });

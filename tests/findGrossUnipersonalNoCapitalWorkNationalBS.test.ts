@@ -59,31 +59,27 @@ import {
 } from "../src/lib/constants";
 
 const TOLERANCE = 1;
-
 const socialSecurityValue = 11 * BFC;
 
 describe("Gross salary calculation for unipersonal national billing", () => {
   it("calculates gross salary correctly when there are no dependents", () => {
     const desiredNet = 30000;
-
     const retirementTax = socialSecurityValue * RETIREMENT_CONTRIBUTIONS;
     const frlTax = socialSecurityValue * LABOR_RETRAINING_CONTRIBUTION;
     const fixedDeductions = retirementTax + frlTax;
-
     // For a gross high enough that 0.7*gross > 2.5*BPC,
-    // effective Fonasa rate = HEALTH_INSURANCE_OVER_25BPC.base.
-    const fonasaRate = HEALTH_INSURANCE_OVER_25BPC.base; // 0.095
-    // Fonasa tax = 0.7 * gross * fonasaRate.
-    // Thus: net = gross - (fixedDeductions + 0.7 * gross * fonasaRate)
-    //       = gross * (1 - 0.7 * fonasaRate) - fixedDeductions.
-    // Solve for gross:
+    // effective Fonasa rate = HEALTH_INSURANCE_OVER_25BPC.base (0.095)
+    const fonasaRate = HEALTH_INSURANCE_OVER_25BPC.base;
+    // net = gross - (fixedDeductions + 0.7 * gross * fonasaRate)
+    // => gross = (desiredNet + fixedDeductions) / (1 - 0.7 * fonasaRate)
     const expectedGross =
       (desiredNet + fixedDeductions) / (1 - 0.7 * fonasaRate);
 
-    const gross = findGrossUnipersonalNoCapitalWorkNationalBS({
+    const result = findGrossUnipersonalNoCapitalWorkNationalBS({
       desiredNet,
       socialSecurityCategory: socialSecurityValue,
     });
+    const gross = result.contractorSalary;
     expect(Math.abs(gross - expectedGross)).toBeLessThanOrEqual(TOLERANCE);
   });
 
@@ -92,20 +88,20 @@ describe("Gross salary calculation for unipersonal national billing", () => {
     const retirementTax = socialSecurityValue * RETIREMENT_CONTRIBUTIONS;
     const frlTax = socialSecurityValue * LABOR_RETRAINING_CONTRIBUTION;
     const fixedDeductions = retirementTax + frlTax;
-    // For one child, effective Fonasa rate is:
-    // base + children = 0.095 + 0.015 = 0.11.
+    // For one child, effective Fonasa rate = base + children = 0.095 + 0.015 = 0.11.
     const fonasaRate =
       HEALTH_INSURANCE_OVER_25BPC.base + HEALTH_INSURANCE_OVER_25BPC.children;
     const expectedGross =
       (desiredNet + fixedDeductions) / (1 - 0.7 * fonasaRate);
 
-    const gross = findGrossUnipersonalNoCapitalWorkNationalBS({
+    const result = findGrossUnipersonalNoCapitalWorkNationalBS({
       desiredNet,
       socialSecurityCategory: socialSecurityValue,
       hasChildsInCharge: true,
       childsInChargeCount: 1,
       dependentsDeductionFactor: 0,
     });
+    const gross = result.contractorSalary;
     expect(Math.abs(gross - expectedGross)).toBeLessThanOrEqual(TOLERANCE);
   });
 
@@ -114,18 +110,18 @@ describe("Gross salary calculation for unipersonal national billing", () => {
     const retirementTax = socialSecurityValue * RETIREMENT_CONTRIBUTIONS;
     const frlTax = socialSecurityValue * LABOR_RETRAINING_CONTRIBUTION;
     const fixedDeductions = retirementTax + frlTax;
-    // For a partner only, effective Fonasa rate:
-    // base + spouse = 0.095 + 0.02 = 0.115.
+    // For a partner only, effective Fonasa rate = base + spouse = 0.095 + 0.02 = 0.115.
     const fonasaRate =
       HEALTH_INSURANCE_OVER_25BPC.base + HEALTH_INSURANCE_OVER_25BPC.spouse;
     const expectedGross =
       (desiredNet + fixedDeductions) / (1 - 0.7 * fonasaRate);
 
-    const gross = findGrossUnipersonalNoCapitalWorkNationalBS({
+    const result = findGrossUnipersonalNoCapitalWorkNationalBS({
       desiredNet,
       socialSecurityCategory: socialSecurityValue,
       hasPartnerInCharge: true,
     });
+    const gross = result.contractorSalary;
     expect(Math.abs(gross - expectedGross)).toBeLessThanOrEqual(TOLERANCE);
   });
 
@@ -141,7 +137,7 @@ describe("Gross salary calculation for unipersonal national billing", () => {
     const expectedGross =
       (desiredNet + fixedDeductions) / (1 - 0.7 * fonasaRate);
 
-    const gross = findGrossUnipersonalNoCapitalWorkNationalBS({
+    const result = findGrossUnipersonalNoCapitalWorkNationalBS({
       desiredNet,
       socialSecurityCategory: socialSecurityValue,
       hasChildsInCharge: true,
@@ -149,7 +145,7 @@ describe("Gross salary calculation for unipersonal national billing", () => {
       childsInChargeCount: 1,
       dependentsDeductionFactor: 0,
     });
-
+    const gross = result.contractorSalary;
     expect(Math.abs(gross - expectedGross)).toBeLessThanOrEqual(TOLERANCE);
   });
 
@@ -157,7 +153,7 @@ describe("Gross salary calculation for unipersonal national billing", () => {
     const desiredNet = 150000;
     const solidarityFundContribution = BPC;
 
-    const gross = findGrossUnipersonalNoCapitalWorkNationalBS({
+    const result = findGrossUnipersonalNoCapitalWorkNationalBS({
       desiredNet,
       socialSecurityCategory: socialSecurityValue,
       hasChildsInCharge: true,
@@ -165,7 +161,8 @@ describe("Gross salary calculation for unipersonal national billing", () => {
       solidarityFundContribution,
       appliesSolidarityFundAditional: true,
     });
-    const computedNet = computeNetUnipersonalNoCapitalWorkNational({
+    const gross = result.contractorSalary;
+    const computedNetObj = computeNetUnipersonalNoCapitalWorkNational({
       gross,
       socialSecurityCategory: socialSecurityValue,
       hasChildsInCharge: true,
@@ -173,6 +170,7 @@ describe("Gross salary calculation for unipersonal national billing", () => {
       solidarityFundContribution,
       appliesSolidarityFundAditional: true,
     });
+    const computedNet = computedNetObj.net;
     expect(Math.abs(computedNet - desiredNet)).toBeLessThanOrEqual(0.1);
   });
 
@@ -180,7 +178,7 @@ describe("Gross salary calculation for unipersonal national billing", () => {
     const desiredNet = 500000;
     const solidarityFundContribution = 2 * BPC;
 
-    const gross = findGrossUnipersonalNoCapitalWorkNationalBS({
+    const result = findGrossUnipersonalNoCapitalWorkNationalBS({
       desiredNet,
       socialSecurityCategory: socialSecurityValue,
       hasChildsInCharge: true,
@@ -188,7 +186,8 @@ describe("Gross salary calculation for unipersonal national billing", () => {
       solidarityFundContribution,
       appliesSolidarityFundAditional: true,
     });
-    const computedNet = computeNetUnipersonalNoCapitalWorkNational({
+    const gross = result.contractorSalary;
+    const computedNetObj = computeNetUnipersonalNoCapitalWorkNational({
       gross,
       socialSecurityCategory: socialSecurityValue,
       hasChildsInCharge: true,
@@ -196,6 +195,7 @@ describe("Gross salary calculation for unipersonal national billing", () => {
       solidarityFundContribution,
       appliesSolidarityFundAditional: true,
     });
+    const computedNet = computedNetObj.net;
     expect(Math.abs(computedNet - desiredNet)).toBeLessThanOrEqual(0.1);
   });
 });

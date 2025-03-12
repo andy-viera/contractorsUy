@@ -49,7 +49,6 @@ vi.mock("../src/lib/constants.ts", () => {
 });
 
 const TOLERANCE = 1;
-
 const socialSecurityValue = 11 * BFC;
 
 describe("computeNetUnipersonalNoCapitalWorkNational", () => {
@@ -66,10 +65,11 @@ describe("computeNetUnipersonalNoCapitalWorkNational", () => {
       - Expected net = 32000 − 6464.58 ≈ 25535.42.
     */
     const expectedNet = 32000 - (4317.39 + 19.19 + 2128);
-    const net = computeNetUnipersonalNoCapitalWorkNational({
+    const result = computeNetUnipersonalNoCapitalWorkNational({
       gross,
       socialSecurityCategory: socialSecurityValue,
     });
+    const net = result.net;
     expect(Math.abs(net - expectedNet)).toBeLessThanOrEqual(TOLERANCE);
   });
 
@@ -85,13 +85,14 @@ describe("computeNetUnipersonalNoCapitalWorkNational", () => {
       - Expected net = 32000 − 6800.58 ≈ 25199.42.
     */
     const expectedNet = 32000 - (4317.39 + 19.19 + 2464);
-    const net = computeNetUnipersonalNoCapitalWorkNational({
+    const result = computeNetUnipersonalNoCapitalWorkNational({
       gross,
       socialSecurityCategory: socialSecurityValue,
       hasChildsInCharge: true,
       childsInChargeCount: 1,
       dependentsDeductionFactor: 0,
     });
+    const net = result.net;
     expect(Math.abs(net - expectedNet)).toBeLessThanOrEqual(TOLERANCE);
   });
 
@@ -107,11 +108,12 @@ describe("computeNetUnipersonalNoCapitalWorkNational", () => {
       - Expected net = 32000 − 6912.58 ≈ 25087.42.
     */
     const expectedNet = 32000 - (4317.39 + 19.19 + 2576);
-    const net = computeNetUnipersonalNoCapitalWorkNational({
+    const result = computeNetUnipersonalNoCapitalWorkNational({
       gross,
       socialSecurityCategory: socialSecurityValue,
       hasPartnerInCharge: true,
     });
+    const net = result.net;
     expect(Math.abs(net - expectedNet)).toBeLessThanOrEqual(TOLERANCE);
   });
 
@@ -127,7 +129,7 @@ describe("computeNetUnipersonalNoCapitalWorkNational", () => {
       - Expected net = 32000 − 7248.58 ≈ 24751.42.
     */
     const expectedNet = 32000 - (4317.39 + 19.19 + 2912);
-    const net = computeNetUnipersonalNoCapitalWorkNational({
+    const result = computeNetUnipersonalNoCapitalWorkNational({
       gross,
       socialSecurityCategory: socialSecurityValue,
       hasChildsInCharge: true,
@@ -135,6 +137,7 @@ describe("computeNetUnipersonalNoCapitalWorkNational", () => {
       childsInChargeCount: 1,
       dependentsDeductionFactor: 0,
     });
+    const net = result.net;
     expect(Math.abs(net - expectedNet)).toBeLessThanOrEqual(TOLERANCE);
   });
 
@@ -153,10 +156,11 @@ describe("computeNetUnipersonalNoCapitalWorkNational", () => {
       - Expected net = 150000 − 34557.85 ≈ 115442.15.
     */
     const expectedNet = 150000 - 34557.85;
-    const net = computeNetUnipersonalNoCapitalWorkNational({
+    const result = computeNetUnipersonalNoCapitalWorkNational({
       gross,
       socialSecurityCategory: socialSecurityValue,
     });
+    const net = result.net;
     expect(Math.abs(net - expectedNet)).toBeLessThanOrEqual(TOLERANCE);
   });
 
@@ -174,13 +178,14 @@ describe("computeNetUnipersonalNoCapitalWorkNational", () => {
       - (Iterative adjustment yields expected net ≈ 113993.15.)
     */
     const expectedNet = 113993.15;
-    const net = computeNetUnipersonalNoCapitalWorkNational({
+    const result = computeNetUnipersonalNoCapitalWorkNational({
       gross,
       socialSecurityCategory: socialSecurityValue,
       hasChildsInCharge: true,
       childsInChargeCount: 1,
       dependentsDeductionFactor: 0,
     });
+    const net = result.net;
     expect(Math.abs(net - expectedNet)).toBeLessThanOrEqual(TOLERANCE);
   });
 
@@ -196,18 +201,19 @@ describe("computeNetUnipersonalNoCapitalWorkNational", () => {
       - With one child, childDeductions = 1×(CHILD_DEDUCTION) = 10960.
       - Extra reduction = 10960×0.08 = 876.8.
       - Adjusted IRPF ≈ 20246.27 − 876.8 ≈ 19369.47.
-      - Total deductions = (4317.39 + 19.19 + 11550) + 19369.47 ≈ 15886.58 + 19369.47 = 35256.05.
+      - Total deductions = (4317.39 + 19.19 + 11550) + 19369.47 ≈ 35256.05.
       - Expected net ≈ 150000 − 35256.05 ≈ 114743.95.
       - (Our iterative adjustment yields expected net ≈ 114869.95.)
     */
     const expectedNet = 114869.95;
-    const net = computeNetUnipersonalNoCapitalWorkNational({
+    const result = computeNetUnipersonalNoCapitalWorkNational({
       gross,
       socialSecurityCategory: socialSecurityValue,
       hasChildsInCharge: true,
       childsInChargeCount: 1,
       dependentsDeductionFactor: 1,
     });
+    const net = result.net;
     expect(Math.abs(net - expectedNet)).toBeLessThanOrEqual(TOLERANCE);
   });
 
@@ -219,18 +225,18 @@ describe("computeNetUnipersonalNoCapitalWorkNational", () => {
       - fonasaBase = 105000.
       - Effective Fonasa rate = 0.095+0.02 = 0.115, so fonasaTax = 105000×0.115 = 12075.
       - NominalSalary = 150000×1.06 = 159000.
-      - IRPF (approx.) ≈ 21391.2 − ( (4317.39+19.19+12075)×0.08 )  
-         = 21391.2 − ( (4317.39+19.19+12075)×0.08 ) ≈ 21044.27.
+      - IRPF (approx.) ≈ 21391.2 − ( (4317.39+19.19+12075)×0.08 ) ≈ 21044.27.
       - Total deductions = 4317.39 + 19.19 + 12075 + 21044.27 ≈ 37455.85.
       - Expected net ≈ 150000 − 37455.85 ≈ 112544.15.
       - Iterative adjustment yields expected net ≈ 113510.15.
     */
     const expectedNet = 113510.15;
-    const net = computeNetUnipersonalNoCapitalWorkNational({
+    const result = computeNetUnipersonalNoCapitalWorkNational({
       gross,
       socialSecurityCategory: socialSecurityValue,
       hasPartnerInCharge: true,
     });
+    const net = result.net;
     expect(Math.abs(net - expectedNet)).toBeLessThanOrEqual(TOLERANCE);
   });
 
@@ -242,13 +248,12 @@ describe("computeNetUnipersonalNoCapitalWorkNational", () => {
       - fonasaBase = 105000.
       - Effective Fonasa rate = 0.095+0.015+0.02 = 0.13, so fonasaTax = 105000×0.13 = 13650.
       - NominalSalary = 150000×1.06 = 159000.
-      - IRPF (approx.) ≈ 21391.2 − ( (4317.39+19.19+13650)×0.08 )  
-         = 21391.2 − (17986.58×0.08) ≈ 21391.2 − 1438.93 = 19952.27.
+      - IRPF (approx.) ≈ 21391.2 − ( (4317.39+19.19+13650)×0.08 ) ≈ 19952.27.
       - Total deductions = 4317.39 + 19.19 + 13650 + 19952.27 ≈ 37938.85.
       - Expected net ≈ 150000 − 37938.85 ≈ 112061.15.
     */
     const expectedNet = 112061.15;
-    const net = computeNetUnipersonalNoCapitalWorkNational({
+    const result = computeNetUnipersonalNoCapitalWorkNational({
       gross,
       socialSecurityCategory: socialSecurityValue,
       hasChildsInCharge: true,
@@ -256,6 +261,7 @@ describe("computeNetUnipersonalNoCapitalWorkNational", () => {
       childsInChargeCount: 1,
       dependentsDeductionFactor: 0,
     });
+    const net = result.net;
     expect(Math.abs(net - expectedNet)).toBeLessThanOrEqual(TOLERANCE);
   });
 
@@ -274,7 +280,7 @@ describe("computeNetUnipersonalNoCapitalWorkNational", () => {
       - Expected net ≈ 150000 − 37062.05 ≈ 112937.95.
     */
     const expectedNet = 112937.95;
-    const net = computeNetUnipersonalNoCapitalWorkNational({
+    const result = computeNetUnipersonalNoCapitalWorkNational({
       gross,
       socialSecurityCategory: socialSecurityValue,
       hasChildsInCharge: true,
@@ -282,6 +288,7 @@ describe("computeNetUnipersonalNoCapitalWorkNational", () => {
       childsInChargeCount: 1,
       dependentsDeductionFactor: 1,
     });
+    const net = result.net;
     expect(Math.abs(net - expectedNet)).toBeLessThanOrEqual(TOLERANCE);
   });
 });
