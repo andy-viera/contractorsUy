@@ -83,6 +83,7 @@ const calculateSalaryForPath = (data: FormData) => {
       hasChildsInCharge,
       hasPartnerInCharge,
     });
+
     return calculateContractorSalary({
       realCurrentSalary,
       retirementTax,
@@ -203,7 +204,7 @@ const calculateContractorSalary = ({
     realCurrentSalary;
 
   return {
-    contractorSalary: realCurrentSalary / (1 - taxPercentage),
+    contractorSalary: realCurrentSalary * (1 + taxPercentage),
     taxDetail: {
       retirementTax,
       fonasaTax,
