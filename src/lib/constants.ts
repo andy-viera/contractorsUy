@@ -15,7 +15,7 @@ const BFC = 1744.4;
 /**
  * Dolar-Uyu rate.
  */
-const DOLAR_UYU_RATE = 42.4;
+const DOLAR_UYU_RATE = 42.45;
 
 /**
  * Last time BPC and BFC values where atomatically updated.
