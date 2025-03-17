@@ -198,9 +198,10 @@ export default function Guide() {
                     Tasa 22%
                   </td>
                   <td className="px-4 py-2 border-t border-l border-r border-gray-300 dark:border-white/[0.1]">
-                    Factura electrónica con la adenda: Contribuyente 100%
-                    exonerado de IRAE por el Art. 161 Bis inc ii del Decreto
-                    150/007.
+                    Factura electrónica incluyendo en "Detalle de productos o
+                    servicios": Contribuyente 100% exonerado de IRAE por el Art.
+                    161 Bis inc ii del Decreto 150/007. Con leyenda: Servicios
+                    exonerados de IRAE según literal S articulo 52 Titulo 4
                   </td>
                 </tr>
                 <tr>
@@ -260,8 +261,10 @@ export default function Guide() {
                     Sin IVA
                   </td>
                   <td className="px-4 py-2 border-t border-l border-r border-gray-300 dark:border-white/[0.1]">
-                    Factura electrónica con la adenda: Contribuyente 100%
-                    exonerado de IRAE por el Art. 163 bis del Decreto 150/007.
+                    Factura electrónica incluyendo en "Detalle de productos o
+                    servicios": Contribuyente 100% exonerado de IRAE por el Art.
+                    163 bis del Decreto 150/007. Con leyenda: Servicios
+                    exonerados de IRAE según literal S articulo 52 Titulo 4
                   </td>
                 </tr>
                 <tr>
@@ -420,7 +423,7 @@ export default function Guide() {
                 className="text-sky-600 dark:text-sky-700"
                 href="https://www.bps.gub.uy/bps/valores.jsp?contentid=5478"
               >
-                Valores actuales de BPC y BFC
+                Valores actuales BPS
               </a>
             </li>
             <li>
@@ -456,6 +459,27 @@ export default function Guide() {
             <li>
               <a
                 id="13"
+                target="_blank"
+                className="text-sky-600 dark:text-sky-700"
+                href="https://www.bps.gub.uy/7525/calculo-de-anticipo-y-factura-de-aportes.html"
+              >
+                Cálculo de anticipo y factura de aportes a BPS - Servicios
+                Personales
+              </a>
+            </li>
+            <li>
+              <a
+                id="14"
+                target="_blank"
+                className="text-sky-600 dark:text-sky-700"
+                href="https://www.bps.gub.uy/7524/"
+              >
+                Base de cálculo de aportes a BPS - Servicios Personales
+              </a>
+            </li>
+            <li>
+              <a
+                id="15"
                 target="_blank"
                 className="text-sky-600 dark:text-sky-700"
                 href="https://www.reddit.com/r/CharruaDevs/"
