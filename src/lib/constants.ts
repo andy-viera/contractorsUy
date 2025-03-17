@@ -13,6 +13,11 @@ const BPC = 6576.0;
 const BFC = 1744.4;
 
 /**
+ * CPE value.
+ */
+const CPE = 47;
+
+/**
  * Dolar-Uyu rate.
  */
 const DOLAR_UYU_RATE = 42.55;
@@ -324,6 +329,7 @@ export {
   INITIAL_INPUTS,
   BPC,
   BFC,
+  CPE,
   LAST_UPDATE,
   IRPF_BRACKETS,
   SAS_RETIREMENT_CONTRIBUTIONS_BASE,

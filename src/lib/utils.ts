@@ -4,6 +4,7 @@ import {
   ADDITIONAL_SOLIDARITY_FUND,
   BPC,
   CHILD_DEDUCTION,
+  CPE,
   DEDUCTIONS_RATE_OVER_15BPC,
   DEDUCTIONS_RATE_UNDER_15BPC,
   DISABLED_CHILD_DEDUCTION,
@@ -244,6 +245,7 @@ const calculateRealCurrentSalary = (salary: number) => {
  * @param baseTaxableAmount - The base taxable amount to calculate FONASA contributions
  * @param hasChildsInCharge - Whether the person has dependent children
  * @param hasPartnerInCharge - Whether the person has a dependent spouse/partner
+ * @param isPersonalServices - Whether the person is a personal services contractor
  *
  * @returns The monetary value of the FONASA contribution (baseTaxableAmount × percentage)
  *
@@ -255,7 +257,8 @@ const calculateRealCurrentSalary = (salary: number) => {
 const calculateFonasa = (
   baseTaxableAmount: number,
   hasChildsInCharge?: boolean,
-  hasPartnerInCharge?: boolean
+  hasPartnerInCharge?: boolean,
+  isPersonalServices: boolean = false
 ) => {
   const greaterThan25BPC = baseTaxableAmount > 2.5 * BPC;
   let fonasaTaxPercent = greaterThan25BPC
@@ -277,7 +280,11 @@ const calculateFonasa = (
       ? HEALTH_INSURANCE_OVER_25BPC.spouse
       : HEALTH_INSURANCE_UNDER_25BPC.spouse;
 
-  return baseTaxableAmount * fonasaTaxPercent;
+  const fonasaTax = isPersonalServices
+    ? Math.max(baseTaxableAmount * fonasaTaxPercent, CPE)
+    : baseTaxableAmount * fonasaTaxPercent;
+
+  return fonasaTax;
 };
 
 /**
@@ -287,6 +294,7 @@ const calculateFonasa = (
  * @param options.hasChildsInCharge - Whether the person has children in charge (affects FONASA tax)
  * @param options.hasPartnerInCharge - Whether the person has a partner in charge (affects FONASA tax)
  * @param options.fonasaBaseTaxableAmount - Optional custom base amount for FONASA tax calculation.
+ * @param options.isPersonalServices - Whether the person is a personal services contractor.
  *
  * @returns An object containing calculated tax values:
  *          - retirementTax: Retirement contribution amount
@@ -298,21 +306,24 @@ const calculateTaxes = ({
   hasChildsInCharge,
   hasPartnerInCharge,
   fonasaBaseTaxableAmount,
+  isPersonalServices = false,
 }: {
   socialSecurityValue: number;
   hasChildsInCharge?: boolean;
   hasPartnerInCharge?: boolean;
   fonasaBaseTaxableAmount?: number;
+  isPersonalServices?: boolean;
 }) => {
   const retirementTax = Math.min(
     socialSecurityValue * RETIREMENT_CONTRIBUTIONS,
     RETIREMENT_CONTRIBUTIONS_CAP
   );
   const frlTax = socialSecurityValue * LABOR_RETRAINING_CONTRIBUTION;
-  const fonasaTax = calculateFonasa(
+  let fonasaTax = calculateFonasa(
     fonasaBaseTaxableAmount ?? socialSecurityValue,
     hasChildsInCharge,
-    hasPartnerInCharge
+    hasPartnerInCharge,
+    isPersonalServices
   );
 
   return { retirementTax, frlTax, fonasaTax };
@@ -600,6 +611,7 @@ function computeNetUnipersonalNoCapitalWorkNational({
     fonasaBaseTaxableAmount: fonasaBase,
     hasChildsInCharge,
     hasPartnerInCharge,
+    isPersonalServices: true,
   });
 
   const { totalIRPF } = calculateIRPF({

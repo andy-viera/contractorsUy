@@ -26,6 +26,7 @@ def fetch_constants():
     constants = {
         "BFC": None,
         "BPC": None,
+        "CPE": None,
         "MINIMUM_WAGE": None,
         "RETIREMENT_CONTRIBUTIONS_CAP": None
     }
@@ -52,6 +53,8 @@ def fetch_constants():
             constants["BFC"] = numeric_value
         elif "prestaciones" in concept or "bpc" in concept:
             constants["BPC"] = numeric_value
+        elif "cpe" in concept:
+            constants["CPE"] = numeric_value
         elif "salario mínimo nacional" in concept:
             constants["MINIMUM_WAGE"] = numeric_value
         elif "topes art." in concept and "- c" in concept:
