@@ -93,38 +93,19 @@ const calculateSalaryForPath = (data: FormData) => {
   }
 
   if (originCompanyType === companyType.unipersonal && socialSecurityCategory) {
-    if (!combinesCapitalAndWork && targetCompanyType === "national") {
-      return findGrossUnipersonalNoCapitalWorkNationalBS({
-        desiredNet: realCurrentSalary,
-        socialSecurityCategory,
-        hasChildsInCharge,
-        hasPartnerInCharge,
-        childsInChargeCount,
-        disabledChildsInChargeCount,
-        dependentsDeductionFactor,
-        solidarityFundContribution,
-        appliesSolidarityFundAditional,
-      });
-    } else {
-      const { retirementTax, frlTax, fonasaTax } = calculateTaxes({
-        socialSecurityValue: socialSecurityCategory,
-        fonasaBaseTaxableAmount: 6.5 * BPC,
-        hasChildsInCharge,
-        hasPartnerInCharge,
-      });
-      return calculateContractorSalary({
-        realCurrentSalary,
-        retirementTax,
-        fonasaTax,
-        frlTax,
-        childsInChargeCount,
-        disabledChildsInChargeCount,
-        dependentsDeductionFactor,
-        solidarityFundContribution,
-        appliesSolidarityFundAditional,
-        addIrpf: combinesCapitalAndWork || targetCompanyType === "national",
-      });
-    }
+    return calculateContractorSalaryBS({
+      desiredNet: realCurrentSalary,
+      socialSecurityCategory,
+      hasChildsInCharge,
+      hasPartnerInCharge,
+      childsInChargeCount,
+      disabledChildsInChargeCount,
+      dependentsDeductionFactor,
+      solidarityFundContribution,
+      appliesSolidarityFundAditional,
+      isFonasaBaseDynamic: !combinesCapitalAndWork,
+      addIrpf: combinesCapitalAndWork || targetCompanyType === "national",
+    });
   }
 };
 
@@ -507,7 +488,7 @@ const calculateIrpfFromNetSalaryBS = ({
  * does not combine capital and work and bills a national company using binary search algorithm.
  *
  * This function iteratively narrows down the possible gross value that would result in the specified net amount
- * using the computeNetUnipersonalNoCapitalWorkNational function.
+ * using the computeNetContractorSalary function.
  *
  * @param params.desiredNet - The target net amount to achieve
  * @param params.socialSecurityCategory - The value associated to the social security category of the individual
@@ -520,7 +501,7 @@ const calculateIrpfFromNetSalaryBS = ({
  *            and solidarity fund contributions
  * });
  */
-function findGrossUnipersonalNoCapitalWorkNationalBS({
+function calculateContractorSalaryBS({
   desiredNet,
   socialSecurityCategory,
   hasChildsInCharge,
@@ -530,6 +511,8 @@ function findGrossUnipersonalNoCapitalWorkNationalBS({
   dependentsDeductionFactor,
   solidarityFundContribution,
   appliesSolidarityFundAditional,
+  isFonasaBaseDynamic = false,
+  addIrpf = false,
 }: {
   desiredNet: number;
   socialSecurityCategory: number;
@@ -540,6 +523,8 @@ function findGrossUnipersonalNoCapitalWorkNationalBS({
   dependentsDeductionFactor?: number;
   solidarityFundContribution?: number;
   appliesSolidarityFundAditional?: boolean;
+  isFonasaBaseDynamic?: boolean;
+  addIrpf?: boolean;
 }) {
   const TOLERANCE = 0.1;
   let lower = 0;
@@ -548,18 +533,19 @@ function findGrossUnipersonalNoCapitalWorkNationalBS({
 
   while (upper - lower > TOLERANCE) {
     const mid = (lower + upper) / 2;
-    const { net, currentTaxDetail } =
-      computeNetUnipersonalNoCapitalWorkNational({
-        gross: mid,
-        socialSecurityCategory,
-        hasChildsInCharge,
-        hasPartnerInCharge,
-        childsInChargeCount,
-        disabledChildsInChargeCount,
-        dependentsDeductionFactor,
-        solidarityFundContribution,
-        appliesSolidarityFundAditional,
-      });
+    const { net, currentTaxDetail } = computeNetContractorSalary({
+      gross: mid,
+      socialSecurityCategory,
+      hasChildsInCharge,
+      hasPartnerInCharge,
+      childsInChargeCount,
+      disabledChildsInChargeCount,
+      dependentsDeductionFactor,
+      solidarityFundContribution,
+      appliesSolidarityFundAditional,
+      isFonasaBaseDynamic,
+      addIrpf,
+    });
 
     if (net < desiredNet) lower = mid;
     else upper = mid;
@@ -584,7 +570,7 @@ function findGrossUnipersonalNoCapitalWorkNationalBS({
  *          - currentTaxDetail: Breakdown of all deductions including retirement, FONASA, FRL, IRPF,
  *            and solidarity fund contributions
  */
-function computeNetUnipersonalNoCapitalWorkNational({
+function computeNetContractorSalary({
   gross,
   socialSecurityCategory,
   hasChildsInCharge,
@@ -594,6 +580,8 @@ function computeNetUnipersonalNoCapitalWorkNational({
   dependentsDeductionFactor,
   solidarityFundContribution,
   appliesSolidarityFundAditional,
+  isFonasaBaseDynamic,
+  addIrpf,
 }: {
   gross: number;
   socialSecurityCategory: number;
@@ -604,14 +592,16 @@ function computeNetUnipersonalNoCapitalWorkNational({
   dependentsDeductionFactor?: number;
   solidarityFundContribution?: number;
   appliesSolidarityFundAditional?: boolean;
+  isFonasaBaseDynamic?: boolean;
+  addIrpf?: boolean;
 }) {
-  const fonasaBase = 0.7 * gross;
+  const fonasaBase = isFonasaBaseDynamic ? 0.7 * gross : 6.5 * BPC;
   const { retirementTax, frlTax, fonasaTax } = calculateTaxes({
     socialSecurityValue: socialSecurityCategory,
     fonasaBaseTaxableAmount: fonasaBase,
     hasChildsInCharge,
     hasPartnerInCharge,
-    isPersonalServices: true,
+    isPersonalServices: isFonasaBaseDynamic,
   });
 
   const { totalIRPF } = calculateIRPF({
@@ -639,14 +629,14 @@ function computeNetUnipersonalNoCapitalWorkNational({
       (retirementTax +
         frlTax +
         fonasaTax +
-        totalIRPF +
+        (addIrpf ? totalIRPF : 0) +
         solidarityFundContributionAmount +
         additionalSolidarityFundAmount),
     currentTaxDetail: {
       retirementTax,
       frlTax,
       fonasaTax,
-      irpfTax: totalIRPF,
+      irpfTax: addIrpf ? totalIRPF : 0,
       solidarityFundContribution: solidarityFundContributionAmount,
       additionalSolidarityFundAmount,
     },
@@ -745,8 +735,8 @@ export {
   calculateTaxes,
   calculateIRPF,
   calculateIrpfFromNetSalaryBS,
-  findGrossUnipersonalNoCapitalWorkNationalBS,
-  computeNetUnipersonalNoCapitalWorkNational,
+  calculateContractorSalaryBS,
+  computeNetContractorSalary,
   cn,
   parseWithDots,
   parseBooleans,
