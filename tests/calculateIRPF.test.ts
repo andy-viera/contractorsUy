@@ -60,7 +60,6 @@ describe("calculateIRPF", () => {
     expect(result.taxDetails.bracketTax[2]).toBeCloseTo(2856, 1);
   });
 
-  // Test 2: High salary with many deductions driving tax to zero.
   it("calculates IRPF for a high salary (80000) with deductions that exceed tax", () => {
     const input = {
       nominalSalary: 80000,

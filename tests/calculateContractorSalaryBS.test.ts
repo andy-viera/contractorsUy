@@ -4,8 +4,7 @@ vi.mock("../src/lib/utils.ts", async () => {
   const actual = await vi.importActual("../src/lib/utils.ts");
   return {
     ...actual,
-    findGrossUnipersonalNoCapitalWorkNationalBS:
-      actual.findGrossUnipersonalNoCapitalWorkNationalBS,
+    calculateContractorSalaryBS: actual.calculateContractorSalaryBS,
   };
 });
 
@@ -47,8 +46,8 @@ vi.mock("../src/lib/constants.ts", () => {
 });
 
 import {
-  findGrossUnipersonalNoCapitalWorkNationalBS,
-  computeNetUnipersonalNoCapitalWorkNational,
+  calculateContractorSalaryBS,
+  computeNetContractorSalary,
 } from "../src/lib/utils";
 import {
   BFC,
@@ -67,17 +66,15 @@ describe("Gross salary calculation for unipersonal national billing", () => {
     const retirementTax = socialSecurityValue * RETIREMENT_CONTRIBUTIONS;
     const frlTax = socialSecurityValue * LABOR_RETRAINING_CONTRIBUTION;
     const fixedDeductions = retirementTax + frlTax;
-    // For a gross high enough that 0.7*gross > 2.5*BPC,
-    // effective Fonasa rate = HEALTH_INSURANCE_OVER_25BPC.base (0.095)
-    const fonasaRate = HEALTH_INSURANCE_OVER_25BPC.base;
-    // net = gross - (fixedDeductions + 0.7 * gross * fonasaRate)
-    // => gross = (desiredNet + fixedDeductions) / (1 - 0.7 * fonasaRate)
+    const effectiveFonasaRate = HEALTH_INSURANCE_OVER_25BPC.base;
     const expectedGross =
-      (desiredNet + fixedDeductions) / (1 - 0.7 * fonasaRate);
+      desiredNet + fixedDeductions + 6.5 * BPC * effectiveFonasaRate;
 
-    const result = findGrossUnipersonalNoCapitalWorkNationalBS({
+    const result = calculateContractorSalaryBS({
       desiredNet,
       socialSecurityCategory: socialSecurityValue,
+      isFonasaBaseDynamic: false,
+      addIrpf: false,
     });
     const gross = result.contractorSalary;
     expect(Math.abs(gross - expectedGross)).toBeLessThanOrEqual(TOLERANCE);
@@ -88,18 +85,19 @@ describe("Gross salary calculation for unipersonal national billing", () => {
     const retirementTax = socialSecurityValue * RETIREMENT_CONTRIBUTIONS;
     const frlTax = socialSecurityValue * LABOR_RETRAINING_CONTRIBUTION;
     const fixedDeductions = retirementTax + frlTax;
-    // For one child, effective Fonasa rate = base + children = 0.095 + 0.015 = 0.11.
-    const fonasaRate =
+    const effectiveFonasaRate =
       HEALTH_INSURANCE_OVER_25BPC.base + HEALTH_INSURANCE_OVER_25BPC.children;
     const expectedGross =
-      (desiredNet + fixedDeductions) / (1 - 0.7 * fonasaRate);
+      desiredNet + fixedDeductions + 6.5 * BPC * effectiveFonasaRate;
 
-    const result = findGrossUnipersonalNoCapitalWorkNationalBS({
+    const result = calculateContractorSalaryBS({
       desiredNet,
       socialSecurityCategory: socialSecurityValue,
       hasChildsInCharge: true,
       childsInChargeCount: 1,
       dependentsDeductionFactor: 0,
+      isFonasaBaseDynamic: false,
+      addIrpf: false,
     });
     const gross = result.contractorSalary;
     expect(Math.abs(gross - expectedGross)).toBeLessThanOrEqual(TOLERANCE);
@@ -110,16 +108,17 @@ describe("Gross salary calculation for unipersonal national billing", () => {
     const retirementTax = socialSecurityValue * RETIREMENT_CONTRIBUTIONS;
     const frlTax = socialSecurityValue * LABOR_RETRAINING_CONTRIBUTION;
     const fixedDeductions = retirementTax + frlTax;
-    // For a partner only, effective Fonasa rate = base + spouse = 0.095 + 0.02 = 0.115.
-    const fonasaRate =
+    const effectiveFonasaRate =
       HEALTH_INSURANCE_OVER_25BPC.base + HEALTH_INSURANCE_OVER_25BPC.spouse;
     const expectedGross =
-      (desiredNet + fixedDeductions) / (1 - 0.7 * fonasaRate);
+      desiredNet + fixedDeductions + 6.5 * BPC * effectiveFonasaRate;
 
-    const result = findGrossUnipersonalNoCapitalWorkNationalBS({
+    const result = calculateContractorSalaryBS({
       desiredNet,
       socialSecurityCategory: socialSecurityValue,
       hasPartnerInCharge: true,
+      isFonasaBaseDynamic: false,
+      addIrpf: false,
     });
     const gross = result.contractorSalary;
     expect(Math.abs(gross - expectedGross)).toBeLessThanOrEqual(TOLERANCE);
@@ -130,20 +129,22 @@ describe("Gross salary calculation for unipersonal national billing", () => {
     const retirementTax = socialSecurityValue * RETIREMENT_CONTRIBUTIONS;
     const frlTax = socialSecurityValue * LABOR_RETRAINING_CONTRIBUTION;
     const fixedDeductions = retirementTax + frlTax;
-    const fonasaRate =
+    const effectiveFonasaRate =
       HEALTH_INSURANCE_OVER_25BPC.base +
       HEALTH_INSURANCE_OVER_25BPC.children +
       HEALTH_INSURANCE_OVER_25BPC.spouse;
     const expectedGross =
-      (desiredNet + fixedDeductions) / (1 - 0.7 * fonasaRate);
+      desiredNet + fixedDeductions + 6.5 * BPC * effectiveFonasaRate;
 
-    const result = findGrossUnipersonalNoCapitalWorkNationalBS({
+    const result = calculateContractorSalaryBS({
       desiredNet,
       socialSecurityCategory: socialSecurityValue,
       hasChildsInCharge: true,
       hasPartnerInCharge: true,
       childsInChargeCount: 1,
       dependentsDeductionFactor: 0,
+      isFonasaBaseDynamic: false,
+      addIrpf: false,
     });
     const gross = result.contractorSalary;
     expect(Math.abs(gross - expectedGross)).toBeLessThanOrEqual(TOLERANCE);
@@ -153,7 +154,7 @@ describe("Gross salary calculation for unipersonal national billing", () => {
     const desiredNet = 150000;
     const solidarityFundContribution = BPC;
 
-    const result = findGrossUnipersonalNoCapitalWorkNationalBS({
+    const result = calculateContractorSalaryBS({
       desiredNet,
       socialSecurityCategory: socialSecurityValue,
       hasChildsInCharge: true,
@@ -162,7 +163,7 @@ describe("Gross salary calculation for unipersonal national billing", () => {
       appliesSolidarityFundAditional: true,
     });
     const gross = result.contractorSalary;
-    const computedNetObj = computeNetUnipersonalNoCapitalWorkNational({
+    const computedNetObj = computeNetContractorSalary({
       gross,
       socialSecurityCategory: socialSecurityValue,
       hasChildsInCharge: true,
@@ -178,7 +179,7 @@ describe("Gross salary calculation for unipersonal national billing", () => {
     const desiredNet = 500000;
     const solidarityFundContribution = 2 * BPC;
 
-    const result = findGrossUnipersonalNoCapitalWorkNationalBS({
+    const result = calculateContractorSalaryBS({
       desiredNet,
       socialSecurityCategory: socialSecurityValue,
       hasChildsInCharge: true,
@@ -187,7 +188,7 @@ describe("Gross salary calculation for unipersonal national billing", () => {
       appliesSolidarityFundAditional: true,
     });
     const gross = result.contractorSalary;
-    const computedNetObj = computeNetUnipersonalNoCapitalWorkNational({
+    const computedNetObj = computeNetContractorSalary({
       gross,
       socialSecurityCategory: socialSecurityValue,
       hasChildsInCharge: true,
