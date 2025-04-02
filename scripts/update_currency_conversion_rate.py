@@ -4,16 +4,26 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 from datetime import datetime
-
+import time
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 CONSTANTS_FILE = os.path.join(SCRIPT_DIR, "../src/lib/constants.ts")
+
+def fetch_with_retries(url, retries=5, timeout=100):
+    for i in range(retries):
+        try:
+            return requests.get(url, timeout=timeout)
+        except requests.exceptions.RequestException as e:
+            if i < retries - 1:
+                time.sleep(5)
+            else:
+                raise e
 
 
 def fetch_dolar_rate():
     """Fetches the current USD to UYU average exchange rate from INE's Excel file."""
     base_url = "https://www.gub.uy/instituto-nacional-estadistica/datos-y-estadisticas/estadisticas/series-historicas-cotizacion%20monedas"
 
-    page = requests.get(base_url)
+    page = fetch_with_retries(base_url)
     page.raise_for_status()
 
     soup = BeautifulSoup(page.text, "html.parser")
