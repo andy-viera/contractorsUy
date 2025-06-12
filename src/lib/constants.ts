@@ -20,7 +20,7 @@ const CPE = 4737.0;
 /**
  * Dolar-Uyu rate.
  */
-const DOLAR_UYU_RATE = 41.4;
+const DOLAR_UYU_RATE = 41.3;
 
 /**
  * Last time BPC and BFC values where automatically updated.
