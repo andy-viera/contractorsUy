@@ -15,7 +15,7 @@ const BFC = 1744.4;
 /**
  * CPE value.
  */
-const CPE = 4737.0;
+const CPE = 4828.0;
 
 /**
  * Dolar-Uyu rate.
