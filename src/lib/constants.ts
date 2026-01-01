@@ -25,7 +25,7 @@ const DOLAR_UYU_RATE = 40.2;
 /**
  * Last time BPC and BFC values where automatically updated.
  */
-const LAST_UPDATE = 2025;
+const LAST_UPDATE = 2026;
 
 /**
  * IRPF tax brackets.
