@@ -5,17 +5,17 @@ import { parseWithDots } from "./utils";
 /**
  * BPC value.
  */
-const BPC = 6576.0;
+const BPC = 6864.0;
 
 /**
  * BFC value.
  */
-const BFC = 1744.4;
+const BFC = 1847.96;
 
 /**
  * CPE value.
  */
-const CPE = 4828.0;
+const CPE = 6693.0;
 
 /**
  * Dolar-Uyu rate.
@@ -116,7 +116,7 @@ const DISABLED_CHILD_DEDUCTION = (40 * BPC) / 12;
  */
 const ADDITIONAL_SOLIDARITY_FUND = ((5 / 6) * BPC) / 12;
 
-const MINIMUM_WAGE = 23604.0;
+const MINIMUM_WAGE = 24572.0;
 
 const PROFESSIONAL_CATEGORIES = [
   { label: "1ra. Especial", value: 3241 },
