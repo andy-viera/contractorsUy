@@ -65,7 +65,7 @@ const SAS_FONASA_BASE = 6.5 * BPC;
 /**
  * Maximum nominal salary on which retirement contributions apply.
  */
-const RETIREMENT_CONTRIBUTIONS_CAP = 272564.0;
+const RETIREMENT_CONTRIBUTIONS_CAP = 288836.0;
 
 /**
  * FONASA contributions percentage for people with salary up to 2.5 BPC.
